@@ -123,8 +123,8 @@ w_{1}
 \end{equation}
 
 \marginnote{\textsl{Likelihood}}[1cm]
-Here, \(w\) are the parameters of the function. The measurements are corrupted by independent white noise \(\epsilon\), such that the noise is a random variable sampled from a white noise Gaussian with variance \(\sigma_{n}^{2}\)\footnote{\(\Pr[\epsilon] = \mathcal{N}(0, \sigma_{n} = \frac{1}{\sqrt{2\pi\sigma_{n}^{2}}}\exp^{-\frac{\epsilonç{2}}{2\sigma_{n}^{2}}}
-)\)}. The above equations \ref{eqBayesianLinearRegression} can be combined to result in the likelihood \(\Pr[Y\mid X, w]\)
+Here, \(w\) are the parameters of the function, \(w_{0}\) denotes the intercept and \(w_{1}\) denotes the slope of the regression model. The measurements are corrupted by independent white noise \(\epsilon\), such that the noise is a random variable sampled from a white noise Gaussian with variance \(\sigma_{n}^{2}\)\footnote{\(\Pr[\epsilon] = \mathcal{N}(0, \sigma_{n} = \frac{1}{\sqrt{2\pi\sigma_{n}^{2}}}\exp^{-\frac{\epsilonç{2}}{2\sigma_{n}^{2}}}
+\)}. The above equations \ref{eqBayesianLinearRegression} can be combined to result in the likelihood \(\Pr[Y\mid X, w]\)
 
 \begin{equation}\label{eqBayesianLikelihood}
 \begin{aligned}
@@ -166,10 +166,25 @@ Here, \(A = \sigma_{n}^{-2}XX^{T} + \Sigma_{Prior}^{-2}\). Thus the posterior di
 \end{equation}
 
 \marginnote{\textsl{Posterior}}[1cm]
-The mean \(\frac{1}{\sigma_{n}^{2}} x_{*}A^{-1}XY\) can be used as a prediction at the test point \(x_{*}\), while the variance is a measure of uncertainty for this prediction. We can thus obtain the prediction \(f(x_{*})\), using a prior set of beliefs (equation \ref{eqBayesianPrior}) and updating those beliefs using observations. While the Bayesian Linear Regression framework provides an opportunity to encode prior assumptions in terms of distributions of the parameters. A much more elegant and expressive method is by using Gaussian Processes to perform regression. Gaussian Processes are a distribution over functions and hence enable us to encode prior knowledge directly in the functional space. 
+The mean \(\frac{1}{\sigma_{n}^{2}} x_{*}A^{-1}XY\) can be used as a prediction at the test point \(x_{*}\), while the variance is a measure of uncertainty for this prediction. We can thus obtain the prediction \(f(x_{*})\), using a prior set of beliefs (equation \ref{eqBayesianPrior}) and updating those beliefs using observations. 
+
+\marginnote{\textsl{Experiment}}[1cm]
+Suppose we have a dataset \(\mathcal{D} = \{X = [-0.5, 0.33, 0.66], Y = [0, 0.5, 0.5]\}\) and want to perform Bayesian Linear Regression on it. We would assume a prior distribution of parameter \(w\):
+\begin{equation}
+\begin{Bmatrix}
+w_{0}\\ 
+w_{1}
+\end{Bmatrix} \sim = \mathcal{N}()
+\end{equation}
+
+
+
+
+
+While the Bayesian Linear Regression framework provides an opportunity to encode prior assumptions in terms of distributions of the parameters. A much more elegant and expressive method is by using Gaussian Processes to perform regression. Gaussian Processes are a distribution over functions and hence enable us to encode prior knowledge directly in the functional space. 
 
 \marginnote{\textsl{Non-parametric models}}[1cm]
-Learning algorithms are mainly divided into two main types. The first is defined by parametric models which can only represent a limited hypothesis space. They use parameters to describe the function between input and output domain. For example the weight parameters \(w\) in Bayesian Linear Regression. The second are non-parametric models whose hypothesis space grows with the size of data. Non-parametric models use data to represent functions, Gaussian Process Regression is a type of non-parametric model. One can imagine a non-parametric model like a stretched rubber sheet: whenever it sees data it deforms accordingly to compensate for the new data point. Hence the more data it sees the more it starts mimicking the actual function. 
+Learning algorithms are mainly divided into two main types. The first is defined by parametric models which can only represent a limited hypothesis space. They use parameters to describe the function between input and output domain. For example the weight parameters \(w\) in Bayesian Linear Regression. The second are non-parametric models whose hypothesis space grows with the size of data \cite{ghahramani2013bayesian}. Non-parametric models use data to represent functions, Gaussian Process Regression is a type of non-parametric model. One can imagine a non-parametric model like a stretched rubber sheet: whenever it sees data it deforms accordingly to compensate for the new data point. Hence the more data it sees the more it starts mimicking the actual function. 
 
 \marginnote{\textsl{Gaussian Process}}[1cm]
 Gaussian Process or Kriging was first used in the context of Geo-statistics research by Daniel Krige \cite{krige1951statistical}, this was later formalized by Matheron in his seminal work "Principals of Geo-statistics" \cite{matheron1963principles}. Recently, interest in the Gaussian Process (GP) grew in the machine learning community from neural networks research. It was shown that a Bayesian neural network becomes a Gaussian process as the number of neurons tends to infinity \cite{neal2012bayesian}. Gaussian processes are probabilistic distributions over functions, which provide a Bayesian non-parametric approach to smoothing and interpolation. A Gaussian Process can be fully parameterized by its mean and covariance function. More generally, a Gaussian Process is a method to probabilistically define a family of functions, chapter \ref{chapGp} expands GP in more detail. 

@@ -51,8 +51,9 @@ set decimal separator={,\!},
 \hypersetup{%
 colorlinks=true,
 linkcolor=black,
-citecolor=black,
+citecolor=blue,
 urlcolor=black}
+
 
 \renewcommand{\baselinestretch}{1.05}
 \usepackage{fancyhdr}
@@ -173,7 +174,9 @@ urlcolor=black}
 \parskip=5pt
 %\sloppy
 
-%\includeonly{01-introduction, 02-gpTheory, 03-scalingUpGPs}
+%\includeonly{01-introduction, 02-gpTheory, 03-scalingUpGPs, 04-basicCovariances} %part 1
+%\includeonly{01-introduction,04-basicCovariances} %part BLR
+%\includeonly{04-basicCovariances}%, 05-combiningBasicKernels} %part 2
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%
@@ -191,7 +194,7 @@ urlcolor=black}
 
 % Title
 \rule{\linewidth}{0.5mm} \\[0.4cm]
-{ \huge \bfseries Titre du rapport éventuellement en plusieurs lignes \\[0.4cm] }
+{ \huge \bfseries Incorporating Prior Information from Engineering Design into Gaussian Process Regression Models \\[0.4cm] }
 \rule{\linewidth}{0.5mm} \\[1.5cm]
 
 % Author and supervisor
@@ -205,7 +208,7 @@ urlcolor=black}
 \begin{minipage}{0.4\textwidth}
   \begin{flushright} \large
     \emph{Encadrants :} \\
-    Pr.Joseph MORLIER\\
+    Dr.Joseph MORLIER\\
     Dr.Emmanuel RACHELSON
     M. Michele COLOMBO
   \end{flushright}
@@ -254,15 +257,16 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendi
 
 \cleardoublepage
 
-\part{Introduction}
+\part{Introduction}\label{partIntroduction}
 \include{01-introduction}
 \include{02-gpTheory}
 \include{03-scalingUpGPs}
 
-\part{Incorporating structure in Gaussian Process Regression}
-\include{04-structureThroughCovariance}
+\part{Incorporating structure in Gaussian Process Regression}\label{partIncorporatePattern}
+\include{04-basicCovariances}
+\include{05-combiningBasicKernels}
 
-\part{Incorporating multiple outputs Gaussian Process Regression}
+\part{Incorporating multiple outputs Gaussian Process Regression}\label{partIncorporateMultipleOutputs}
 \include{05-addingEquations}
 \include{06-multiTaskExtrapolation}
 
