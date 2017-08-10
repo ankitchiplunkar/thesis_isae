@@ -41,15 +41,78 @@ In fact \(k(x_{i}, x_{j})\) corresponds to a covariance function iff it is a sym
 
 After accounting for the zero mean, the GP model can be completely parametrized by the kernel. Hence the problem of learning in a Gaussian Process is exactly the problem of finding suitable properties of the covariance function \cite{rasmussen2006gaussian}. The covariance function consists of two parts a functional form (which define a pattern for constituent family of functions) and a set of hyper-parameters (which define the probability distribution for constituent family of functions). In section \ref{} we have seen in detail how to automatically choose hyper-parameters. The current chapter and the next chapter will detail how to choose the functional form. Although there exist methods in the literature to automatically choose the functional form of a covariance function \cite{duvenaud-thesis-2014, lloyd2014automatic, automaticStatistician}, we will not detail those methods here. 
 
-\section{Bayesian Linear Regression}
+\section{Revisiting Bayesian Linear Regression}
+The Bayesian Linear regression described during section \ref{secBayesianModelling} can also be seen as a form of GP Regression but with a Linear covariance function.
+In the Bayesian linear regression we assume a prior distribution of parameters, this is equivalent to assuming a prior distribution over functions. For a function and its prior as defined by equation \ref{eqBLRRevisited}.
+
+\begin{equation}\label{eqBLRRevisited}
+    f(x_{i}) = \phi(x_{i})^{T}w
+\quad \quad \Pr[w] = \mathcal{N}(0, \Sigma_{Prior}) 
+\end{equation}
+
+The equivalent prior over the functions \(f\) can be written as equation \ref{eqPriorDistributionOverLinearFunctions}
+
+\begin{equation}\label{eqPriorDistributionOverLinearFunctions}
+    \Pr[f(x)] = GP(0, \phi(x)^{T} \Sigma_{Prior} \phi(x'))
+\end{equation}
+
+The above covariance function (\(k(x, x') = \phi(x)^{T} \Sigma_{Prior} \phi(x')^{T}\)) describes a family of functions which are linear combinations of the basis functions (\(\phi(x)\)). Hence if we choose a linear basis describes family of linear functions, a polynomial basis encodes a family of polynomial basis functions. If we assume an independent noise \(\epsilon\) on the observations then based on the discussion on noisy GPs (section \ref{subSecPosteriorNoisy}) the GP prior becomes:
+
+\begin{equation}\label{eqNoisyPriorDistributionOverLinearFunctions}
+    \Pr[y(x)] = GP(0, \phi(x)^{T} \Sigma_{Prior} \phi(x') + \sigma_{n}^2\delta_{xx'})
+\end{equation}
+
+The matrix \(\Sigma_{Prior}\) and \(\sigma_{n}\) are the hyper-parameters of this GP prior and \(\phi(x)\) represents its functional form. The hyper-parameters can be chosen using marginal likelihood and posterior prediction can be performed based on the discussion on chapter \ref{}. 
+
+\paragraph{Experiments}\label{paraLinearGPExperiment}
+Let us revisit the experiment performed in section \ref{secBayesianModelling} but this time using GP regression and a linear kernel. The toy-dataset \(\mathcal{D}_{1} = \{X = [-0.5, 0.33, 0.66], Y = [0, 0.5, 0.5]\}\) (section \ref{secBayesianModelling}) will be used again. The prior distribution on parameters \(\Sigma_{Prior} = [w_{0}, 0; 0, w_{1}] \mid w_{0} = 1, w_{1} = 1\) and prior on noise \(\sigma_{n} = 0.1\) will be the same as used in the earlier experiment. \(w_{0}\), \(w_{1}\) and \(\sigma_{n}\) are the hyper-parameters of this GP prior. 
+
+Figure \ref{subFigdrawsLinear} shows draws from a GP prior with mean zero and Linear kernel as defined in the above para. The solid black line defines the mean function, shaded blue region defines 95\% confidence interval (2\(\sigma\)) distance away from the mean. The dashed lines are five functions drawn at random from a GP prior. Random functions drawn from a linear GP are linear. Figure \ref{subFigposteriorLinearNoisy_1} show draws from a GP posterior with mean zero and Linear kernel  as defined in above para and conditioned on the first data point \(X = -0.5, Y = 0\). The solid black line defines the mean function, shaded blue region defines 95\% confidence interval (2\(\sigma\)) distance away from the mean. The dashed lines are five functions drawn at random from a GP prior. The posterior mean passes from the data point, random functions drawn from a linear GP are linear.
 
 
+\begin{figure}[!ht]
+  \centering
+    \subfigure[{Draws from a GP prior with mean zero and Linear kernel (\(k(x, x') = \phi(x)^{T} \Sigma_{Prior} \phi(x')^{T} + \sigma_{n}^2\delta_{xx'}\)) with \(w_{0} = 1, w_{1} = 1\) and \(\sigma_{n} = 0.1\). The solid black line defines the mean function, shaded blue region defines 95\% confidence interval (2\(\sigma\)) distance away from the mean. The dashed lines are five functions drawn at random from a GP prior. Random functions drawn from a linear GP are linear.}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/drawsLinear}
+        \label{subFigdrawsLinear}
+  }\quad
+\subfigure[{Draws from a GP posterior with mean zero and Linear kernel (figure \ref{subFigdrawsLinear}) conditioned on the data \(X = -0.5, Y = 0\). The solid black line defines the mean function, shaded blue region defines 95\% confidence interval (2\(\sigma\)) distance away from the mean. The dashed lines are five functions drawn at random from a GP prior. The posterior mean passes from the data point, random functions drawn from a linear GP are linear}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/posteriorLinearNoisy_1}
+        \label{subFigposteriorLinearNoisy_1}
+  }\quad
+
+       \caption{Prior and posterior from a GP prior of linear kernel}
+       \label{figPriorAndPosteriorLinearKernel}
+\end{figure}
+
+Figure \ref{subFigmaximizingMarginalLikelihoodLinear} shows the contours of marginal likelihood with respect to \(w\) and noise \(\sigma_{n}\) hyper-parameters. The data set \(\mathcal{D}_{1}\) and the prior is a zero mean with Linear kernel. The marginal likelihood is maximum for \(w_{0} = 0.2576, w_{1} = 0.4584\), incidentally the same posterior predictions as section \ref{toyDataSet1}. This means that the data has the highest possibility of coming from a dataset defined by such a prior. Figure \ref{subFigoptimizedPosteriorLinearNoisy_3} shows the posterior for same data set but for the hyper-parameters where marginal likelihood is maximum.
+
+\begin{figure}[!ht]
+  \centering
+    \subfigure[{Marginal likelihood contours for varying bias and slope parameter. The noise hyper parameter is \((\sigma_{1} = [0.1])\). Marginal likelihood is maximum for \(w_{0} = 0.2576, w_{1} = 0.4584\).}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/maximizingMarginalLikelihoodLinear}
+        \label{subFigmaximizingMarginalLikelihoodLinear}
+  }\quad
+\subfigure[{Draws from a GP posterior, conditioned on the dataset \(\mathcal{D}_{1}\) with mean zero and Linear kernel with hyper-parameters that maximize the marginal likelihood.}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/optimizedPosteriorLinearNoisy_3}
+        \label{subFigoptimizedPosteriorLinearNoisy_3}
+  }\quad
+
+       \caption{Maximizing Marginal Likelihood Linear kernel}
+       \label{figMaximizingMLLinearKernel}
+\end{figure}
 
 
-Section \ref{sec:covStructure} will show commonly used covariance functions and how to combine them for introducing structure in the model. Section \ref{sec:multiOutputKernels} deals with how to merge multiple outputs in a single kernel for making a better model.
-
-\section{Expressing Structure with Kernels} \label{sec:covStructure}
-Neural networks initially became popular because they could automatically detect hidden pattern in data. Gaussian Process are effectively smoothing devices, if used with a proper kernel (squared exponential). Simple kernels cannot discover structure in the data and cannot extrapolate. This observation prompted MacKay \cite{mackay2003information} to ask the question "Have we thrown the baby out with the bathwater?" in replacing Gaussian Process with Neural Networks. This section will show how to encode different types of structure in a kernel and eventually how to progressively combine them to discover understandable structure in data \cite{duvenaud-thesis-2014}.
+\section{Stationary kernels} \label{secStationaryKernels}
+Covariance functions which are purely a function of distance \(d = (x-x')\) are called as stationary functions. While a if covariance functions are functions of \(d = |x-x'|\) then they are called as isotropic covariance functions. These covariance functions remains unchanged if the points \(x, x'\) are rotated translated. Hence a family of functions defined by stationary kernels will have similar local features throughout the input domain. 
 
 
 
@@ -75,46 +138,6 @@ Mat\'ern kernels have been found to have superior performance on datasets with h
 
 In our experiments the Mat\'ern kernel performs significantly well when compared to SE kernels. This improved performance is due to the increased hypothesis space or better performance in higher dimensions should be a matter of study.
 
-\subsection{Linear Kernel} 
-A linear kernel represents a hypothesis space on linear functions. Using a linear kernel means we are effectively performing Bayesian Linear Regression. Linear kernel when combined with other kernels brings about some very nice properties discussed in subsection \ref{subsec:structureKernelsMultiplyingKernels}.
-
-\begin{align}
-k_{\textrm{Lin}}(x, x') = \sigma_v^2(x - c)(x' - c)
-\end{align}
-
-The linear kernel is not like other kernels it is non-stationary. Stationary kernels are generally a function of $(x-x')$. This gives stationary kernels a nice property that they are irrelevant to displacing the data points. Fig: \ref{subfig:linearDraws} shows random draws from a Linear kernel.
-
-\subsection{Change-Point kernels}
-Changepoint (CP) kernels can be defined through addition and multiplication with sigmoidal functions. They were introduced to identify changepoints in time-series modelling \cite{osborne2010bayesian}. This kernel expresses a change from one structure to another. 
-
-\begin{align} \label{eq:changePointKernel}
-CP(k_{1}, k_{2}(x, x')) = sigm(x)k_{1}sigm(x') + (1-sigm(x))k_{2}(1-sigm(x'))
-\end{align}
-
-The parameters of the sigmoidal determine the steepness of the changepoint and the placement of changepoint.
-
-\subsection*{Identifying physical parameters using CP kernel}\label{subsubsec:applicationCP}
-In several physical processes, there is an equilibrium condition. Near this equilibrium, a linear approximation is performed and when the assumptions start failing a non-linear domain is observed. This basic approximation is made in experiments such as: lift vs alpha curves; estimation of Young's Modulus; basics of control theory. The value of these physical parameters slope (eg. Young's Modulus) and position of changepoint (eg. plasticity) are progressively fed into further simulations. 
-
-These basic physical properties define the general characteristics of the field. The parameters are then later fed into more complex designs and used as an input into particular mesh elements (remember induction vs deduction \ref{sec:machineLearning}). The values of slopes and position of change-point are approximated by engineering judgement. 
-
-\begin{figure}[!ht]
-  \centering
-    \subfigure[GP regression using a SE kernel]
-	    {\includegraphics[width=0.45\textwidth]{images/clAlphaCovSE}
-	    \label{subfig:clAlphaCovSE}}
-	    \quad
-    \subfigure[GP regression using a CP(linear, SE) kernel]
-	    {\includegraphics[width=0.45\textwidth]{images/clAlphaCovCP}
-	    \label{subfig:clAlphaCovCP}}
-	    \caption{Estimation of lift coefficient $Cl\alpha$}
-\end{figure}
-
-
-We tried to solve the problem of estimating the lift coefficient using Gaussian Process. Using the changepoint kernel which transitions from linear domain (linear kernel) to non-linear domain (SE kernel), prior assumptions of the problem were encoded in the kernel structure. Open source data for the lift vs alpha curves for the NACA 0012 airfoil were chosen. Fig: \ref{subfig:clAlphaCovSE} shows the regression of the data using SE kernel. Fig: \ref{subfig:clAlphaCovCP} regression of the same dataset using the CP(linear, SE) kernel. 
-
-We can observe that the algorithm predicts a changepoint for the dataset. This is the point with where the linear assumptions start failing, according to prior information. The marginal likelihood of CP(linear, SE) kernel is rigged with many local minimas. The algorithm tries to put a changepoint at every observation point. Hence using a global optimizer is advised. The changepoint kernel is also very numerically unstable hence cross-validating the learners is also very important (model ensembles \ref{subsec:modelEnsembles}). The results of this study will be presented in the SIAM Uncertainty Quantification 2016 Conference.
-
 \subsection{Spectral Mixture Kernel}
 Spectral mixture kernels expand the hypothesis space by exploiting the Bochner's theorem \cite{bochner1959lectures}. It defines a scale-location mixture of finite Gaussian's in the frequency domain \cite{wilson2013gaussian}. 
 
@@ -124,7 +147,7 @@ k_{\textrm{SM}}(x, x') = \sum_{q=1}^{Q}w_{q}cos(2\pi\mu_{q}^{T}\tau)\prod_{p=1}^
 
 In the frequency domain: the $\mu$ corresponds to modal frequencies; the $\nu$ correspond to damping values and the $w$ corresponds to amplitude or weights of individual gaussians. The Spectral Mixture kernel performs surprisingly well in pattern discovery and extrapolation tasks. But, it falls in the similar trade-off of bias vs variance \ref{subsec:biasVsVariance}. In our experiments the Spectral Mixture kernel performs significantly well in time-series tasks.
 
-\subsubsection{Identifying structural modal parameters using Spectral Mixture Kernel}
+\subsection{Identifying structural modal parameters using Spectral Mixture Kernel}
 Modal analysis has been widely used as a means of identifying dynamic properties such as modal frequencies, damping ratios and mode shapes of a structural system. Traditionally, the system is subjected to artificial input excitations and output deformations (displacements, velocities or accelerations) are measured. These later help in identifying the modal parameters of the system, this process is called Experimental Modal Analysis (EMA). 
 
 Since the last decade Operational Modal Analysis (OMA) has gained considerable interest in the community. OMA identifies the modal parameters only from the output measurements while assuming ambient excitations as random noise. OMA is cheaper because it does not require expensive experimental setup and and can be used in real time operational use cases such as health monitoring \cite{peeters2005industrial} \cite{shahdin2010correlating} \cite{rainieri2007automated}. Several algorithms in OMA can be seen as extensions of EMA algorithms based on the similar assumption of second order MDOF system.
@@ -194,7 +217,7 @@ We would like to emphasize that keeping the computational complexities aside, fi
   \subfigure[Distribution of  gaussians for $Q=6$. We can see that the three modal frequencies have majority of the participation in representing the spectral density.]
   {\includegraphics[width=0.3\textwidth]{images/distriButionOfGaussians}\label{subfig:distriButionOfGaussians}}
 
-Figure \ref{subfig:stabilizationDiagram} shows the stabilization diagram with increasing number of gaussians $Q$. We can observe that as the number of $Q$ increases the algorithm starts finding better and better modes. We can also observe that there are three modes which start stabilizing from $Q=5$. The, figure \ref{subfig:bicVsQ} shows the BIC criterion with increasing number of gaussian's $Q$. We can see that that the BIC is minimum for $Q=6$ and hence if we add anymore gaussian's for our dataset we will be performing over-fitting.
+Figure \ref{subfig:stabilizationDiagram} shows the stabilization diagram with increasing number of gaussians $Q$. We can observe that as the number of $Q$ increases the algorithm starts finding better and better modes. We can also observe that there are three modes which start stabilizing from $Q=5$. The, figure \ref{subfig:bicVsQ} shows the BIC criterion with increasing number of Gaussian's $Q$. We can see that that the BIC is minimum for $Q=6$ and hence if we add anymore Gaussian's for our dataset we will be performing over-fitting.
 
 Figure \ref{subfig:distriButionOfGaussians} shows the $6$ constituent gaussians which represent the $Q=6$ case. The three principal peaks represent the modal frequencies of the system, these correspond to the stabilized frequencies from figure \ref{subfig:stabilizationDiagram}. The remaining three peaks are there to compensate for the spectral density not explained by the three principal peaks. 
 
@@ -206,6 +229,52 @@ In the current setting of the GMM model we only propose a quick and easy way to 
 In this paper we have proposed to identify model frequencies of a system by curve-fitting a mixture of gaussians in the frequency domain. While the common assumption that the structure can be modelled as a MDOF second order differential system causes stability issues in presence of non-linear systems. The GMM model is mathematically stable, gives results in seconds and can fit a function upto arbitrary accuracy. Moreover we introduce the BIC to identify the optimum number of gaussians and perform a trade-off between accuracy of fit and over-fitting. 
 
 Without doubt this is very nascent stage of application of GMM for system identification and there remains problems such as identification of mode-shape and damping ratio in this algorithm. We wish to tackle these problems in the future. We also wish to apply the algorithm on a real world dataset and compare with respect to other time domain and frequency domain techniques.
+
+
+
+\section{Non-stationary kernels}\label{nonStationaryKernels}
+
+
+
+\subsection{Linear Kernel} 
+A linear kernel represents a hypothesis space on linear functions. Using a linear kernel means we are effectively performing Bayesian Linear Regression. Linear kernel when combined with other kernels brings about some very nice properties discussed in subsection \ref{subsec:structureKernelsMultiplyingKernels}.
+
+\begin{align}
+k_{\textrm{Lin}}(x, x') = \sigma_v^2(x - c)(x' - c)
+\end{align}
+
+The linear kernel is not like other kernels it is non-stationary. Stationary kernels are generally a function of $(x-x')$. This gives stationary kernels a nice property that they are irrelevant to displacing the data points. Fig: \ref{subfig:linearDraws} shows random draws from a Linear kernel.
+
+\subsection{Change-Point kernels}
+Changepoint (CP) kernels can be defined through addition and multiplication with sigmoidal functions. They were introduced to identify changepoints in time-series modelling \cite{osborne2010bayesian}. This kernel expresses a change from one structure to another. 
+
+\begin{align} \label{eq:changePointKernel}
+CP(k_{1}, k_{2}(x, x')) = sigm(x)k_{1}sigm(x') + (1-sigm(x))k_{2}(1-sigm(x'))
+\end{align}
+
+The parameters of the sigmoidal determine the steepness of the changepoint and the placement of changepoint.
+
+\subsection*{Identifying physical parameters using CP kernel}\label{subsubsec:applicationCP}
+In several physical processes, there is an equilibrium condition. Near this equilibrium, a linear approximation is performed and when the assumptions start failing a non-linear domain is observed. This basic approximation is made in experiments such as: lift vs alpha curves; estimation of Young's Modulus; basics of control theory. The value of these physical parameters slope (eg. Young's Modulus) and position of changepoint (eg. plasticity) are progressively fed into further simulations. 
+
+These basic physical properties define the general characteristics of the field. The parameters are then later fed into more complex designs and used as an input into particular mesh elements (remember induction vs deduction \ref{sec:machineLearning}). The values of slopes and position of change-point are approximated by engineering judgement. 
+
+\begin{figure}[!ht]
+  \centering
+    \subfigure[GP regression using a SE kernel]
+	    {\includegraphics[width=0.45\textwidth]{images/clAlphaCovSE}
+	    \label{subfig:clAlphaCovSE}}
+	    \quad
+    \subfigure[GP regression using a CP(linear, SE) kernel]
+	    {\includegraphics[width=0.45\textwidth]{images/clAlphaCovCP}
+	    \label{subfig:clAlphaCovCP}}
+	    \caption{Estimation of lift coefficient $Cl\alpha$}
+\end{figure}
+
+
+We tried to solve the problem of estimating the lift coefficient using Gaussian Process. Using the changepoint kernel which transitions from linear domain (linear kernel) to non-linear domain (SE kernel), prior assumptions of the problem were encoded in the kernel structure. Open source data for the lift vs alpha curves for the NACA 0012 airfoil were chosen. Fig: \ref{subfig:clAlphaCovSE} shows the regression of the data using SE kernel. Fig: \ref{subfig:clAlphaCovCP} regression of the same dataset using the CP(linear, SE) kernel. 
+
+We can observe that the algorithm predicts a changepoint for the dataset. This is the point with where the linear assumptions start failing, according to prior information. The marginal likelihood of CP(linear, SE) kernel is rigged with many local minimas. The algorithm tries to put a changepoint at every observation point. Hence using a global optimizer is advised. The changepoint kernel is also very numerically unstable hence cross-validating the learners is also very important (model ensembles \ref{subsec:modelEnsembles}). The results of this study will be presented in the SIAM Uncertainty Quantification 2016 Conference.
 
 
 %%% Local Variables: 

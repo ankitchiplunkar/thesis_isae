@@ -110,7 +110,7 @@ To integrate the prior information we propose to use a Bayesian inference for mo
 Suppose we have access to a training set of observations (or outputs) \(Y = (y(x_{1}); \ldots ; y(x_{i}); \ldots ; y(x_{N}))\), evaluated at a set of known inputs \(X = (x_{1}; \ldots ; x_{i}; \ldots; x_{N})\), and we wish to predict \(y(x_{*})\) at a test input \(x_{*}\). The input and output can be multi-dimensional; \(x_{i} \in \mathbb{R}^{D_{inputs}}\) and \(y(x_{i}) \in \mathbb{R}^{D_{outputs}}\). The process of learning the transformation function \(f\) to make prediction at a new point is called as regression. In the following section we follow formulation for Bayesian Linear Regression provided by \cite{mackay2003information}.
 
 \marginnote{\textsl{Basis functions}}[1cm]
-A simple method to perform regression is by assuming a parametrized form of the function \(f\) and then minimizing the error between measurements and predictions to estimate the parameters of function. The function is written in terms of basis functions \(\phi(x)\). For example when \(\phi(x) = \{1, x\}\) we are performing linear regression, when \(\phi(x) = \{1, x, x^{2}, \ldots, x^{L}\}\) we are performing \(L^{th}\) order polynomial regression. We will focus on linear regression in this section and hence \(\phi(x) = \{1, x\}\).
+A simple method to perform regression is by assuming a parametrized form of the function \(f\) and then minimizing the error between measurements and predictions to estimate the parameters of function. The function is written in terms of basis functions \(\phi(x)\). For example when \(\phi(x) = \{1, x\}^{T}\) we are performing linear regression, when \(\phi(x) = \{1, x, x^{2}, \ldots, x^{L}\}^{T}\) we are performing \(L^{th}\) order polynomial regression. We will focus on linear regression in this section and hence \(\phi(x) = \{1, x\}^{T}\).
 
 \begin{equation}\label{eqBayesianLinearRegression}
 f(x_{i}) = \begin{Bmatrix}
@@ -130,7 +130,7 @@ Here, \(w\) are the parameters of the function, \(w_{0}\) denotes the intercept 
 \begin{aligned}
 \Pr[Y \mid X, w]  & = \prod \Pr[y_{i}\mid x_{i}, w]\\
                 & = \prod \mathcal{N}[x_{i}w , \sigma_{n}^{2}]\\
-                & = \mathcal{N}(X w, \sigma_{n}^{2}I)    
+                & = \mathcal{N}(X^{T} w, \sigma_{n}^{2}I)    
 \end{aligned}
 \end{equation}
 
@@ -168,16 +168,60 @@ Here, \(A = \sigma_{n}^{-2}XX^{T} + \Sigma_{Prior}^{-2}\). Thus the posterior di
 \marginnote{\textsl{Posterior}}[1cm]
 The mean \(\frac{1}{\sigma_{n}^{2}} x_{*}A^{-1}XY\) can be used as a prediction at the test point \(x_{*}\), while the variance is a measure of uncertainty for this prediction. We can thus obtain the prediction \(f(x_{*})\), using a prior set of beliefs (equation \ref{eqBayesianPrior}) and updating those beliefs using observations. 
 
-\marginnote{\textsl{Experiment}}[1cm]
-Suppose we have a dataset \(\mathcal{D} = \{X = [-0.5, 0.33, 0.66], Y = [0, 0.5, 0.5]\}\) and want to perform Bayesian Linear Regression on it. We would assume a prior distribution of parameter \(w\):
-\begin{equation}
-\begin{Bmatrix}
+\paragraph{Experiment}\label{toyDataSet1}
+Suppose we have a dataset \(\mathcal{D}_{1} = \{X = [-0.5, 0.33, 0.66], Y = [0, 0.5, 0.5]\}\) and want to perform Bayesian Linear Regression on it. If we would assume a prior distribution of parameter \(w\) as defined by equation \ref{eqExperimentalPrior}, then the probability density will look like figure \ref{subFigpriorBLR}.
+
+\begin{equation}\label{eqExperimentalPrior}
+\Pr \left [\begin{pmatrix}
 w_{0}\\ 
 w_{1}
-\end{Bmatrix} \sim = \mathcal{N}()
+\end{pmatrix} \right ] = \mathcal{N}\left [ \begin{pmatrix}
+0\\ 
+0
+\end{pmatrix}, \Sigma_{P} = \begin{bmatrix}
+1 & 0\\ 
+0 & 1
+\end{bmatrix} \right ]
 \end{equation}
 
+Using equations \ref{eqExperimentalPrior} and \ref{eqBayesianFunctionalPosterior} we can calculate the posterior distribution for the parameters. For a noise model of \(\Pr[\epsilon] = \mathcal{N}(0, (\sigma_{n}=0.1)^2)\) the posterior distribution comes out as the figure \ref{subFigposteriorBLR}
 
+\begin{equation}\label{eqExperimentalPosterior}
+\Pr \left [\begin{pmatrix}
+w_{0}\\ 
+w_{1}
+\end{pmatrix} \mid \mathcal{D}_{1}, \Sigma_{P}, \sigma_{n} \right ] = \mathcal{N}\left [ \begin{pmatrix}
+0.2576\\ 
+0.4584
+\end{pmatrix}, \begin{bmatrix}
+0.0037 & -0.0022\\ 
+-0.0022 & 0.0138
+\end{bmatrix} \right ]
+\end{equation}
+
+\begin{figure}[!ht]
+  \centering
+    \subfigure[{Contours of probability density for a prior on parameters \(w\) as defined by equation \ref{eqExperimentalPrior}}]
+  {
+        \includegraphics[width=0.29\textwidth]
+        {images/priorBLR}
+        \label{subFigpriorBLR}
+  }\quad
+\subfigure[{Contours of probability density for posterior distribution of parameters \(w\) using equations \ref{eqExperimentalPrior} and \ref{eqBayesianPosterior}. The predicted intercept is \(0.2576\) and the predicted slope is \(0.4584\)}]
+  {
+        \includegraphics[width=0.29\textwidth]
+        {images/posteriorBLR}
+        \label{subFigposteriorBLR}
+  }\quad
+\subfigure[{Linear Prediction based on the posterior, given the Dataset \(\mathcal{D}_{1}\) prior \(\Sigma_{P}\)and noise \(\sigma_{n}\). The predicted linear line does not pass through the data points but between them.}]
+  {
+        \includegraphics[width=0.29\textwidth]
+        {images/predictionsBLR}
+        \label{subFigpredictionsBLR}
+  }\quad
+       \caption{Prior, Posterior and Predictionin Bayesian Linear Regression}
+       \label{figPriorAndPosterior}
+\end{figure}
 
 
 

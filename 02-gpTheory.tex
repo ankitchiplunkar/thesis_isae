@@ -85,7 +85,7 @@ k_{SE}(x, x', \theta) = \theta_{1}^2exp[-\frac{d^2}{2\theta_{2}^2}]
 \end{equation}
 
 \marginnote{\textsl{SE kernel}}[1cm]
-For the case of the SE kernel the hyper-parameters \((\theta = [\theta_{1}, \theta_{2}])\) are; amplitude \((\theta_{1})\) which defines average distance from mean and the length scale \((\theta_{2})\) which defines the smoothness of functions. Here, \(d\) defines the absolute distance between points \(|x-x'|\). Covariance functions which are purely a function of distance \(d\) are called as stationary functions. The covariance remains unchanged if the points \(x, x'\) are rotated or moved. Hence a family of functions defined by stationary kernels will have similar local features throughout the input domain. 
+For the case of the SE kernel the hyper-parameters \((\theta = [\theta_{1}, \theta_{2}])\) are; amplitude \((\theta_{1})\) which defines average distance from mean and the length scale \((\theta_{2})\) which defines the smoothness of functions. Here, \(d\) defines the absolute distance between points \(|x-x'|\). Covariance functions which are purely a function of distance \(d\) are called as isotropic stationary functions. These covariance functions remains unchanged if the points \(x, x'\) are rotated or translated. Hence a family of functions defined by stationary kernels will have similar local features throughout the input domain. 
 
 \marginnote{\textsl{Length-Scale}}[1cm]
 When \(x\) tends to \(x'\) then \(k(x, x')\) approaches \(\theta_{1}^{2}\), this means that \(f(x)\) is highly correlated with \(f(x')\). This is a good characteristic for smooth functions, since points in the neighbourhood must be alike. If \(x\) is far away from  \(x'\) then \(k(x, x')\) tends to zero, this means that far away points are loosely correlated. Hence, far off observations will have negligible effect while performing interpolations. How fast or slow the covariance decreases with distance depends on the length scale parameter \(\theta_{2}\), smaller length-scale means a faster moving function. In general we cannot extrapolate more than \(\theta_{2}\) units from the closest data-point \cite{duvenaud-thesis-2014}. 
@@ -139,7 +139,7 @@ To generate a random Gaussian vector \(f(X_{*})\) of length \(N_{*}\), we first 
         \label{subFigSEPrior_2}
   }\quad
   
-       \caption{Solid black line defines the mean function, shaded blue region defines 95\% confidence interval (2\(\sigma\)) distance away from mean. The dashed lines are five functions drawn at random from a GP prior. We can observe that figure \ref{subFigSEPrior_1} varies faster when compared to figure \ref{subFigSEPrior_2} due to smaller length scale hyper-parameter.       }\label{figGPPriors}
+       \caption{The solid black line defines the mean function, shaded blue region defines 95\% confidence interval (2\(\sigma\)) distance away from the mean. The dashed lines are five functions drawn at random from a GP prior. We can observe that figure \ref{subFigSEPrior_1} varies faster when compared to figure \ref{subFigSEPrior_2} due to smaller length scale hyper-parameter.       }\label{figGPPriors}
 \end{figure}
 
 
@@ -354,7 +354,7 @@ Figure \ref{subFigmaximizingMarginalLikelihood} shows the contours of marginal l
 
   \begin{figure}[!ht]
   \centering
-    \subfigure[{Marginal likelihood contours for varying noise and length-scale parameter. The amplitude hyper parameter is \((\theta_{1} = [0.35])\).  Also shown on the figure are locations of hyper-parameters for figures \ref{subFigPosterior1} and \ref{subFigPosteriorOptimized}.w}]
+    \subfigure[{Marginal likelihood contours for varying noise and length-scale parameter. The amplitude hyper parameter is \((\theta_{1} = [0.35])\).  Also shown on the figure are locations of hyper-parameters for figures \ref{subFigPosterior1} and \ref{subFigPosteriorOptimized}.}]
   {
         \includegraphics[width=0.45\textwidth]
         {images/maximizingMarginalLikelihood}
