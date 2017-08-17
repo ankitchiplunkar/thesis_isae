@@ -10,6 +10,24 @@ Multiplying two kernels is not only limited to a single input dimension. One can
 k_{\textrm{SE}}(x, x') = \sigma^2\prod_{i=1}^{M}\exp\left(-\frac{(x - x')^2}{2\ell_{i}^2}\right)
 \end{equation}
 
+\begin{figure}[!ht]
+  \centering
+    \subfigure[{}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {imagesPart2/drawsMultiLinSE}
+        %\label{}
+  }\quad
+\subfigure[{}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {imagesPart2/drawsSumLinSE}
+        %\label{}
+  }\quad
+
+       \caption{}
+       \label{figPrior}
+\end{figure}
 \textbf{add figure for product of kernel draws}
 
 
@@ -19,22 +37,35 @@ Adding two kernels acts as an OR operator. This means that the resulting kernel 
 An interesting consequence of adding kernels is that, now one can decompose the result into additive parts. This comes very handy while discovering structure in the data. Often statisticians  looks at the posterior error variance and try to add new kernels until the point such that posterior error variance represents a white noise \cite{duvenaud2013structure}, \cite{lloyd2014automatic}. 
 
 \textbf{add figure for addition of kernel draws}
+\textbf{Tell about the extrapolation capabilities of an additive kernel}
 
-%\begin{figure}[!ht]
-%  \centering
-%    \subfloat[Adding SE kernels on a 2-dimensional space \label{subfig:SEAdd2Dimensions}]
-%	    {\includegraphics[width=0.45\textwidth]{images/SEAdd2Dimensions}
-%	   }
-%	    \quad
-%    \subfloat[Draws from an addition of Periodic and Linear Kernel \label{subfig:periodicPlusSEDraws}]
-%	    {\includegraphics[width=0.45\textwidth]{images/periodicPlusSEDraws}
-%	    }
-%	    \caption{Addition of kernels}
-%\end{figure}
+\begin{figure}[!ht]
+  \centering
+    \subfigure[{}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {imagesPart2/drawsProdMultiDimensional}
+        %\label{}
+  }\quad
+\subfigure[{}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {imagesPart2/drawsSumMultiDimensional}
+        %\label{}
+  }\quad
+
+       \caption{}
+       \label{figPrior}
+\end{figure}
+
+\section{Low dimensional structure}
+
+\textbf{mohameds work on low dimensional}, \textbf{zoubin work on PCA is only }
 
 
 
-\section{Higher dimensions}
+
+\section{Application: Interpolation of aerodynamic pressures}
 
 We now test the performance of distributed GP and POD+I on two sets of numerical experiments. Firstly, we test the accuracy on a detailed FTF design \cite{Bosco2016} in subsonic regime \ref{subSec:elsAResults} based on simulation from the elsA code \cite{cambier2008status}. Finally, we compare the accuracy on CRM wing in the transonic regime using elsA solver and kOmega-SST turbulence model \cite{vassberg2014summary}. 
 
@@ -62,7 +93,7 @@ The FTF degree of freedom chosen for this analysis are $\theta$, the rotation ar
 
 We use Leave One Out (LOO) Cross Validation method to quantify the performance of the two methodologies. $[\alpha, \theta]$ pairs are removed one by one from the database to create a new training set. The new training set is used to perform interpolation according to POD+I and distributed GP. Pressure snapshot is reconstructed for the missing $[\alpha, \theta]$ pairs. The methods are finally compared by evaluating the Root Mean Square Error (RMSE) and time of prediction values for each pair case. 
 
-As described in Section \ref{sec:podi} we use all the available modes for pressure snapshot reconstruction. While performing distributed GP regression, we learn a GP model between \(p_{ij}\) and input vector \(X = [\Omega, \alpha, \theta]\). Effectively we are learning a GP model for \(N = 36802\times80 = 2.9\) million data-points. Since the input vector \(X\) is 5 dimensional, we propose to use Mat\'ern kernel for interpolating over the subsonic regime (subsection \ref{subsubsec:matern}).  
+As described in Appendix \textbf{reference to the appendix} we use all the available modes for pressure snapshot reconstruction. While performing distributed GP regression, we learn a GP model between \(p_{ij}\) and input vector \(X = [\Omega, \alpha, \theta]\). Effectively we are learning a GP model for \(N = 36802\times80 = 2.9\) million data-points. Since the input vector \(X\) is 5 dimensional, we propose to use Mat\'ern kernel for interpolating over the subsonic regime (section \ref{subsecCh4MaternKernel}).  
 
 \begin{figure*}[!ht]
   \centering
@@ -94,7 +125,7 @@ Due to the shape of an airfoil, airflow is accelerated on the upper surface of t
 
 Again we use the elsA\textsuperscript{\textregistered} solver to perform simulations on the design. We use the \(\kappa - \omega\) SST turbulence model to perform predictions since it has good performance in the fuselage wing interaction regions \cite{menter2003ten, vassberg2014summary}. The CFD was run for a combination of 21 values of \(\alpha \in [1: 0.1: 3]\) and 5 values of \(Mach \in [0.84: 0.005: 0.86]\), hence \(N_{parameter} = 21\times5 = 105\). Figure, \ref{subfig:crmSnapshot} shows one of the pressure snapshots for \(\alpha = 2\) and \(Mach = 0.85\). We then cut the wing at four distinct locations \(y/b = [0.105, 0.37, 0.5, 0.84]\) figure \ref{subfig:crmWing} to clearly observe different types of aerodynamic behavior. Here, \(y\) denotes the y-distance from aircraft axis and \(b\) denotes the span of one wing. 
 
-As detailed in the earlier section we again use LOO-CV for comparing the performance of the two methods. The POD+I method has been run as described in Section \ref{sec:podi}. The distributed GP has been run as described in the earlier section only this time we use Neural Network kernel for the spatial dimension. The neural network kernel lets us encode information of discontinuity (as expected from a shock) in our family of functions as detailed in subsection \ref{subsubsec:nnkernel}. 
+As detailed in the earlier section we again use LOO-CV for comparing the performance of the two methods. The POD+I method has been run as described in Appendix \textbf{reference to appendix on PODi}. The distributed GP has been run as described in the earlier section only this time we use Neural Network kernel for the spatial dimension. The neural network kernel lets us encode information of discontinuity (as expected from a shock) in our family of functions as detailed in section \ref{subSecCh4NNkernel}. 
 
 \begin{figure*}[!ht]
   \centering

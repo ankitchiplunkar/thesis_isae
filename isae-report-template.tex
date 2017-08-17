@@ -25,6 +25,7 @@
 \usepackage[english]{babel} % If you write in English
 \usepackage{a4wide}
 \usepackage{graphicx}
+\usepackage{tabularx}
 \graphicspath{{images/}}
 \usepackage{subfigure}
 \usepackage{tikz}
@@ -175,8 +176,10 @@ urlcolor=black}
 %\sloppy
 
 %\includeonly{01-introduction, 02-gpTheory, 03-scalingUpGPs, 04-basicCovariances} %part 1
-%\includeonly{01-introduction,04-basicCovariances} %part BLR
-%\includeonly{04-basicCovariances}%, 05-combiningBasicKernels} %part 2
+%\includeonly{ 02-gpTheory,04-basicCovariances} %part BLR
+%\includeonly{04-basicCovariances, 05-combiningBasicKernels} %part 2
+\includeonly{04-basicCovariances}%, 05-combiningBasicKernels} %part 2
+%\includeonly{05-combiningBasicKernels} %part 2
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%
@@ -267,8 +270,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendi
 \include{05-combiningBasicKernels}
 
 \part{Incorporating multiple outputs Gaussian Process Regression}\label{partIncorporateMultipleOutputs}
-\include{05-addingEquations}
-\include{06-multiTaskExtrapolation}
+\include{06-addingEquations}
+\include{07-multiTaskExtrapolation}
 
 \appendix
 
