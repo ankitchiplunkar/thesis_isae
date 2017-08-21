@@ -2,6 +2,7 @@
 \label{chapAddingEquationsInGP}
 
 \section{Multi-output Gaussian Process}\label{sec:mogp}
+\textbf{Linear operator ginsbourger 2013}
 
 \noindent Given a dataset for multiple outputs \(\{(x_{i}, y_{i})\}\) for \(i \in [1; D]\) we define the joint output vector \(Y = [y_{1}; y_{2}; y_{3}; \ldots; y_{D}]\) such that all the output values are stacked one after the other. Similarly, we define the joint input matrix as \(X = [x_{1}; x_{2}; x_{3}; \ldots; x_{D}]\). For the sake of simplicity, suppose we measure two outputs  \(y_{1}\) and \(y_{2}\) with some error, while the true physical process is defined by latent variables \(f_{1}\) and \(f_{2}\) equation \ref{eq:physicalRelation}. The operator \(g(.)\) can be a known physical equation or a computer code between the outputs, it basically represents a transformation from one output to another. 
 

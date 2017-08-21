@@ -50,7 +50,7 @@ The main difference between the engineering design and surrogate modeling can be
 \end{figure}
 
 \marginnote{\textsl{Developing faster models}}[1cm]
-Since models are an integral part of any engineering design, model building in aircraft engineering was traditionally outsourced to research institutes. Researchers perform iterative experiments in a controlled environment and discover patterns between the physics of the system. For example, it took 200 years to iteratively develop the Gas law \footnote{\(Pressure \times Volume \approx numberOfMoles \times Temperature\)}, Boyle's law in 1600's found the relation between Pressure and Volume, Charle's Law in 1787 discovered the relationship between Volume and Temperature, while Gay-Lussac's Law in 1809 discovered the relationship between Pressure and Temperature \cite{clapeyron1834memoire}. This is a rigorous and time-consuming method of developing models. Machine learning is a much more elegant method of building models. Using data and few basic assumptions, automatic models can be built between desired inputs and outputs. For example, while the first model of a neural network was proposed in 1950's \cite{kleene1951representation}, neural networks are today used daily for tasks such as tagging cat photos on facebook and converting speech to text\footnote{I wrote a fourth of this thesis using a text to speech software}. In this thesis, we wish to automatically build models for aircraft design tasks primarily to be used during the detailed design phase and certification phase. 
+Since models are an integral part of any engineering design, model building in aircraft engineering was traditionally outsourced to research institutes. Researchers perform iterative experiments in a controlled environment and discover patterns between the physics of the system. For example, it took 200 years to iteratively develop the Gas law \footnote{$Pressure \times Volume \approx numberOfMoles \times Temperature$}, Boyle's law in 1600's found the relation between Pressure and Volume, Charle's Law in 1787 discovered the relationship between Volume and Temperature, while Gay-Lussac's Law in 1809 discovered the relationship between Pressure and Temperature \cite{clapeyron1834memoire}. This is a rigorous and time-consuming method of developing models. Machine learning is a much more elegant method of building models. Using data and few basic assumptions, automatic models can be built between desired inputs and outputs. For example, while the first model of a neural network was proposed in 1950's \cite{kleene1951representation}, neural networks are today used daily for tasks such as tagging cat photos on facebook and converting speech to text\footnote{I wrote a fourth of this thesis using a text to speech software}. In this thesis, we wish to automatically build models for aircraft design tasks primarily to be used during the detailed design phase and certification phase. 
 
 
 \section{Machine Learning}\label{secMachineLearning}
@@ -100,17 +100,17 @@ Unfortunately, generating a huge amount of accurate data is a costly exercise in
 The main contribution of this thesis is to provide a framework on how to combine the prior knowledge from a physical system and add it to a learning algorithm. A model generated from merging of the two methodologies will be both consistent with the physics of the system and be quicker to evaluate. We integrate three types of prior knowledge by answering the following questions:
 \begin{enumerate}
 \item \textbf{Pattern}: How to add apriori information of a pattern in a learning algorithm? For example, given that shock is a discontinuous change in pressure, how to predict the position of shock on an airfoil (chapter \ref{chapStructureWithCovariance}). 
-\item \textbf{Relationships}: How to add apriori information of relationships between measurements? For example given \(Loads = \int Pressures\), how to make a robust loads model when we measure both pressures and loads (chapter \ref{chapAddingEquationsInGP}).
+\item \textbf{Relationships}: How to add apriori information of relationships between measurements? For example given $Loads = \int Pressures$, how to make a robust loads model when we measure both pressures and loads (chapter \ref{chapAddingEquationsInGP}).
 \item \textbf{Simulation model}: How to merge apriori information of simulations with experiments? For example, given a simulation model and experimental data how to perform extrapolations on experimental data(chapter \ref{chapMultiTaskExtrapolation}). 
 \end{enumerate}
 
 To integrate the prior information we propose to use a Bayesian inference for model building. Bayesian inference is a method of statistical inference in which Bayes theorem is used to update an initial probability (prior) as more and evidence becomes available the final probability (posterior) gives our estimate. More specifically, we will use the Gaussian Processes (GP) Regression framework which is a subset of the Bayesian Inference algorithms to define prior information of physical systems. But, before deep diving into the details of GP let us have a look at a simple Bayesian Linear Regression algorithm.
 
 \section{Bayesian Linear Regression}\label{secBayesianModelling}
-Suppose we have access to a training set of observations (or outputs) \(Y = (y(x_{1}); \ldots ; y(x_{i}); \ldots ; y(x_{N}))\), evaluated at a set of known inputs \(X = (x_{1}; \ldots ; x_{i}; \ldots; x_{N})\), and we wish to predict \(y(x_{*})\) at a test input \(x_{*}\). The input and output can be multi-dimensional; \(x_{i} \in \mathbb{R}^{D_{inputs}}\) and \(y(x_{i}) \in \mathbb{R}^{D_{outputs}}\). The process of learning the transformation function \(f\) to make prediction at a new point is called as regression. In the following section we follow formulation for Bayesian Linear Regression provided by \cite{mackay2003information}.
+Suppose we have access to a training set of observations (or outputs) $Y = (y(x_{1}); \ldots ; y(x_{i}); \ldots ; y(x_{N}))$, evaluated at a set of known inputs $X = (x_{1}; \ldots ; x_{i}; \ldots; x_{N})$, and we wish to predict $y(x_{*})$ at a test input $x_{*}$. The input and output can be multi-dimensional; $x_{i} \in \mathbb{R}^{D_{inputs}}$ and $y(x_{i}) \in \mathbb{R}^{D_{outputs}}$. The process of learning the transformation function $f$ to make prediction at a new point is called as regression. In the following section we follow formulation for Bayesian Linear Regression provided by \cite{mackay2003information}.
 
 \marginnote{\textsl{Basis functions}}[1cm]
-A simple method to perform regression is by assuming a parametrized form of the function \(f\) and then minimizing the error between measurements and predictions to estimate the parameters of function. The function is written in terms of basis functions \(\phi(x)\). For example when \(\phi(x) = \{1, x\}^{T}\) we are performing linear regression, when \(\phi(x) = \{1, x, x^{2}, \ldots, x^{L}\}^{T}\) we are performing \(L^{th}\) order polynomial regression. We will focus on linear regression in this section and hence \(\phi(x) = \{1, x\}^{T}\).
+A simple method to perform regression is by assuming a parametrized form of the function $f$ and then minimizing the error between measurements and predictions to estimate the parameters of function. The function is written in terms of basis functions $\phi(x)$. For example when $\phi(x) = \{1, x\}^{T}$ we are performing linear regression, when $\phi(x) = \{1, x, x^{2}, \ldots, x^{L}\}^{T}$ we are performing $L^{th}$ order polynomial regression. We will focus on linear regression in this section and hence $\phi(x) = \{1, x\}^{T}$.
 
 \begin{equation}\label{eqBayesianLinearRegression}
 f(x_{i}) = \begin{Bmatrix}
@@ -123,8 +123,8 @@ w_{1}
 \end{equation}
 
 \marginnote{\textsl{Likelihood}}[1cm]
-Here, \(w\) are the parameters of the function, \(w_{0}\) denotes the intercept and \(w_{1}\) denotes the slope of the regression model. The measurements are corrupted by independent white noise \(\epsilon\), such that the noise is a random variable sampled from a white noise Gaussian with variance \(\sigma_{n}^{2}\)\footnote{\(\Pr[\epsilon] = \mathcal{N}(0, \sigma_{n} = \frac{1}{\sqrt{2\pi\sigma_{n}^{2}}}\exp^{-\frac{\epsilon^{2}}{2\sigma_{n}^{2}}}
-\)}. The above equations \ref{eqBayesianLinearRegression} can be combined to result in the likelihood \(\Pr[Y\mid X, w]\)
+Here, $w$ are the parameters of the function, $w_{0}$ denotes the intercept and $w_{1}$ denotes the slope of the regression model. The measurements are corrupted by independent white noise $\epsilon$, such that the noise is a random variable sampled from a white noise Gaussian with variance $\sigma_{n}^{2}$\footnote{$\Pr[\epsilon] = \mathcal{N}(0, \sigma_{n} = \frac{1}{\sqrt{2\pi\sigma_{n}^{2}}}\exp^{-\frac{\epsilon^{2}}{2\sigma_{n}^{2}}}
+$}. The above equations \ref{eqBayesianLinearRegression} can be combined to result in the likelihood $\Pr[Y\mid X, w]$
 
 \begin{equation}\label{eqBayesianLikelihood}
 \begin{aligned}
@@ -134,7 +134,7 @@ Here, \(w\) are the parameters of the function, \(w_{0}\) denotes the intercept 
 \end{aligned}
 \end{equation}
 
-The notation \(\Pr[Y \mid X, w]\) symbolizes probability distribution of observations \(Y\) at the inputs \(X\) given the parameter \(w\). The notation \(\mathcal{N}[\mu , \Sigma]\) symbolizes a multi-variate Gaussian distribution for mean vector \(\mu\) and covariance matrix \(\Sigma\). 
+The notation $\Pr[Y \mid X, w]$ symbolizes probability distribution of observations $Y$ at the inputs $X$ given the parameter $w$. The notation $\mathcal{N}[\mu , \Sigma]$ symbolizes a multi-variate Gaussian distribution for mean vector $\mu$ and covariance matrix $\Sigma$. 
 
 \marginnote{\textsl{Prior}}[1cm]
 While performing Bayesian inference we specify a prior distribution to encode our assumptions on the parameters before we look at the observations. For this case, we put a zero mean Gaussian prior on our weights.
@@ -143,7 +143,7 @@ While performing Bayesian inference we specify a prior distribution to encode ou
 \Pr[w] = \mathcal{N}(0, \Sigma_{Prior})
 \end{equation}
 
-The prior distribution on \(w\) induces a prior distribution over functions parametrized by \(w\), effectively we are defining family of functions \((\Pr[f(x_{i})] = \mathcal{N}(0, x_{i}^{T}\Sigma_{Prior}x_{i}))\) by placing a prior distribution over \(w\). Once we have a prior distribution encoding our beliefs, we use Bayes rule to look at the observations and get a posterior distribution of parameters.
+The prior distribution on $w$ induces a prior distribution over functions parametrized by $w$, effectively we are defining family of functions $(\Pr[f(x_{i})] = \mathcal{N}(0, x_{i}^{T}\Sigma_{Prior}x_{i}))$ by placing a prior distribution over $w$. Once we have a prior distribution encoding our beliefs, we use Bayes rule to look at the observations and get a posterior distribution of parameters.
 
 \begin{equation*}
 posterior = \frac{likelihood \times prior}{marginal \quad likelihood}
@@ -159,17 +159,17 @@ The \textsl{marginal likelihood} is a normalization constant, for more details p
 \Pr[w \mid Y, X]  = \mathcal{N}\left ( \frac{1}{\sigma_{n}^{2}} A^{-1}X Y , A^{-1} \right )
 \end{equation}
 
-Here, \(A = \sigma_{n}^{-2}XX^{T} + \Sigma_{Prior}^{-2}\). Thus the posterior distribution for function \(f\) at test point \(x_{*}\) becomes:
+Here, $A = \sigma_{n}^{-2}XX^{T} + \Sigma_{Prior}^{-2}$. Thus the posterior distribution for function $f$ at test point $x_{*}$ becomes:
 
 \begin{equation}\label{eqBayesianFunctionalPosterior}
 \Pr[f \mid x_{*}, X, y]  = \mathcal{N}\left ( \frac{1}{\sigma_{n}^{2}} x_{*}A^{-1}XY , x_{*}^{T}A^{-1}x_{*} \right )
 \end{equation}
 
 \marginnote{\textsl{Posterior}}[1cm]
-The mean \(\frac{1}{\sigma_{n}^{2}} x_{*}A^{-1}XY\) can be used as a prediction at the test point \(x_{*}\), while the variance is a measure of uncertainty for this prediction. We can thus obtain the prediction \(f(x_{*})\), using a prior set of beliefs (equation \ref{eqBayesianPrior}) and updating those beliefs using observations. 
+The mean $\frac{1}{\sigma_{n}^{2}} x_{*}A^{-1}XY$ can be used as a prediction at the test point $x_{*}$, while the variance is a measure of uncertainty for this prediction. We can thus obtain the prediction $f(x_{*})$, using a prior set of beliefs (equation \ref{eqBayesianPrior}) and updating those beliefs using observations. 
 
 \paragraph{Experiment}\label{toyDataSet1}
-Suppose we have a dataset \(\mathcal{D}_{1} = \{X = [-0.5, 0.33, 0.66], Y = [0, 0.5, 0.5]\}\) and want to perform Bayesian Linear Regression on it. If we would assume a prior distribution of parameter \(w\) as defined by equation \ref{eqExperimentalPrior}, then the probability density will look like figure \ref{subFigpriorBLR}.
+Suppose we have a dataset $\mathcal{D}_{1} = \{X = [-0.5, 0.33, 0.66], Y = [0, 0.5, 0.5]\}$ and want to perform Bayesian Linear Regression on it. If we would assume a prior distribution of parameter $w$ as defined by equation \ref{eqExperimentalPrior}, then the probability density will look like figure \ref{subFigpriorBLR}.
 
 \begin{equation}\label{eqExperimentalPrior}
 \Pr \left [\begin{pmatrix}
@@ -184,7 +184,7 @@ w_{1}
 \end{bmatrix} \right ]
 \end{equation}
 
-Using equations \ref{eqExperimentalPrior} and \ref{eqBayesianFunctionalPosterior} we can calculate the posterior distribution for the parameters. For a noise model of \(\Pr[\epsilon] = \mathcal{N}(0, (\sigma_{n}=0.1)^2)\) the posterior distribution comes out as the figure \ref{subFigposteriorBLR}
+Using equations \ref{eqExperimentalPrior} and \ref{eqBayesianFunctionalPosterior} we can calculate the posterior distribution for the parameters. For a noise model of $\Pr[\epsilon] = \mathcal{N}(0, (\sigma_{n}=0.1)^2)$ the posterior distribution comes out as the figure \ref{subFigposteriorBLR}
 
 \begin{equation}\label{eqExperimentalPosterior}
 \Pr \left [\begin{pmatrix}
@@ -201,19 +201,19 @@ w_{1}
 
 \begin{figure}[!ht]
   \centering
-    \subfigure[{Contours of probability density for a prior on parameters \(w\) as defined by equation \ref{eqExperimentalPrior}}]
+    \subfigure[{Contours of probability density for a prior on parameters $w$ as defined by equation \ref{eqExperimentalPrior}}]
   {
         \includegraphics[width=0.29\textwidth]
         {images/priorBLR}
         \label{subFigpriorBLR}
   }\quad
-\subfigure[{Contours of probability density for posterior distribution of parameters \(w\) using equations \ref{eqExperimentalPrior} and \ref{eqBayesianPosterior}. The predicted intercept is \(0.2576\) and the predicted slope is \(0.4584\)}]
+\subfigure[{Contours of probability density for posterior distribution of parameters $w$ using equations \ref{eqExperimentalPrior} and \ref{eqBayesianPosterior}. The predicted intercept is $0.2576$ and the predicted slope is $0.4584$}]
   {
         \includegraphics[width=0.29\textwidth]
         {images/posteriorBLR}
         \label{subFigposteriorBLR}
   }\quad
-\subfigure[{Linear Prediction based on the posterior, given the Dataset \(\mathcal{D}_{1}\) prior \(\Sigma_{P}\)and noise \(\sigma_{n}\). The predicted linear line does not pass through the data points but between them.}]
+\subfigure[{Linear Prediction based on the posterior, given the Dataset $\mathcal{D}_{1}$ prior $\Sigma_{P}$and noise $\sigma_{n}$. The predicted linear line does not pass through the data points but between them.}]
   {
         \includegraphics[width=0.29\textwidth]
         {images/predictionsBLR}
@@ -228,7 +228,7 @@ w_{1}
 While the Bayesian Linear Regression framework provides an opportunity to encode prior assumptions in terms of distributions of the parameters. A much more elegant and expressive method is by using Gaussian Processes to perform regression. Gaussian Processes are a distribution over functions and hence enable us to encode prior knowledge directly in the functional space. 
 
 \marginnote{\textsl{Non-parametric models}}[1cm]
-Learning algorithms are mainly divided into two main types. The first is defined by parametric models which can only represent a limited hypothesis space. They use parameters to describe the function between input and output domain. For example the weight parameters \(w\) in Bayesian Linear Regression. The second are non-parametric models whose hypothesis space grows with the size of data \cite{ghahramani2013bayesian}. Non-parametric models use data to represent functions, Gaussian Process Regression is a type of non-parametric model. One can imagine a non-parametric model like a stretched rubber sheet: whenever it sees data it deforms accordingly to compensate for the new data point. Hence the more data it sees the more it starts mimicking the actual function. 
+Learning algorithms are mainly divided into two main types. The first is defined by parametric models which can only represent a limited hypothesis space. They use parameters to describe the function between input and output domain. For example the weight parameters $w$ in Bayesian Linear Regression. The second are non-parametric models whose hypothesis space grows with the size of data \cite{ghahramani2013bayesian}. Non-parametric models use data to represent functions, Gaussian Process Regression is a type of non-parametric model. One can imagine a non-parametric model like a stretched rubber sheet: whenever it sees data it deforms accordingly to compensate for the new data point. Hence the more data it sees the more it starts mimicking the actual function. 
 
 \marginnote{\textsl{Gaussian Process}}[1cm]
 Gaussian Process or Kriging was first used in the context of Geo-statistics research by Daniel Krige \cite{krige1951statistical}, this was later formalized by Matheron in his seminal work "Principals of Geo-statistics" \cite{matheron1963principles}. Recently, interest in the Gaussian Process (GP) grew in the machine learning community from neural networks research. It was shown that a Bayesian neural network becomes a Gaussian process as the number of neurons tends to infinity \cite{neal2012bayesian}. Gaussian processes are probabilistic distributions over functions, which provide a Bayesian non-parametric approach to smoothing and interpolation. A Gaussian Process can be fully parameterized by its mean and covariance function. More generally, a Gaussian Process is a method to probabilistically define a family of functions, chapter \ref{chapGp} expands GP in more detail. 
@@ -240,7 +240,7 @@ This thesis is divided into three main parts, each part is then divided into ind
 Chapter \ref{chapGp} shows the key processes involved in a GP regression framework. GPs as distributions over functions have a rich history in geo-statistics and machine learning. The second chapter heavily draws ideas from \cite{krige2015statistical, matheron1963principles} of the geo-statistics community and \cite{Stein1999Springer, kennedy2000predicting, Rasmussen2005, mackay2003information} of the machine-learning community, showing a process flow of how to perform regression using GPs. The remaining chapter unfolds as follows, section \ref{secPrior} describes the key constituents of a GP and how to draw random functions from a GP. Section \ref{secPosterior} describes how to perform prediction in presence and absence of measurement noise. Section \ref{secHyperParameter} introduces marginal likelihood as a form of evaluation method to automatically choose hyper-parameters. 
 
 \marginnote{\textsl{Chapter \ref{chapScalingGPR}}}[1cm]
-Chapter \ref{chapScalingGPR} deals with the problem of scaling GP regression to massively many points. Traditional GPs are computationally infeasible on a standard laptop if the number of data points increase \(\mathcal{O}(10^4)\). There exist two main methods to scale a GP regression, one using reduced set of inducing points while another based on mixture of experts methodology. This chapter draws heavily from the works of \cite{quinonero2005unifying, seeger2003fast, Snelson06sparsegaussian, Titsias09variationallearning} for the approximation method of inducing points and \cite{cao2014generalized, tresp2000bayesian, chen2009bagging, deisenroth2015distributed} for the approximation method of mixture of experts, please refer to the individual publications for more detail. We demonstrate the limitations and capabilities of both the methods on a toy dataset, giving directions to choosing optimal parameters and extracting the best possible result.  
+Chapter \ref{chapScalingGPR} deals with the problem of scaling GP regression to massively many points. Traditional GPs are computationally infeasible on a standard laptop if the number of data points increase $\mathcal{O}(10^4)$. There exist two main methods to scale a GP regression, one using reduced set of inducing points while another based on mixture of experts methodology. This chapter draws heavily from the works of \cite{quinonero2005unifying, seeger2003fast, Snelson06sparsegaussian, Titsias09variationallearning} for the approximation method of inducing points and \cite{cao2014generalized, tresp2000bayesian, chen2009bagging, deisenroth2015distributed} for the approximation method of mixture of experts, please refer to the individual publications for more detail. We demonstrate the limitations and capabilities of both the methods on a toy dataset, giving directions to choosing optimal parameters and extracting the best possible result.  
 
 \textbf{Description of the other two parts}
 
