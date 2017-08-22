@@ -1,0 +1,53 @@
+% packages to be included
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+%\usepackage[frenchb]{babel} % If you write in French
+\usepackage[english]{babel} % If you write in English
+% basic packages
+\usepackage{a4wide}
+\usepackage{newclude}
+\usepackage{pdfpages}
+
+% styling packages
+\usepackage{graphicx}
+\usepackage{tabularx}
+\graphicspath{{images/}}
+\usepackage[footnote]{acronym}
+\usepackage{marginnote}
+\usepackage{mdframed}
+\usepackage{subfigure}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows, chains}
+\usepackage{smartdiagram}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\pgfplotsset{plot coordinates/math parser=false}
+\newlength\figureheight
+\newlength\figurewidth
+\pgfkeys{/pgf/number format/.cd,
+set decimal separator={,\!},
+1000 sep={\,},
+}
+
+\usepackage{ifthen}\usepackage{ifpdf}
+\ifpdf
+\usepackage[pdftex]{hyperref}
+\else
+\usepackage{hyperref}
+\fi
+\usepackage{color}
+\hypersetup{%
+colorlinks=true,
+linkcolor=black,
+citecolor=blue,
+urlcolor=black}
+
+
+% math packages
+\usepackage{amsthm}
+\usepackage{amssymb,amsmath,bbm}
+\usepackage{array}
+\usepackage{bm}
+\usepackage{multirow}
+

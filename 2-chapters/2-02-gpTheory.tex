@@ -1,0 +1,411 @@
+\chapter{Gaussian Process Regression}
+\label{chapGp}
+
+Suppose we perform a simulation or experiment on an input point $x_{j} \in \mathbb{R}^{D_{inputs}}$and measure an output $y_{j} \in \mathbb{R}$. In this chapter we assume that the input is $D_{inputs}$ dimensional and the output is one dimensional. We can thus have a data set of $N$ observations, $\{\mathcal{D} = (x_{j}, y_{j}) | j \in [1; N] \}$. The full input and output vectors can be denoted as $X = \{x_{1}; x_{2}; \ldots ; x_{N}\}$ and $Y = \{y_{1}; y_{2}; \ldots ; y_{N}\}$ such that $X \in \mathbb{R}^{N \times P}$ and $Y \in \mathbb{R}^{N }$. Given this data we are interested in making predictions for new input points $x_{*}$ \footnote{Also called as test point, prediction point or target point.}that are not present in our series of experiments. This means that we need to use out training data and learn, the true physical process  $f(x)$ that generates our data set.
+
+As discussed in the previous chapter, to learn the governing function $f(x)$ we first start with a family of functions. Gaussian Process (GP) can be used to probabilistically define a family of functions. More formally, a GP is a distribution over functions such that any finite set of function values $[f(x_{1}), f(x_{2}), \ldots, f(x_{N})]$ have a joint Gaussian distribution \cite{rasmussen2006gaussian}. 
+
+\marginnote{\textsl{Infinite dimensional random vector}}[1cm]
+While a normal distribution describes a scalar random variable, example $X \sim \mathcal{N}(0, 1)$ defines a Gaussian variable with mean $0$ and variance $1$. A multi variate distribution defines a vector of random variables, for example $\{X\} \sim \mathcal{N}(\{0, 0\}, [1, 0; 0, 1])$ defines a Gaussian vector with mean $\{0, 0\}$ and covariance $[1, 0; 0, 1]$. A GP is the extension of this concept in the functional space. We can also think of a function as an infinite dimensional vector, each entry in the vector specifying the function value $f(x)$ at a particular point $x$ \footnote{Yes blew my mind as well!}. 
+
+\marginnote{\textsl{Mean}}[1cm]
+A GP model before conditioning on data can be completely parameterized by its mean
+
+\begin{equation}\label{eq:meanGP}
+\mathbf{E}[f(x)] = m(x)
+\end{equation}
+
+\marginnote{\textsl{Covariance}}[1cm]
+and its covariance function also called a kernel. In the context of the GPs a kernel is a measure of similarity between pairs of functional values $(f(x))$ evaluated at input points , often involving an inner product of basis functions $\phi(x)$ \cite{bishop2006pattern}. Please refer to chapter \ref{chapBasicCovarianceKernels} for a more detailed insight into kernels.   \footnote{The terms covariance functions, kernel and kernel functions will be used interchangeably during the reminder of this thesis}:
+
+\begin{equation}\label{eq:covarianceGP}
+Cov[f(x) - m(x), f(x') - m(x')] = k(x_{1}, x_{2})
+\end{equation}
+
+We can formally write the probability of the function $f$ as:
+
+\begin{equation}\label{equationGPdefinition}
+\Pr[f(x)] = GP(m(x), k(x_{1}, x_{2}))
+\end{equation}
+
+The notation $\Pr(f( x))$ symbolizes probability distribution of function $f$ at the inputs $x$. A function randomly drawn from a GP yields a random function around the mean function $m(x)$ and of the shape as defined by covariance function $k(x_{1}, x_{2})$. 
+
+\marginnote{\textsl{Tractable}}[1cm]
+Performing inference on an infinite dimensional vector (function) can be a computationally intensive task. Thankfully, due to the marginalization property of Gaussians, if we ask for properties of the function at a finite number of points, then  GP will give us the same answer if we ignore the infinitely many other points. In other words any finite set of function values $[f(x_{1}), f(x_{2}), \ldots, f(x_{N})]$ have a joint Gaussian distribution in GP (also the  definition of GP). This property means that GP specified in equation \ref{equationGPdefinition} also specifies equation \ref{equationGPMarginalizationProperty}. This makes GPes computationally tractable, one of the major benefits of GP. 
+
+
+\begin{equation}\label{equationGPMarginalizationProperty}
+\Pr\left [ \begin{matrix}
+f(x_{1})
+\\ f(x_{2})
+\end{matrix} \right ] = \mathcal{N}\left (\left [ \begin{matrix}
+m(x_{1})
+\\ m(x_{2})
+
+\end{matrix} \right ] , \left [ \begin{matrix}
+k(x_{1}, x_{1}) & k(x_{1}, x_{2})\\ 
+k(x_{2}, x_{1}) & k(x_{2}, x_{2})
+\end{matrix} \right ] \right )
+\end{equation}
+
+While performing regression in a GP framework we first define a family of functions also called prior (section \ref{secPrior}). The next step involves taking observations and eliminating all the functions in our prior which do not obey the observations, this step gives us the posterior mean and variance (section \ref{secPosterior}). Finally, we can further improve our predictions by fine-tuning our hyper-parameters (section \ref{secHyperParameter}).
+
+\section{Prior} \label{secPrior}
+In the Bayesian framework, a prior is a probability distribution before looking at any evidence. In the context of a GP Regression, this is provided by the mean and covariance function. 
+
+\subsection{Hyperparameters}
+Both mean and covariance functions are specified by a set of hyper-parameters $\theta$. The hyper-parameters are very similar to weight parameter ($w$) during Bayesian Linear Regression (section \ref{secBayesianModelling}), these are the parameters of the GP. Selecting a prior in GP boils down to choosing an appropriate functional form of the mean and covariance matrix and then choosing the hyper-parameters of the prior \cite{duvenaud2013structure}. 
+
+Automatically, predicting the values of hyper-parameters is important to choose a good prior. We will look at how to choose good hyper-parameters in section \ref{secHyperParameter}. 
+
+\subsection{Mean function}\label{subSecCH2MeanFunction}
+The mean function $m(x)$ of a GP represents its trend. In Universal Kriging, we usually choose a mean function of the form $m(x) = \phi(x)^{T}\theta$, with $\phi(x) = (\phi_{1}(x), \ldots , f_{p}(x))$ being a vector of basis functions, generally including a constant function and $\theta \in \mathbb{R}^{p}$ is a vector of hyper-parameters \cite{matheron1963principles}. In Simple Kriging we assume a constant mean function $m(x) = \theta$.
+
+\marginnote{\textsl{Zero mean}}[1cm]
+Without loss of generality, we can assume the mean function to be zero everywhere, since uncertainty about the mean function can be taken into account by adding an extra term to the covariance function (Chapter \ref{chapBasicCovarianceKernels}).  
+
+\begin{equation}\label{equationMeanZeroGPdefinition}
+\Pr[f(x)] = GP(0 , k(x_{1}, x_{2}, \theta))
+\end{equation}
+
+We assume a zero mean prior through out this section. After accounting for the zero mean, the GP model can be completely parametrized by the kernel. Hence the problem of learning in a GP is exactly the problem of finding suitable properties of the covariance function \cite{rasmussen2006gaussian} (equation \ref{equationMeanZeroGPdefinition}). 
+
+
+\subsection{Covariance function}\label{subSecCH2Covariance}
+The covariance function is a positive definite kernel, such that for any $a_{i} \in \mathbb{R}$ equation \ref{equationPDKernel} holds \cite{Stein1999Springer}.
+
+\begin{equation}\label{equationPDKernel}
+\sum_{i=1}^{N}\sum_{j=1}^{N}a_{i}a_{j}k(x,x') \geq 0
+\end{equation}
+
+A popular choice of covariance function is a Squared Exponential (SE) function (equation \ref{eqnSquaredExponential}), because it defines a family of highly smooth (infinitely differentiable) non-linear functions as shown in figure \ref{figGPPriors}.
+
+\begin{equation}\label{eqnSquaredExponential}
+k_{SE}(x_{1}, x_{2}, \theta) = \theta_{amplitude}^2exp[-\frac{d^2}{2\theta_{lengthScale}^2}]
+\end{equation}
+
+\marginnote{\textsl{SE kernel}}[1cm]
+For the case of the SE kernel the hyper-parameters $(\theta = [\theta_{amplitude}, \theta_{lengthScale}])$ are; amplitude $(\theta_{amplitude})$ which defines average distance from mean and the length scale $(\theta_{lengthScale})$ which defines the smoothness of functions. Here, $d$ defines the absolute distance between points $|x-x'|$. Covariance functions which are purely a function of distance $d$ are called as isotropic stationary functions. These covariance functions remains unchanged if the points $x_{1}, x_{2}$ are rotated or translated. Hence a family of functions defined by stationary kernels will have similar local features throughout the input domain. 
+
+\marginnote{\textsl{Length-Scale}}[1cm]
+When $x$ tends to $x'$ then $k(x_{1}, x_{2})$ approaches $\theta_{amplitude}^{2}$, this means that $f(x)$ is highly correlated with $f(x')$. This is a good characteristic for smooth functions, since points in the neighbourhood must be alike. If $x$ is far away from  $x'$ then $k(x_{1}, x_{2})$ tends to zero, this means that far away points are loosely correlated. Hence, far off observations will have negligible effect while performing interpolations. How fast or slow the covariance decreases with distance depends on the length scale parameter $\theta_{lengthScale}$, smaller length-scale means a faster moving function. In general we cannot extrapolate more than $\theta_{lengthScale}$ units from the closest data-point \cite{duvenaud-thesis-2014}. 
+
+\subsection{Sampling functions from GP priors}\label{subSecSamplingFunctionsGPPrior}
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+To have a look at the constituent functions in a prior we can randomly sample functions from the GP. Since any finite set of set of function values have a joint Gaussian distribution in a GP. To draw random functions from a GP we choose $N*$ input points $X_{*} = \{x_{1*}; x_{2*}; \ldots ; x_{N*}\}$ and write corresponding mean vector $m(X_{*})$ and covariance matrix $K(X_{*}, X_{*} )$ \footnote{The covariance matrix is also called the Gram matrix} using equation \ref{equationGPMarginalizationProperty} and \ref{eqnSquaredExponential}. We then generate a random Gaussian vector $f(X_{*})$ for this multi-variate Gaussian (equation \ref{equationMeanZeroGPdefinition}) and plot the generated values as a function of inputs $X_{*}$. 
+
+\begin{equation}\label{eqnCovMatrixSquaredExponential}
+K(X_{*}, X_{*} ) = \left [ \begin{matrix}
+k(x_{1*}, x_{1*}) & k(x_{1*}, x_{2*}) & \ldots & k(x_{1*}, x_{N*})
+\\ k(x_{2*}, x_{1*}) & k(x_{2*}, x_{2*}) & \ldots & k(x_{2*}, x_{N*})
+\\ \vdots & \vdots & \ddots & \vdots
+\\ k(x_{N*}, x_{1*}) & k(x_{N*}, x_{2*}) & \ldots & k(x_{N*}, x_{N*})
+\end{matrix} \right ] 
+\end{equation}
+
+Figure \ref{figGPCovarianceMatrix} shows the covariance matrix for Standard Exponential kernel with different hyper-parameters at the input points $X^{*} = \{[0:0.02:1]\}$. The SE kernel of figure \ref{subFigcovSEmatrix_1} has a lower length-scale than figure \ref{subFigcovSEmatrix_2}. Note, how the covariance values are more spread out for figure \ref{subFigcovSEmatrix_2}.
+
+\textbf{add algorithm}
+
+\end{mdframed}
+
+\begin{figure}[!ht]
+  \centering
+    \subfigure[{Covariance matrix for a Standard Exponential (SE) Kernel with $(\theta = [1, 0.2])$ at the input points $X^{*} = \{[0:0.02:1]\}$. }]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/part1/covSEmatrix_1}
+        \label{subFigcovSEmatrix_1}
+  }\quad
+\subfigure[{Covariance matrix for a Standard Exponential (SE) with $(\theta = [1, 0.5])$ at the input points $X^{*} = \{[0:0.02:1]\}$}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/part1/covSEmatrix_2}
+        \label{subFigcovSEmatrix_2}
+  }\quad
+  
+       \caption{Covariance matrix for a Standard Exponential kernel with different hyper-parameters at the input points $X^{*} = \{[0:0.02:1]\}$. The SE kernel of figure \ref{subFigcovSEmatrix_1} has a lower length-scale than figure \ref{subFigcovSEmatrix_2}. Note, how the covariance values are more spread out for figure \ref{subFigcovSEmatrix_2}.}\label{figGPCovarianceMatrix}
+\end{figure}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+To generate a random Gaussian vector $f(X_{*})$ of length $N_{*}$, we first calculate the Cholesky decomposition\footnote{Cholesky Decomposition is also called the square-root of matrix and is defined for positive definite matrices} of the covariance matrix $K(X_{*}, X_{*}) = LL^{T}$, where $L$ is a lower triangular matrix. We then generate a random vector $U$, such that $U = \mathcal{N}(0, I)$ and $I$ is an identity matrix of size $N_{*}$.  The random vector can be then computed as, $f(X_{*}) = m(X_{*}) + LU$ and when plotted with the inputs $X_{*}$ gives a randomly drawn function. Figure \ref{figGPPriors} shows 5 random functions drawn for a zero mean GP with the covariance matrices of figure \ref{figGPCovarianceMatrix}. The solid black line defines the mean function, shaded blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The dashed lines are five functions drawn at random from a GP prior. We can observe that figure \ref{subFigSEPrior_1} varies faster when compared to figure \ref{subFigSEPrior_2} due to smaller length scale hyper-parameter. 
+
+\textbf{add algorithm}
+
+\end{mdframed}
+
+\begin{figure}[!ht]
+  \centering
+    \subfigure[{Draws from a GP prior with mean zero and Standard Exponential (SE) Kernel with $(\theta = [1, 0.2])$. }]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/part1/drawsSEKernel_1}
+        \label{subFigSEPrior_1}
+  }\quad
+\subfigure[{Draws from a GP prior with mean zero and Standard Exponential (SE) with $(\theta = [1, 0.5])$}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/part1/drawsSEKernel_2}
+        \label{subFigSEPrior_2}
+  }\quad
+  
+       \caption{The solid black line defines the mean function, shaded blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The dashed lines are five functions drawn at random from a GP prior. We can observe that figure \ref{subFigSEPrior_1} varies faster when compared to figure \ref{subFigSEPrior_2} due to smaller length scale hyper-parameter.       }\label{figGPPriors}
+\end{figure}
+
+
+
+\section{Posterior}\label{secPosterior}
+Once we have defined an appropriate prior we wish to incorporate the information of training data set into the probabilistic framework. In the Bayesian framework, a posterior is the probability distribution after updating the information of evidence into prior knowledge. 
+
+
+\subsection{Posterior with Noise-free observations}\label{subSecPosteriorNoiseFree}
+We first consider the case of noise-free observations, that is we know $\{y(x_{i}) = f_{i} | i \in [1; N] \}$. This is case for many high-fidelity computer simulations, since high-fidelity computer simulations can be treated as having no noise \cite{sacks1989design}. If we desire to interpolate at $N_{*}$ test points $X_{*}$, then the multi-variate distribution of the training outputs $f(X)$ and test outputs $f(X_{*})$ according to the GP prior, test and training points is given by equation \ref{equationJointPriorNoiseFree}.
+
+\begin{equation}\label{equationJointPriorNoiseFree}
+\Pr\left [ \begin{matrix}
+f(X)
+\\ f(X_{*})
+\end{matrix} \right ] = 
+\mathcal{N}\left (\left [ \begin{matrix} 0 \\ 0 \end{matrix} \right ]
+, 
+\left [ \begin{matrix}
+K(X, X) & K(X, X_{*})\\ 
+K(X_{*}, X) & K(X_{*}, X_{*})
+\end{matrix} \right ]
+\right)
+\end{equation}
+
+$K(X, X_{*})$ is $N \times N_{*}$ covariance matrix between the training points $X$ and test points $X_{*}$ (equation \ref{eqnCovMatrixSquaredExponential}). The other covariance matrices $K(X, X)$, $K(X_{*}, X)$ and $K(X_{*}, X_{*})$ can be computed similarly. 
+
+The posterior will be the the conditional probability of $f(X_{*})$ given the prior and data set. For a multi-variate Gaussian the conditional distribution is also a multi-variate Gaussian and can be calculated tractably, for a more detailed derivation refer to appendix \textbf{refer to the appendix here}. Graphically, we can imagine that the Bayes theorem is removing all the functions from our prior family of functions that do not pass through the data set (figure \ref{figGPNoiseLessPosteriors}). The predicted distribution after adding the information of data set into the prior can be written as:
+
+  \begin{equation}\label{eqNoiseFreePosteriorGP}
+  \begin{aligned}
+  \Pr(f(X_{*}) \mid X_{*}, X, f(X)) = GP(  & K(X_{*}, X)( K(X, X) )^{-1}f(X),   \\ 
+                                & K(X_{*}, X_{*}) - K(X_{*}, X)( K(X, X) )^{-1} K(X, X_{*}))
+  \end{aligned}
+  \end{equation}
+
+The term $K(X_{*}, X)( K(X, X) )^{-1}f(X)$ is the predicted mean of the posterior at the test points $X_{*}$. The term $K(X_{*}, X_{*}) - K(X_{*}, X)( K(X, X) )^{-1} K(X, X_{*})$ is the predicted covariance. 
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\textbf{add description of D1}
+
+\textbf{add algorithm}
+Figure \ref{figGPNoiseLessPosteriors} shows the posterior GP after adding observed data into the initial prior. We can see that Bayes theorem eliminates all the functions in the prior that does not pass through the data. The solid black line defines the mean function, blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The mean of the of the posterior distribution is also used as a point estimate for interpolation. The dashed lines are three functions drawn at random from a GP posterior. Random functions can be sampled from the posterior distribution as described in the earlier section. 
+\end{mdframed}
+
+
+\begin{figure}[!ht]
+  \centering
+    \subfigure[{Posterior distribution for the case of noiseless observations. Prior is a GP with mean zero and covariance as Standard Exponential (SE) Kernel with $(\theta = [1, 0.2])$, data set is $\{x = -0.5; f = 0\}$.}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/part1/posteriorSENoiseLess_1}
+        \label{posteriorSENoiseLess_1}
+  }\quad
+\subfigure[{Posterior distribution for the case of noiseless observations. Prior is a GP with mean zero and covariance as Standard Exponential (SE) Kernel with $(\theta = [1, 0.2])$, data set is $\{x = [-0.5, 0.33, 0.66]; f = [0, 0.5, 0.5]\}$}.  ]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/part1/posteriorSENoiseLess_3}
+        \label{posteriorSENoiseLess_3}
+  }\quad
+  
+       \caption{Prediction in the case of noiseless observations. The solid black line defines the mean function, blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The dashed lines are three functions drawn at random from a GP posterior. We can observe that Bayes Theorem eliminates all the functions that do not pass through the observed data-set.}
+       \label{figGPNoiseLessPosteriors}
+\end{figure}
+
+
+
+\subsection{Posterior with Noisy observations}\label{subSecPosteriorNoisy}
+If we assume a more general case of noisy observations then the measured outputs can be written as:
+
+\begin{equation}\label{eqNoiseEquation}
+y(x) = f(x) + \epsilon
+\end{equation}
+
+Such that $\epsilon$ is an independent random noise sampled from a white noise Gaussian $\mathcal{N}(0, \sigma_{n}^{2})$. We can thus write the prior GP of the noisy case as:
+
+\begin{equation}\label{equationMeanZeroGPNoisydefinition}
+\Pr[y(x) \mid X, \sigma_{n}] = GP(0 , k(x_{1}, x_{2}) + \sigma^{2}_{n}\delta_{xx'})
+\end{equation}
+
+Here, $\delta_{xx'}$ is a Kronecker delta which is one iff $x = x'$ and zero otherwise. Since the noise is independent for each observation hence there is no noise term for covariances between inputs. The joint distribution of the training outputs $Y(X)$ and true physical process $f(X_{*})$ according to the above prior becomes:
+
+\begin{equation}\label{equationJointPriorNoisy}
+\Pr\left [ \begin{matrix}
+Y(X)
+\\ f(X_{*})
+\end{matrix} \right ]
+= 
+\mathcal{N}\left (
+\left [ \begin{matrix}
+0
+\\ 0
+
+\end{matrix} \right ] , \left [ \begin{matrix}
+K(X, X) + \sigma^{2}_{n}I & K(X, X_{*})\\ 
+K(X_{*}, X) & K(X_{*}, X_{*})
+\end{matrix} \right ] 
+\right )
+\end{equation}
+
+The difference between equation \ref{equationJointPriorNoisy} and \ref{equationJointPriorNoiseFree} is the addition of noise term $\sigma^{2}_{n}I$. The noise is assumed to be independent hence is multiplied to an identity matrix, to know how to add more complex noise models please refer to chapter \ref{chapBasicCovarianceKernels}. The posterior distribution of $f(X_{*})$ can be calculated as:
+
+  \begin{equation}\label{eqNoisyPredictiveGP}
+  \begin{aligned}
+      \Pr(f(X_{*}) \mid X_{*}, X, Y(X)) = GP(  & K(X_{*}, X)( K(X, X) + \sigma^{2}_{n}I)^{-1}f(X),   \\ 
+                                & K(X_{*}, X_{*}) - K(X_{*}, X)( K(X, X) + \sigma^{2}_{n}I)^{-1} K(X, X_{*}) 
+  \end{aligned}
+  \end{equation}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+
+\textbf{again attach an algorithm
+\textbf{again describe the D1 etc}}
+Figure \ref{figGPNoisyPosteriors} shows the posterior GP after adding observed data into the initial prior. The solid black line defines the mean function, blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The dashed lines are three functions drawn at random from a GP posterior. Random functions can be sampled from the posterior distribution as described in the earlier section \ref{secPrior}.  Due to the inclusion of noise in the prior, we see that the draws from posterior are not necessarily passing from the observed point.
+\end{mdframed}
+
+\begin{figure}[!ht]
+  \centering
+    \subfigure[{Posterior distribution for the case of noisy observations. Prior is a GP with mean zero, covariance as Standard Exponential (SE) Kernel with $(\theta = [1, 0.2])$ and noise as $\sigma_{n} = [0.02])$, , data set is $\{x = -0.5; f = 0\}$.}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/part1/posteriorSENoisy_1}
+        \label{posteriorSENoisy_1}
+  }\quad
+\subfigure[{Posterior distribution for the case of noisy observations. Prior is a GP with mean zero, covariance as Standard Exponential (SE) Kernel with $(\theta = [1, 0.2])$ and noise as $\sigma_{n} = [0.02])$, , data set is $\{x = [-0.5, 0.33, 0.66]; f = [0, 0.5, 0.5]\}$.}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/part1/posteriorSENoisy_3}
+        \label{posteriorSENoisy_3}
+  }\quad
+  
+       \caption{Prediction in the case of noisy observations. The solid black line defines the mean function, blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The dashed lines are three functions drawn at random from a GP posterior. The mean and the draws do not pass exactly from the observation point.}
+       \label{figGPNoisyPosteriors}
+\end{figure}
+
+\subsection{Interpretation of posterior}
+We will now introduce a short hand notation and replace the lengthy notation $K(X, X)$ with $K_{XX}$ and $K(X, X_{*})$ with $K_{XX_{*}}$. For the case when we have only one test point $x_{*}$ we can write the predictive mean and variance in short-hand as:
+
+  \begin{equation}\label{eqNoisyPredictiveMean}
+  \mathbf{E}[f(x_{*})] = K_{Xx_{*}}^{T}( K_{XX} + \sigma^{2}_{n}I)^{-1}Y
+  \end{equation}
+  \begin{equation}\label{eqNoisyPredictiveCovariance}
+	Cov[f(x_{*})] = K_{x_{*}x_{*}} - K_{Xx_{*}}^{T}( K_{XX} + \sigma^{2}_{n}I )^{-1} K_{Xx_{*}}
+  \end{equation}
+
+\paragraph{Precision Matrix}  
+Both the predictive mean (equation \ref{eqNoisyPredictiveMean}) and predictive covariance (equation \ref{eqNoisyPredictiveCovariance}) need inverse of the covariance matrix $( K_{XX} + \sigma^{2}_{n}I)^{-1}$. The inverse of a covariance matrix is also known as a precision matrix. While the elements of a covariance matrix capture the variance and correlation information, a precision matrix contains the conditional dependence information \cite{mackay2003information}. Thus, if the $(i, j)^{th}$ element of a precision matrix is zero, the $i^{th}$ and $j^{th}$ random variables are conditionally independent. 
+
+Calculating the precision matrix is a $\mathcal{O}\left ( N^{3} \right )$ operation for a covariance matrix of size $N$. After $N \sim 10,000$ a normal computer runs out of RAM and we thus cannot perform the inversion. Fortunately, there exist several approximations to efficiently inverse the covariance matrix and perform predictions, details are available in section \ref{chapScalingGPR}.
+
+\paragraph{Predicted mean}
+The predictive mean is a linear combination of the observations $y_{i}$, and has participation-factor of $K_{Xx_{*}}^{T}( K_{XX} + \sigma^{2}_{n}I)^{-1}$. For a SE kernel $K_{Xx_{*}}^{T}$ decreases exponentially with distance, hence observations closer to $x_{*}$ have more impact on the final prediction (equation \ref{eqNoisyPredictiveMeanLinearInY}). 
+  
+  \begin{equation}\label{eqNoisyPredictiveMeanLinearInY}
+  \mathbf{E}[f(x_{*})] = \sum_{i = 1}^{N} K_{Xx_{*}}^{T}( K_{XX} + \sigma^{2}_{n}I)^{-1}y_{i}
+  \end{equation}
+
+The predictive mean can also be interpreted as a linear combination of the basis functions $K_{x_{i}x_{*}}$, and participation factors $( K_{XX} + \sigma^{2}_{n}I)^{-1}Y$ (equation \ref{eqNoisyPredictiveMeanLinearInBasis}). 
+
+  \begin{equation}\label{eqNoisyPredictiveMeanLinearInBasis}
+  \mathbf{E}[f(x_{*})] = \sum_{i = 1}^{N} K_{x_{i}x_{*}}( K_{XX} + \sigma^{2}_{n}I)^{-1}Y
+  \end{equation}
+  
+This means that even though a GP represents of an infinite-dimensional vector (function), we only care about the $N$ dimensional multivariate Gaussian (section \ref{equationJointPriorNoisy}) to actually predict the mean. If the precision matrix is cached, then calculating the mean is an $\mathcal{O}\left ( N \right )$ operation.
+
+\paragraph{Predicted variance}
+The predictive variance is a combination of two terms $K_{x_{*}x_{*}}$ which is the variance due to prior assumptions and $- K_{Xx_{*}}^{T}( K_{XX} + \sigma^{2}_{n}I )^{-1} K_{Xx_{*}}$ which denotes the decrease in variance due to observations. The predictive distribution of test targets $y(x_{*})$ can be calculated by adding a noise term $\sigma^{2}_{n}$ in predictive covariance equation \ref{eqNoisyPredictiveCovariance}. 
+
+  \begin{equation}\label{eqNoisyPredictiveCovarianceOnNoisyTarget}
+	Cov[y(x_{*})] = K_{x_{*}x_{*}} - K_{Xx_{*}}^{T}( K_{XX} + \sigma^{2}_{n}I )^{-1} K_{Xx_{*}} + \sigma_{n}^{2}
+  \end{equation}
+  
+We observe that the predicted variance in not dependent on the observations $y$, this is one of the flaws in GP regression. Since the assumption that the dataset $(\mathcal{D})$ comes from a GP might not necessarily be true, the predicted variance can poorly represent the model error. Hence, predicted variance is not necessarily a measure of model error but an efficient method to track uncertainties arising from the prior assumption and non-continuous observations \cite{shah2014student}.
+
+The mean and variance are highly dependent on the kernel hyper-parameters. In order to automatically learn the hyper-parameters, we must perform model selection. Section \ref{secHyperParameter} details how to fine-tune hyper-parameters to find an optimal prediction.
+
+\section{Choosing Hyper-parameters}\label{secHyperParameter}
+Since the properties of functions under a GP are controlled by the functional form of the covariance kernel and its hyper-parameters, model selection amounts to choosing a functional form and learning the hyper-parameters $\theta$ from data. In this section we discuss how to select an optimal model by tuning hyper-parameters for a given covariance function. Please refer to chapter \ref{chapAddingEquationsInGP} for discussion on how to choose covariance functions. 
+
+
+\textbf{define $\mathcal{D}_{2}$}
+
+Figure \ref{figGPRMarginal} demonstrates that choosing optimal hyper-parameters is very vital for accurate prediction. Figure  \ref{figGPRMarginal} compares the posterior distributions obtained for SE priors with 2 different hyper-parameters. We observe that the mean of figure \ref{subFigPosterior1} passes through all the observed data points but is more complex. The mean in figure \ref{subFigPosterior3} is a smooth function but does not fit the data properly. 
+
+  \begin{figure}[!ht]
+  \centering
+    \subfigure[{Posterior between SE prior with hyper-parameters $(\theta = [0.35, 0.05]; \sigma_{noise} = 0.01)$ and data. }]
+    %$\log (ML) = -35.3$]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/part1/posteriorSE1}
+        \label{subFigPosterior1}
+  }\quad
+\subfigure[{Posterior between SE prior with hyper-parameters $(\theta = [0.35, 0.5]; \sigma_{noise} = 0.01)$ and data. }]
+%$\log (ML) = -8.2$}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/part1/posteriorSE3}
+        \label{subFigPosterior3}
+  }\quad
+       \caption{Posteriors for 2 different sets of hyper-parameters. Solid black line defines the mean function, blue region defines 95\% confidence interval (2$\sigma$) distance away from mean. }\label{figGPRMarginal}
+\end{figure}
+
+Since hyper-parameters control the family of functions in the hypothesis space and are equivalent to parameters $w$, in a pure Bayesian framework we should put a prior over our hyper-parameters $\Pr[\theta]$ and use Bayes Rule to estimate the posterior $\Pr[\theta \mid \mathcal{D}]$ over our data set. However, this approach becomes intractable and several sampling schemes have been proposed to calculate the posterior of hyper-parameters \cite{osborne2010bayesian, neal2011mcmc}.
+
+Another method to find the optimal hyper-parameters is by performing Cross-Validation (CV). CV procedure is to split the experimental design set into two disjoint sets, one is used for training and the other one is used to monitor the performance
+of the surrogate model. A particular case of CV is the Leave-One-Out (LOO) where test sets are obtained by removing one observation at-a-time. Although this can be time-consuming, there are computational short-cuts available for this scheme \cite{rasmussen2006gaussian, dubrule1983cross, le2013multi}. 
+
+In this manuscript we neither put a prior over our hyper-parameters nor use LOO-CV for choosing hyper-parameters. We use the marginal likelihood also called evidence to find optimal hyper-parameters \cite{mackay2003information}. The probability of generating the observations $(Y)$ at the points $(X)$ from a prior (defined by $k(x_{1}, x_{2}, \theta)$) is called the marginal likelihood $\Pr[Y \mid X, \theta]$. In other words, marginal likelihood is the probability that our data set $\mathcal{D}$ was generated from a particular prior. Hence, when we maximize a marginal likelihood we are finding the best prior that could generate our data set. Using equation \ref{equationMeanZeroGPNoisydefinition} and \ref{equationJointPriorNoisy} we get:
+
+\begin{equation}\label{equationMarginalLikelihood}
+\begin{aligned}
+\Pr[Y(X) \mid X, \theta, \sigma_{n}] & = \mathcal{N}(0 , K(X, X') + \sigma^{2}_{n}I)  \\
+& = \frac{1}{\sqrt{(2\pi)^{N/2} K_{XX}}} exp^{-\frac{1}{2}Y^{T}K_{XX}Y}
+\end{aligned}
+\end{equation}
+
+ Directly, maximizing the marginal likelihood with respect to the hyper-parameters can be inefficient. This is because the marginal likelihood does not vary significantly with the hyper-parameters. Hence to speed up the optimization process we generally maximize the log of marginal likelihood. 
+
+  \begin{equation}\label{eqExactNLML}
+\log(\Pr [Y \mid X, \theta ]) = -\frac{1}{2}Y^{T}[K_{XX}+ \sigma_{noise}^{2}I]^{-1}Y - \log\left |  K_{XX}+ \sigma_{noise}^{2}I\right | - \frac{n}{2}\log(2\pi)
+  \end{equation}
+  
+The marginal likelihood is a trade-off between a data-fit term $(\frac{1}{2}Y^{T}K_{XX}^{-1}Y)$ and a model complexity term $(\log\left |  K_{XX}\right |)$. The optimization of ML($\theta$) provides the best compromise in terms of explaining the existing data set \{($x_{i}, y_{i}$)\} and the initial assumptions encoded in the prior. 
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\textbf{add the algorithm}
+\textbf{define an optimization problem}
+
+Figure \ref{subFigmaximizingMarginalLikelihood} shows the contours of marginal likelihood with respect to length-scale $\theta_{lengthScale}$ and noise $\sigma_{n}$ hyper-parameters. The data set is same as used in figure \ref{figGPRMarginal} and the prior is a zero mean with SE kernel. Figure \ref{subFigPosteriorOptimized} shows the posterior for same data set as used in figure \ref{figGPRMarginal} but for the hyper-parameters where marginal likelihood is maximum. The marginal likelihood could have multiple maximas in the space of hyper-parameters, hence care should be taken while initializing hyper-parameters for optimizing the log of marginal likelihood. 
+
+\end{mdframed}
+  \begin{figure}[!ht]
+  \centering
+    \subfigure[{Marginal likelihood contours for varying noise and length-scale parameter. The amplitude hyper parameter is $(\theta_{amplitude} = [0.35])$.  Also shown on the figure are locations of hyper-parameters for figures \ref{subFigPosterior1} and \ref{subFigPosteriorOptimized}.}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/part1/maximizingMarginalLikelihood}
+        \label{subFigmaximizingMarginalLikelihood}
+  }\quad
+  \subfigure[{Posterior between SE prior with optimized hyper-parameters $(\theta = [0.35, 0.15]; \sigma_{noise} = 0.015)$ and data. $\log( ML) = 8.04$. Solid black line defines the mean function, blue region defines 95\% confidence interval (2$\sigma$) distance away from mean.}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/part1/posteriorSE}
+        \label{subFigPosteriorOptimized}
+  }\quad
+       \caption{Maximizing marginal likelihood}\label{figGPRMarginalOptimized}
+\end{figure}
+
+\section{Discussion}\label{secCH2Discussion}
+In this chapter we provide a brief introduction on how to perform Regression with GPs. GPs are the ideal candidate for regression due to their marginalization property, which makes them computationally tractable. Even if GPs define an infinite dimensional random vector, inference on a few points does not require the presence of infinitely other points. This makes drawing functions, calculating posterior distribution and automating selection of hyper-parameters computationally feasible. Thereby making GPs an ideal candidate for defining a Prior distribution in a Bayesian Regression framework. 
+
+The section \ref{secPrior} details the key constituents of a GPs. A GP can be completely parametrized by its mean and covariance function. While, the trend of a GP is defined by its mean function, the structure of its constituent functions is defined by the covariance function. Normally the mean of a GP can be assumed to be zero, since an extra term in the covariance function can represent the mean function. Hence the problem of learning in a GP is exactly the problem of finding suitable properties of the covariance function (subsection \ref{subSecCH2Covariance}). Once a function form of covariance is chosen we can calculate the Gram matrix at desired points and use it to draw random functions from our prior (subsection \ref{subSecSamplingFunctionsGPPrior}). 
+
+The next section \ref{secPosterior} describes how to calculate the posterior distribution. The posterior is the conditional distribution $(\Pr[f(x_{*}) \mid Y, X, \theta])$ for an assumed Prior distribution $(\Pr[f] = GP(0, k(x_{1}, x_{2}, \theta))$ and a set of observed data points $(\mathcal{D} = {X, Y})$. Again, due to the Gaussian assumption the conditional probabilities are all computationally tractable and can be calculated using a few matrix operations, side-stepping the computational burden of performing iterative sampling. Calculating the posterior is easy both in the absence (subsection \ref{subSecPosteriorNoiseFree})and presence (subsection \ref{subSecPosteriorNoisy}) of noise in observations. 
+
+Given a functional form of the covariance, section \ref{secHyperParameter} shows the importance of choosing the correct hyper-parameters. In a pure Bayesian framework the posterior distribution of the hyper-parameters should be calculated ($\Pr[\theta \mid \mathcal{D}]$), but this is computationally intractable needing several iterations for calculation of integrals. A common practice in the community is maximizing the marginal likelihood to automatically choose the hyper-parameters. Marginal likelihood is the probability of a prior distribution $\Pr[f] = GP(0, k(x_{1}, x_{2}, \theta)$ generating the observations $\mathcal{D}$. Hence maximizing the marginal likelihood gives the optimal set of hyper-parameters for a functional form of covariance function (figure \ref{figGPRMarginalOptimized}). 
+
+Calculating the precision matrix $[K_{XX}+ \sigma_{noise}^{2}I]^{-1}$ is an important task in calculating the marginal likelihood (equation \ref{}), posterior mean (equation \ref{}) and covariance (equation \ref{}). Unfortunately, this task has a computational complexity of $\mathcal{O}\left ( N^{3} \right )$ and memory footprint of $\mathcal{O}\left ( N^{2} \right )$. Putting an upper limit of $N \sim 10^4$ on the number of data points, a standard laptop cannot store such a big matrix for inversion \footnote{The computer runs out of memory before we run out of patience :p}. The next chapter describes few methods of performing approximating inference which scales GPs to $N \sim 10^6$ or more data points. 
