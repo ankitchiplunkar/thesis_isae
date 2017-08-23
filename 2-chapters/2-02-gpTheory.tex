@@ -70,6 +70,18 @@ Without loss of generality, we can assume the mean function to be zero everywher
 
 We assume a zero mean prior through out this section. After accounting for the zero mean, the GP model can be completely parametrized by the kernel. Hence the problem of learning in a GP is exactly the problem of finding suitable properties of the covariance function \cite{rasmussen2006gaussian} (equation \ref{equationMeanZeroGPdefinition}). 
 
+\textbf{Comment about the code}
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\begin{lstlisting}[caption={A zero mean function}, 
+                    captionpos=b, 
+                    label={codeMeanFunction},
+                    style=Matlab-editor, 
+                    backgroundcolor = \color{MatlabCellColour}]
+% zero mean function
+meanFunction = @(x) 0*x; 
+
+\end{lstlisting}
+\end{mdframed}
 
 \subsection{Covariance function}\label{subSecCH2Covariance}
 The covariance function is a positive definite kernel, such that for any $a_{i} \in \mathbb{R}$ equation \ref{equationPDKernel} holds \cite{Stein1999Springer}.
@@ -90,8 +102,21 @@ For the case of the SE kernel the hyper-parameters $(\theta = [\theta_{amplitude
 \marginnote{\textsl{Length-Scale}}[1cm]
 When $x$ tends to $x'$ then $k(x_{1}, x_{2})$ approaches $\theta_{amplitude}^{2}$, this means that $f(x)$ is highly correlated with $f(x')$. This is a good characteristic for smooth functions, since points in the neighbourhood must be alike. If $x$ is far away from  $x'$ then $k(x_{1}, x_{2})$ tends to zero, this means that far away points are loosely correlated. Hence, far off observations will have negligible effect while performing interpolations. How fast or slow the covariance decreases with distance depends on the length scale parameter $\theta_{lengthScale}$, smaller length-scale means a faster moving function. In general we cannot extrapolate more than $\theta_{lengthScale}$ units from the closest data-point \cite{duvenaud-thesis-2014}. 
 
-\subsection{Sampling functions from GP priors}\label{subSecSamplingFunctionsGPPrior}
+\textbf{comment about the code}
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\begin{lstlisting}[caption={A Standard Exponential covariance function}, 
+                    captionpos=b, 
+                    label={codeCovarianceFUnction},
+                    style=Matlab-editor, 
+                    backgroundcolor = \color{MatlabCellColour}]
+% Standard exponential covariance function
+covarianceFunction = @(theta, x1, x2)(theta(1).^2*exp(-(x1 - x2)^2/(2*theta(2).^2))); 
+% theta(1): is the amplitude hyperparameter
+% theta(2): is the length-scale hyperparameter
+\end{lstlisting}
+\end{mdframed}
+
+\subsection{Sampling functions from GP priors}\label{subSecSamplingFunctionsGPPrior}
 To have a look at the constituent functions in a prior we can randomly sample functions from the GP. Since any finite set of set of function values have a joint Gaussian distribution in a GP. To draw random functions from a GP we choose $N*$ input points $X_{*} = \{x_{1*}; x_{2*}; \ldots ; x_{N*}\}$ and write corresponding mean vector $m(X_{*})$ and covariance matrix $K(X_{*}, X_{*} )$ \footnote{The covariance matrix is also called the Gram matrix} using equation \ref{equationGPMarginalizationProperty} and \ref{eqnSquaredExponential}. We then generate a random Gaussian vector $f(X_{*})$ for this multi-variate Gaussian (equation \ref{equationMeanZeroGPdefinition}) and plot the generated values as a function of inputs $X_{*}$. 
 
 \begin{equation}\label{eqnCovMatrixSquaredExponential}
@@ -103,11 +128,18 @@ k(x_{1*}, x_{1*}) & k(x_{1*}, x_{2*}) & \ldots & k(x_{1*}, x_{N*})
 \end{matrix} \right ] 
 \end{equation}
 
-Figure \ref{figGPCovarianceMatrix} shows the covariance matrix for Standard Exponential kernel with different hyper-parameters at the input points $X^{*} = \{[0:0.02:1]\}$. The SE kernel of figure \ref{subFigcovSEmatrix_1} has a lower length-scale than figure \ref{subFigcovSEmatrix_2}. Note, how the covariance values are more spread out for figure \ref{subFigcovSEmatrix_2}.
+\textbf{comment about the code}
 
-\textbf{add algorithm}
-
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\lstinputlisting[caption={Plotting the Gram Matrix}, 
+                    captionpos=b, 
+                    label={codeGramMatrix}, 
+                    backgroundcolor = \color{MatlabCellColour}, 
+                    style=Matlab-editor]
+                    {codes/chapter2/gramMatrix.m}
 \end{mdframed}
+
+Figure \ref{figGPCovarianceMatrix} shows the covariance matrix for Standard Exponential kernel with different hyper-parameters at the input points $X^{*} = \{[0:0.02:1]\}$. The SE kernel of figure \ref{subFigcovSEmatrix_1} has a lower length-scale than figure \ref{subFigcovSEmatrix_2}. Note, how the covariance values are more spread out for figure \ref{subFigcovSEmatrix_2}.
 
 \begin{figure}[!ht]
   \centering
@@ -127,12 +159,20 @@ Figure \ref{figGPCovarianceMatrix} shows the covariance matrix for Standard Expo
        \caption{Covariance matrix for a Standard Exponential kernel with different hyper-parameters at the input points $X^{*} = \{[0:0.02:1]\}$. The SE kernel of figure \ref{subFigcovSEmatrix_1} has a lower length-scale than figure \ref{subFigcovSEmatrix_2}. Note, how the covariance values are more spread out for figure \ref{subFigcovSEmatrix_2}.}\label{figGPCovarianceMatrix}
 \end{figure}
 
+To generate a random Gaussian vector $f(X_{*})$ of length $N_{*}$, we first calculate the Cholesky decomposition\footnote{Cholesky Decomposition is also called the square-root of matrix and is defined for positive definite matrices} of the covariance matrix $K(X_{*}, X_{*}) = LL^{T}$, where $L$ is a lower triangular matrix. We then generate a random vector $U$, such that $U = \mathcal{N}(0, I)$ and $I$ is an identity matrix of size $N_{*}$.  The random vector can be then computed as, $f(X_{*}) = m(X_{*}) + LU$ and when plotted with the inputs $X_{*}$ gives a randomly drawn function. 
+
+\textbf{Comment about the algorithm}
+% Adding the algorithm
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
-To generate a random Gaussian vector $f(X_{*})$ of length $N_{*}$, we first calculate the Cholesky decomposition\footnote{Cholesky Decomposition is also called the square-root of matrix and is defined for positive definite matrices} of the covariance matrix $K(X_{*}, X_{*}) = LL^{T}$, where $L$ is a lower triangular matrix. We then generate a random vector $U$, such that $U = \mathcal{N}(0, I)$ and $I$ is an identity matrix of size $N_{*}$.  The random vector can be then computed as, $f(X_{*}) = m(X_{*}) + LU$ and when plotted with the inputs $X_{*}$ gives a randomly drawn function. Figure \ref{figGPPriors} shows 5 random functions drawn for a zero mean GP with the covariance matrices of figure \ref{figGPCovarianceMatrix}. The solid black line defines the mean function, shaded blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The dashed lines are five functions drawn at random from a GP prior. We can observe that figure \ref{subFigSEPrior_1} varies faster when compared to figure \ref{subFigSEPrior_2} due to smaller length scale hyper-parameter. 
-
-\textbf{add algorithm}
-
+\lstinputlisting[caption={Sampling a random function from the prior}, 
+                    captionpos=b, 
+                    label={codeSamplingFUnction}, 
+                    backgroundcolor = \color{MatlabCellColour}, 
+                    style=Matlab-editor]
+                    {codes/chapter2/samplingFunctionFromAPrior.m}
 \end{mdframed}
+
+Figure \ref{figGPPriors} shows 5 random functions drawn for a zero mean GP with the covariance matrices of figure \ref{figGPCovarianceMatrix}. The solid black line defines the mean function, shaded blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The dashed lines are five functions drawn at random from a GP prior. We can observe that figure \ref{subFigSEPrior_1} varies faster when compared to figure \ref{subFigSEPrior_2} due to smaller length scale hyper-parameter. 
 
 \begin{figure}[!ht]
   \centering
@@ -188,12 +228,19 @@ The posterior will be the the conditional probability of $f(X_{*})$ given the pr
 
 The term $K(X_{*}, X)( K(X, X) )^{-1}f(X)$ is the predicted mean of the posterior at the test points $X_{*}$. The term $K(X_{*}, X_{*}) - K(X_{*}, X)( K(X, X) )^{-1} K(X, X_{*})$ is the predicted covariance. 
 
+\textbf{add description of D1 and algorithm}
+\textbf{Comment about the algorithm}
+% Adding the algorithm
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
-\textbf{add description of D1}
-
-\textbf{add algorithm}
-Figure \ref{figGPNoiseLessPosteriors} shows the posterior GP after adding observed data into the initial prior. We can see that Bayes theorem eliminates all the functions in the prior that does not pass through the data. The solid black line defines the mean function, blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The mean of the of the posterior distribution is also used as a point estimate for interpolation. The dashed lines are three functions drawn at random from a GP posterior. Random functions can be sampled from the posterior distribution as described in the earlier section. 
+\lstinputlisting[caption={Calculating and plotting the mean, the variance and a sample of the posterior}, 
+                    captionpos=b, 
+                    label={codePosterior}, 
+                    backgroundcolor = \color{MatlabCellColour},
+                    style=Matlab-editor]
+                    {codes/chapter2/evaluatingAndPlottingThePosterior.m}
 \end{mdframed}
+
+Figure \ref{figGPNoiseLessPosteriors} shows the posterior GP after adding observed data into the initial prior. We can see that Bayes theorem eliminates all the functions in the prior that does not pass through the data. The solid black line defines the mean function, blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The mean of the of the posterior distribution is also used as a point estimate for interpolation. The dashed lines are three functions drawn at random from a GP posterior. Random functions can be sampled from the posterior distribution as described in the earlier section. 
 
 
 \begin{figure}[!ht]
@@ -259,12 +306,7 @@ The difference between equation \ref{equationJointPriorNoisy} and \ref{equationJ
   \end{aligned}
   \end{equation}
 
-\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
-
-\textbf{again attach an algorithm
-\textbf{again describe the D1 etc}}
 Figure \ref{figGPNoisyPosteriors} shows the posterior GP after adding observed data into the initial prior. The solid black line defines the mean function, blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The dashed lines are three functions drawn at random from a GP posterior. Random functions can be sampled from the posterior distribution as described in the earlier section \ref{secPrior}.  Due to the inclusion of noise in the prior, we see that the draws from posterior are not necessarily passing from the observed point.
-\end{mdframed}
 
 \begin{figure}[!ht]
   \centering
@@ -329,8 +371,23 @@ The mean and variance are highly dependent on the kernel hyper-parameters. In or
 \section{Choosing Hyper-parameters}\label{secHyperParameter}
 Since the properties of functions under a GP are controlled by the functional form of the covariance kernel and its hyper-parameters, model selection amounts to choosing a functional form and learning the hyper-parameters $\theta$ from data. In this section we discuss how to select an optimal model by tuning hyper-parameters for a given covariance function. Please refer to chapter \ref{chapAddingEquationsInGP} for discussion on how to choose covariance functions. 
 
+\textbf{Comment about the code}
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\begin{lstlisting}[caption={Code for dataset D2}, 
+                    captionpos=b, 
+                    label={codeDatasetD2},
+                    style=Matlab-editor, 
+                    backgroundcolor = \color{MatlabCellColour}]
+nData = 20; % number of data points
 
-\textbf{define $\mathcal{D}_{2}$}
+f = @(x)sin(5*pi*x)./(5*pi*x); % Function
+
+noise = 0.1; % Noise in dataset
+xData = linspace(-1, 1, nData)';
+yData = f(xData) + noise*2*rand(nData, 1);
+
+\end{lstlisting}
+\end{mdframed}
 
 Figure \ref{figGPRMarginal} demonstrates that choosing optimal hyper-parameters is very vital for accurate prediction. Figure  \ref{figGPRMarginal} compares the posterior distributions obtained for SE priors with 2 different hyper-parameters. We observe that the mean of figure \ref{subFigPosterior1} passes through all the observed data points but is more complex. The mean in figure \ref{subFigPosterior3} is a smooth function but does not fit the data properly. 
 
@@ -375,13 +432,19 @@ In this manuscript we neither put a prior over our hyper-parameters nor use LOO-
   
 The marginal likelihood is a trade-off between a data-fit term $(\frac{1}{2}Y^{T}K_{XX}^{-1}Y)$ and a model complexity term $(\log\left |  K_{XX}\right |)$. The optimization of ML($\theta$) provides the best compromise in terms of explaining the existing data set \{($x_{i}, y_{i}$)\} and the initial assumptions encoded in the prior. 
 
-\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
-\textbf{add the algorithm}
 \textbf{define an optimization problem}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\lstinputlisting[caption={Optimizing the Log Marginal Likelihood}, 
+                    captionpos=b, 
+                    label={codeOptimizingLML}, 
+                    backgroundcolor = \color{MatlabCellColour},
+                    style=Matlab-editor]
+                    {codes/chapter2/optimizingLogMarginalLikelihood.m}
+\end{mdframed}
 
 Figure \ref{subFigmaximizingMarginalLikelihood} shows the contours of marginal likelihood with respect to length-scale $\theta_{lengthScale}$ and noise $\sigma_{n}$ hyper-parameters. The data set is same as used in figure \ref{figGPRMarginal} and the prior is a zero mean with SE kernel. Figure \ref{subFigPosteriorOptimized} shows the posterior for same data set as used in figure \ref{figGPRMarginal} but for the hyper-parameters where marginal likelihood is maximum. The marginal likelihood could have multiple maximas in the space of hyper-parameters, hence care should be taken while initializing hyper-parameters for optimizing the log of marginal likelihood. 
 
-\end{mdframed}
   \begin{figure}[!ht]
   \centering
     \subfigure[{Marginal likelihood contours for varying noise and length-scale parameter. The amplitude hyper parameter is $(\theta_{amplitude} = [0.35])$.  Also shown on the figure are locations of hyper-parameters for figures \ref{subFigPosterior1} and \ref{subFigPosteriorOptimized}.}]

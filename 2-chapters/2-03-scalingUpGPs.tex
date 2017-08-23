@@ -15,9 +15,7 @@ Sparse methods use a small subset of input points as support or inducing points 
 
 \subsection{Nystr\"{o}m Approximation}\label{subSecNystrom} 
 
-Using Nystr\"{o}m approximation the Gram matrix can be approximated as equation \ref{eqnSparseNystormGram} \textbf{add more detail here as well}. Refer to \cite{quinonero2005unifying, seeger2003fast} for more detail. 
-
-\textbf{add more steps}
+Using Nystr\"{o}m approximation the Gram matrix can be approximated as equation \ref{eqnSparseNystormGram} \cite{quinonero2005unifying, seeger2003fast}, for more detail refer to appendix \textbf{refer to link in the appendix}. 
 
 \begin{equation}\label{eqnSparseNystormGram}
 K_{nystorm}(X, X) = K(X, X^{m})K(X^{m}, X^{m})^{-1}K(X^{m}, X)
@@ -50,6 +48,17 @@ K_{FITC}(X, X) = diag[K(X, X) - K_{nystorm}(X, X)] + K_{nystorm}(X, X)
 \end{equation}
 
 Note, calculating $diag(K(X, X))$ is an $\mathcal{O}\left ( N \right )$ operation and thus does not significantly impact the time taken. 
+
+\textbf{add comment about algorithm}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\lstinputlisting[caption={Gram Matrix using Nystr\"{o}m Approximation}, 
+                    captionpos=b, 
+                    label={codeGramNystrom}, 
+                    backgroundcolor = \color{MatlabCellColour},
+                    style=Matlab-editor]
+                    {codes/chapter3/evaluateNystromGramMatrix.m}
+\end{mdframed}
 
 
 The posterior distribution for the approximate prior can be derived similarly as given in appendix \textbf{add appendix ref} and is a Gaussian. The predictive mean and predictive variance are written as equation \ref{eqNoisyNystormPredictiveMean} and equation \ref{eqNoisyNystormPredictiveCovariance}. Here, $K_{approximate}(X, X')$ can be the approximated Gram matrix either from the Nystr\"{o}m approximation (equation \ref{eqnSparseNystormGram}) or the FITC approximation (equation \ref{eqnSparseFITCGram}). 
@@ -88,7 +97,16 @@ We here conduct experiments on a toy-data set to observe the accuracy of Nystr\"
 
 10-fold Cross Validation (CV) will be used to assess the performance of the prediction. CV is a technique where the dataset is partitioned as the test set and training set. A model is learned using the training set and Root Mean Square Error (RMSE) is calculated between the prediction and test set as a measure of accuracy. In the 10-fold version of CV, the dataset will be randomly partitioned into 10 subsets containing an equal number of points. Of the 10 subsets, a single subset is retained as the test dataset, and the remaining 9 (10 - 1) subsets are used as training data. The cross-validation process is then repeated 10 times (the folds), with each of the k subsets used exactly once as the validation data.
 
-The toy data set was generated at 1000 input points $X = \{[-1:0.002:1]\}$ by sampling a random function from a GP\footnote{$(\Pr[Y \mid X, \theta, \sigma_{n}] = GP(0, K_{SE}(X, X', \theta = [1, 0.1]) + (0.3)^{2}I)$} with zero mean, SE covariance function ($\theta = [1, 0.1]$) and noise $\sigma_{n} = 0.3$. 
+The toy data set ($\mathcal{D}_{3}$) was generated at 1000 input points $X = \{[-1:0.002:1]\}$ by sampling a random function from a GP\footnote{$(\Pr[Y \mid X, \theta, \sigma_{n}] = GP(0, K_{SE}(X, X', \theta = [1, 0.1]) + (0.3)^{2}I)$} with zero mean, SE covariance function ($\theta = [1, 0.1]$) and noise $\sigma_{n} = 0.3$. 
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\lstinputlisting[caption={Code for toy dataset 3}, 
+                    captionpos=b, 
+                    label={codeDataset3}, 
+                    backgroundcolor = \color{MatlabCellColour},
+                    style=Matlab-editor]
+                    {codes/chapter3/generatingDataset3.m}
+\end{mdframed}
 
 Figure \ref{predictionOfm10_242} is the prediction of the GP obtained after Nystr\"{o}m approximation using 10 inducing points. The solid black line defines the mean function, blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The points denoted by `+' sign are initial locations of inducing points, while the points denoted by `*' sign are locations of inducing points after optimization. The points denoted by `.' are the test points for this fold of the 10-fold CV. 
 
@@ -126,6 +144,16 @@ Initially, this mixture of local models was used to highlight local features in 
 \begin{equation}\label{distributedGPPrior}
     \Pr[y^{(i)} \mid x^{(i)}, \theta, \sigma_{n}] = GP(0, K(x^{(i)}, x^{(i)'}, \theta) + \sigma^{2}_{n}I) 
 \end{equation}
+
+\textbf{comment about the algorithm}
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\lstinputlisting[caption={Randomly clustering points into experts}, 
+                    captionpos=b, 
+                    label={codeClusteringIntoExperts}, 
+                    backgroundcolor = \color{MatlabCellColour},
+                    style=Matlab-editor]
+                    {codes/chapter3/clusteringPointsInExperts.m}
+\end{mdframed}
 
 Figure \ref{subFigdistributedKernelRandomExperts} is an approximate Gram matrix using distributed GP approximation for a Standard Exponential (SE) Kernel with $(\theta = [1, 0.2])$ (figure \ref{subFigcovSEmatrix_1}) at the input points $X^{*} = \{[0:0.02:1]\}$. 5 experts each having 100 points are chosen, points in the experts are distributed randomly, this gives the approximate Gram matrix scattered shape. Figure \ref{subFigDistributedKernel} is an approximate Gram matrix using distributed GP approximation of the matrix in figure \ref{subFigcovSEmatrix_1} and uniformly distributed experts. 5 experts each having 100 points are chosen, The first expert has first set of 100 points, the second expert has the second set of 100 points and so on. The Gram matrix with randomly chosen experts has a more global nature but lacks many high variance regions. The Gram matrix for uniformly chosen experts retains more local features. Inversion of this Gram matrix is an operation of complexity $\mathcal{O}(N_{experts}P^{3})$, where $P$ is the number of points in an expert.
 
@@ -175,6 +203,16 @@ Due to the independence assumption, the marginal likelihood can be written as a 
 \begin{align}\label{eqDGPNLML}
     \log \Pr[y \mid X, \mathcal{D}, \theta] \approx \sum_{k=1}^{N_{experts}} \log \Pr[y^{(i)}\mid X^{(i)}, \theta]
  \end{align}
+
+\textbf{comment about the algorithm}
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\lstinputlisting[caption={log Marginal Likelihood for Distributed GP}, 
+                    captionpos=b, 
+                    label={codelmdDGP}, 
+                    backgroundcolor = \color{MatlabCellColour},
+                    style=Matlab-editor]
+                    {codes/chapter3/logMarginalLikelihoodDGP.m}
+\end{mdframed}
 
 Maximizing the above log-marginal likelihood will give the optimal values of hyper-parameters. Points in the experts can be distributed either randomly or using a clustering scheme (eg. k-means clustering\footnote{k-means algorithm clusters close by points in one cluster. The notion of closeness is defined by some measure of distance}) for stationary kernels\footnote{stationary kernels are only a function of $\tau = |x-x'|$} k-means clustering should be preferred. The k-means algorithm clusters points based on a measure of distance, points in separate clusters are far away from each other when compared to points in the same cluster. This means that the covariance (for stationary kernels) between separate clusters is significantly lower when compared to points in same cluster. Hence, the cross-covariance across separate clusters can be more easily assumed to be zero.
 

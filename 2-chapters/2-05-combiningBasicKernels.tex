@@ -187,7 +187,7 @@ Figure \ref{subFigdrawsProdMultiDimensional} is obtained after multiplying 2 SE 
         {images/part2/drawsSumMultiDimensional}
         \label{subFigdrawsSumMultiDimensional}
   }\quad
-\subfigure[{Random draw from a 2 dimensional prior which encodes a low-dimensional structure. The hyper-parameters of the kernel are $\theta_{amplitude}=1$ and $\theta_{lengthscale}=1$}]
+\subfigure[{Random draw from a 2 dimensional prior which encodes a \textbf{low-dimensional} structure. The hyper-parameters of the kernel are $\theta_{amplitude}=1$ and $\theta_{lengthscale}=1$}]
   {
         \includegraphics[width=0.29\textwidth]
         {images/part2/drawsLowMultiDimensional}
@@ -252,7 +252,7 @@ P_{new}(\Omega) = \sum_{l=1}^{p}a^{l}(d_{new}) \phi^{l}(\Omega)
 \end{equation}
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=blue!20]
-\paragraph{contribution}
+\paragraph{Contribution}
 Due to the assumption of linear subspace, interpolation through ROM is highly efficient both in terms of cost and performance in the subsonic regime \cite{verveld2016reduced}. Unfortunately in the transonic regime, the shock creates a highly non-linear, almost discontinuous pressure distribution and the assumption of linear subspace does not hold \cite{li2016performance}. Although the performance of ROM interpolators can be improved with larger number of samples \cite{franz2014interpolation, forrester2008engineering}, we propose to improve the accuracy of prediction using distributed GP Regression for the same number of samples.  
 
 We interpolate the pressure $p_{j}(\omega_{i})$ by simply multiplying the kernels across dimensions (equation \ref{eqPressureGP}). To interpolate in subsonic regime we multiply Mat\'ern $\nu=5/2$ across dimensions, while to interpolate in transonic regime we use the Neural Network kernel in the dimension of shock.
@@ -372,11 +372,28 @@ The current section presents a comparison between two different surrogate model 
 Plots like figure \ref{subfig:alphaSweepCut4} give a quick understanding of the flight regime for very few simulation runs. These plots can also be used to find transition regimes from single shock to double shock, which are very interesting performance points. In the future we wish to improve reconstruction of double shock patterns by improving the length scale and improve the choice of experts for distributed GP.
 
 \section{Discussion}\label{subsec:ExpressingStructureKernelConclusion}
-The above section shows a small sneak peek into the vast variety of kernel functions available in research papers. Due to the ability to create new kernels every problem statement comes up with an optimal structure which encodes the basic assumptions. Unfortunately finding the correct kernel is still a black art. 
+In the last two chapters we have tried to answer the question: How to add \textit{apriori} information of a pattern in a learning algorithm? We present a small sneak peek into the wide variety of available covariance functions. Due to the ability to create new kernels, encoding prior information into the structure can be performed easily. If we have an \textit{apriori} information about the pattern of function to be learned, then embedding this information into the GP algorithm greatly improves accuracy and cost of prediction. Table \ref{tabListOfCovarianceFUnctions} lists a few commonly known combination of covariance functions known in the literature. 
 
-In the current chapter 
-\textbf{list of kernel combinations and the regression types}
-
+%\renewcommand{\arraystretch}{1}
+\begin{table}[!h]
+    \centering
+\begin{tabularx}{\textwidth}{|l|l|c|}
+  \hline
+Model  & Structure & Citation \\
+  \hline 
+  \hline
+Linear Regression & \small $k_{constant}+k_{linear}+k_{noise}$ &  \normalsize\\
+Polynomial & \small $k_{constant}+\prod k_{linear}+k_{noise}$ &  \normalsize\\
+Ordinary kriging & \small $k_{SE} + k_{noise}$ \normalsize &  \cite{krige1951statistical} \\
+Simple kriging & \small $k_{constant}+k_{SE} + k_{noise}$ &  \normalsize\\
+Universal Kriging & \small $\prod k_{linear}+k_{SE} + k_{noise}$ \normalsize & \cite{matheron1963principles} \\ Multiple Kernel & \small $\sum k_{SE} + k_{noise}$ \normalsize  &  \\
+Spectral Mixture & \small  $\sum cos k_{SE} + k_{noise} ]$ \normalsize & \cite{wilson2013gaussian} \\
+Change point & \small  $\sum CP(k_{Lin}, k_{SE}) + k_{noise} ]$ \normalsize & \cite{osborne2010bayesian} \\
+Additive GPs & \small  $\prod_{i}(1+k^{i}_{SE}) ]$ \normalsize& \cite{duvenaud2011additive} \normalsize\\
+   \hline
+\end{tabularx}
+  \label{tabListOfCovarianceFUnctions}
+  \caption{Combination of covariance functions available in literature}
+  \end{table}
  
-
-It is also in the interest of this PhD to be able to extrapolate till limit-loads. Constructing a detailed kernel which can replace the parametric theoretical model is highly time-consuming. We wish to use the already constructed theoretical model as a prior into our model. How to use a parametric model for extrapolation will be discussed in the next section.
+In the next two chapters we will tackle the remaining two questions posed in section \ref{} of the thesis. Chapter \ref{chapAddingEquationsInGP} discusses how to encode prior information of relationships between measurements into a GP regression. While chapter \ref{chapMultiTaskExtrapolation} discusses how to perform extrapolation given a computer simulation of experiments. 
