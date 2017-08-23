@@ -116,7 +116,7 @@ A simple method to perform regression is by assuming a form of the function $f$,
 
 \begin{equation}\label{eqBayesianLinearRegression}
 f(x_{i}) = \begin{Bmatrix}
-x^{0} & x^{1}
+1 & x
 \end{Bmatrix}  \begin{Bmatrix}
 w_{0}\\ 
 w_{1}
@@ -125,13 +125,13 @@ w_{1}
 \end{equation}
 
 \marginnote{\textsl{Likelihood}}[1cm]
-Here, $w$ are the parameters of the function, $w_{0}$ denotes the intercept and $w_{1}$ denotes the slope of the regression model. The measurements are corrupted by independent white noise $\epsilon$, such that the noise is a random variable sampled from a white noise Gaussian with variance $\sigma_{n}^{2}$\footnote{$\Pr[\epsilon] = \mathcal{N}(0, \sigma_{n} = \frac{1}{\sqrt{2\pi\sigma_{n}^{2}}}\exp^{-\frac{\epsilon^{2}}{2\sigma_{n}^{2}}}
+Here, $w$ are the parameters of the function, such that $w_{0}$ denotes the intercept and $w_{1}$ denotes the slope of the regression model. The measurements are corrupted by independent white noise $\epsilon$, such that the noise is a random variable sampled from a white noise Gaussian with variance $\sigma_{n}^{2}$\footnote{$\Pr[\epsilon] = \mathcal{N}(0, \sigma_{n} = \frac{1}{\sqrt{2\pi\sigma_{n}^{2}}}\exp^{-\frac{\epsilon^{2}}{2\sigma_{n}^{2}}}
 $}. The above equations \ref{eqBayesianLinearRegression} can be combined to result in the likelihood $\Pr[Y\mid X, w]$
 
 \begin{equation}\label{eqBayesianLikelihood}
 \begin{aligned}
 \Pr[Y \mid X, w]  & = \prod \Pr[y_{i}\mid x_{i}, w]\\
-                & = \prod \mathcal{N}[x_{i}w , \sigma_{n}^{2}]\\
+                & = \prod \mathcal{N}[[1, x_{i}]w , \sigma_{n}^{2}]\\
                 & = \mathcal{N}(X^{T} w, \sigma_{n}^{2}I)    
 \end{aligned}
 \end{equation}

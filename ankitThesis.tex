@@ -1,0 +1,105 @@
+% A LaTeX (non-official) template for ISAE projects reports
+% Copyright (C) 2014 Damien Roque
+
+% This program is free software; you can redistribute it and/or
+% modify it under the terms of the GNU General Public License
+% as published by the Free Software Foundation; either version 2
+% of the License, or (at your option) any later version.
+
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+% Version: 0.2.1
+% Author: Damien Roque <damien.roque_AT_isae.fr>
+% Updated by : Ankit Chiplunkar ankitchiplunkar@gmail.com
+
+\documentclass[a4paper,12pt]{book}
+% include user packages
+\include{0-configuration/packages}
+
+% Include user macros
+\include{0-configuration/macros}
+
+\includeonly{2-chapters/2-01-introduction, 2-chapters/2-02-gpTheory, 2-chapters/2-03-scalingUpGPs, 2-chapters/2-04-basicCovariances,  2-chapters/2-05-combiningBasicKernels} %part 1
+%\includeonly{ 2-chapters/2-02-gpTheory, 2-chapters/2-03-scalingUpGPs}%, 2-chapters/2-04-basicCovariances} %part BLR
+%\includeonly{2-chapters/2-04-basicCovariances, 2-chapters/2-05-combiningBasicKernels} %part 2
+%\includeonly{2-chapters/2-04-basicCovariances}%, 2-chapters/2-05-combiningBasicKernels} %part 2
+%\includeonly{2-chapters/2-05-combiningBasicKernels} %part 2
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%
+%%% First page %%%
+%%%%%%%%%%%%%%%%%%
+%\makeflyleaf
+% compiled the myflyleaf
+
+\includepdf[pages={1}]{1-opening/firstPage_ankitThesis.pdf}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Non-significant pages %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\frontmatter
+
+\include{1-opening/acknowledgements}
+
+\clearpage
+\tableofcontents
+
+\clearpage
+\listoffigures
+
+\clearpage
+\include{1-opening/acronyms}
+
+\clearpage
+\lstlistoflistings
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Content of the report and references %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mainmatter
+\pagestyle{fancy}
+
+\cleardoublepage
+
+\part{Introduction}\label{partIntroduction}
+\include{2-chapters/2-01-introduction}
+\include{2-chapters/2-02-gpTheory}
+\include{2-chapters/2-03-scalingUpGPs}
+
+\part{Incorporating structure in Gaussian Process Regression}\label{partIncorporatePattern}
+\include{2-chapters/2-04-basicCovariances}
+\include{2-chapters/2-05-combiningBasicKernels}
+
+\part{Incorporating multiple outputs Gaussian Process Regression}\label{partIncorporateMultipleOutputs}
+\include{2-chapters/2-06-addingEquations}
+\include{2-chapters/2-07-multiTaskExtrapolation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Appendices are included here %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+%\include{3-appendices/3-1-PIV}
+
+\bibliographystyle{authoryear-fr}
+\bibliography{references}
+
+\clearpage
+
+%%%%%%%%%%%%%%%%
+%%% Abstract %%%
+%%%%%%%%%%%%%%%%
+
+% Include the abstract
+\cleardoublepage
+\input{4-closing/abstract}
+
+\end{document}
