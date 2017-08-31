@@ -1,5 +1,6 @@
 \chapter{Basic Covariance Functions}
 \label{chapBasicCovarianceKernels}
+\textbf{An ober view page would be nice}
 
 If we assume the mean function as zero, then a GP prior can be completely parametrized by its covariance function. Hence the problem of learning in a GP regression is exactly the problem of finding suitable properties of the covariance function \cite{rasmussen2006gaussian}. The covariance function consists of two parts a functional form, (which specifies the shape of functions in the hypothesis space) and a set of hyper-parameters (which define the probability of a function in the hypothesis space). In section \ref{secHyperParameter} we have seen in detail how to automatically choose hyper-parameters, the part \ref{partIncorporatePattern} of this thesis will detail how to choose the functional form. 
 
@@ -223,7 +224,7 @@ When $\nu = 1/2$ the Mat\'ern kernel is also called the Ornstein-Uhlenbeck or Ex
        \label{figKernelAndPowerSpectrums}
 \end{figure}
 
-\subsection{Experiments}
+\subsection{Experiments}\label{subsecCH4Experiments}
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
 Let us revisit the dataset $\mathcal{D}_{2}$ used to calculate the posterior in section \ref{secPosterior}, but this time using three different covariance functions. We will use Exponential kernel, Mat\'ern ($\nu=1/2$) and SE kernel to compare their performance. 
 

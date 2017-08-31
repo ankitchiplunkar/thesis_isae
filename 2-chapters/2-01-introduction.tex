@@ -27,7 +27,7 @@ To simplify this process an aircraft design is broken down into several design p
 In the last decade high-fidelity, physics based, mathematical simulations have become central to designing an aircraft. However, high-fidelity simulations are computationally expensive, this is the case for several Computational Fluid Dynamics (CFD) and Finite Element Method (FEM) based solvers. Due to this high cost high-fidelity simulations are launched only for a few carefully chosen design configurations. This results in inefficient exploration of the the design space and thus a non-optimal design. A common strategy to speed up simulations is by reducing the physical complexity of the model to make quick predictions. As an example linear potential flows (simpler aerodynamic model), or coarser FEM meshes (simpler structural model) are regularly used during the preliminary design phase \cite{cummings2015applied}. While this is an acceptable practice during the preliminary design phase, during the detailed design phase physical complexity is needed to find a robust optimum design point \cite{raymer2012aircraft}.
 
 \marginnote{\textsl{Need for accuracy}}[1cm]
-Instead of approximating physical complexity, surrogate models\footnote{Surrogate models, learning algorithms and machine learning models will be used interchangeably throughout this manuscript} simplify mathematical complexity \cite{verveld2016reduced}. Surrogate models learn patterns between the input and output dataset and then are used to make predictions on the desired point. This property is very useful in quickly exploring the design space and finding a robust design point \cite{forrester2008engineering}. Moreover, surrogate models are commonly passed across disciplines to perform inter-disciplinary optimizations. For example, a loads department would prefer running a quick surrogate model over the costly CFD model while performing the load's loop.  
+Instead of approximating physical complexity, surrogate models\footnote{Surrogate models, learning algorithms and machine learning models will be used interchangeably throughout this manuscript} simplify mathematical complexity \cite{verveld2016reduced}. Surrogate models learn patterns between the input and output dataset and then are used to make predictions on the desired point. This property is very useful in quickly exploring the design space and finding a robust design point \cite{forrester2008engineering}. Moreover, surrogate models are commonly passed across disciplines to perform inter-disciplinary optimizations. For example, a loads department would prefer running a quick surrogate model over the costly CFD model while performing the load's loop \cite{bartoliAIAA2017, bartoliAGILE2017}.  
 
 \marginnote{\textsl{Deduction vs Induction}}[1cm]
 The main difference between the engineering design and surrogate modeling can be explained by the difference between deduction and induction \cite{domingos2012few} (figure \ref{fig:engineeringDesignVsSurrogateModelling}). Engineering design is deduction: where a very general formula is applied to a particular case (figure \ref{figDeduction}). The basics of Newtonian physics, when applied to a particular aircraft geometry, give inertial loads. The basics of aerodynamics, when applied to a particular set of aircraft geometry and aircraft states, give out aerodynamic pressures. Engineering design takes global rules and applies them to local configurations. Whereas, surrogate modeling is induction: it looks at local features and data, tries to find similarity measures between them and gives a global formula for the process (figure \ref{figInduction}). For example, an algorithm to detect faces in images will look at several images with and without faces, learn a facial pattern and make predictions on new images \cite{marszalek2007semantic}. We here see a possible complementary relationship between engineering design and machine learning; where engineering design needs models to generate data, machine learning needs data to generate models.
@@ -94,7 +94,7 @@ Surrogate models suffer from the bias vs variance trade-off (figure \ref{figBias
 \marginnote{\textsl{Soft and hard constraints}}[1cm]
 One method to overcome this trade-off is by using lots and lots of data. Data acts as a hard constraint for learning algorithm, imagine a family of all possible continuous 2-dimensional functions in the range of $x \in [-1, 1]$ and $y \in [-1, 1]$. What will happen, given an observation $(x = 0, y = 0)$. All the functions that do not pass through this point will be eliminated, the new data point has basically reduced the possible family of functions. Whereas, bias acts as soft constraint, we can use the bias of linearity or smoothness to reduce our hypothesis space. Therefore, both bias and data help in reducing the hypothesis space\footnote{Bias can also be looked upon as distilled knowledge or patterns gained after interpreting huge amounts data}. Given access to more and more data, we can progressively reduce the bias in learning models thereby relying more on true evidence. This is also the main concept behind deep learning, where several layers of neural networks define a very large hypothesis space \cite{Goodfellow-et-al-2016, lecun2015deep}. 
 
-Unfortunately in aircraft design, generating a huge amount of accurate data is a costly exercise, for example a high fidelity CFD simulation runs for weeks \cite{murthy2014computational, jameson2012computational} and a flight-test campaign costs millions of euros \cite{fox2004test}. On another hand due to centuries of research and tinkering, we have a treasure trove of prior information about the physical systems. We propose to build better machine learning models by integrating the time-tested prior knowledge of physical systems with experimental data. 
+Unfortunately in aircraft design, generating a huge amount of accurate data is a costly exercise, for example a high fidelity CFD simulation runs for weeks \cite{murthy2014computational, jameson2012computational, forrester2008engineering} and a flight-test campaign costs millions of euros \cite{fox2004test}. On another hand due to centuries of research and tinkering, we have a treasure trove of prior information about the physical systems. We propose to build better machine learning models by integrating the time-tested prior knowledge of physical systems with experimental data. 
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=blue!20]
 \marginnote{\textsl{Contribution}}[1cm]
@@ -109,7 +109,7 @@ To integrate the prior information we propose to use a Bayesian inference for mo
 \end{mdframed}
 
 \section{Bayesian Linear Regression}\label{secBayesianModelling}
-Suppose we have access to a training set of observations (or outputs) $Y = (y(x_{1}); \ldots ; y(x_{i}); \ldots ; y(x_{N}))$, evaluated at a set of known inputs $X = (x_{1}; \ldots ; x_{i}; \ldots; x_{N})$, and we wish to predict $y(x_{*})$ at a test input $x_{*}$. The input and output can be multi-dimensional; $x_{i} \in \mathbb{R}^{D_{inputs}}$ and $y(x_{i}) \in \mathbb{R}^{D_{outputs}}$. The process of learning the transformation function $f$ to make prediction at a new point is called as regression. In the following section we follow formulation for Bayesian Linear Regression provided by \cite{mackay2003information}.
+\sloppy Suppose we have access to a training set of observations (or outputs) $Y = (y(x_{1}); \ldots ; y(x_{i}); \ldots ; y(x_{N}))$, evaluated at a set of known inputs $X = (x_{1}; \ldots ; x_{i}; \ldots; x_{N})$, and we wish to predict $y(x_{*})$ at a test input $x_{*}$. The input and output can be multi-dimensional; $x_{i} \in \mathbb{R}^{D_{inputs}}$ and $y(x_{i}) \in \mathbb{R}^{D_{outputs}}$. The process of learning the transformation function $f$ to make prediction at a new point is called as regression. In the following section we follow formulation for Bayesian Linear Regression provided by \cite{mackay2003information}.
 
 \marginnote{\textsl{Basis functions}}[1cm]
 A simple method to perform regression is by assuming a form of the function $f$, then minimizing the error between the true measurements and assumed form to estimate the parameters of $f$. The function is written in terms of basis functions $\phi(x)$. For example when $\phi(x) = \{1, x\}^{T}$ we are performing linear regression, when $\phi(x) = \{1, x, x^{2}, \ldots, x^{L}\}^{T}$ we are performing $L^{th}$ order polynomial regression. We will focus on linear regression in this section and hence $\phi(x) = \{1, x\}^{T}$.
@@ -125,18 +125,18 @@ w_{1}
 \end{equation}
 
 \marginnote{\textsl{Likelihood}}[1cm]
-Here, $w$ are the parameters of the function, such that $w_{0}$ denotes the intercept and $w_{1}$ denotes the slope of the regression model. The measurements are corrupted by independent white noise $\epsilon$, such that the noise is a random variable sampled from a white noise Gaussian with variance $\sigma_{n}^{2}$\footnote{$\Pr[\epsilon] = \mathcal{N}(0, \sigma_{n} = \frac{1}{\sqrt{2\pi\sigma_{n}^{2}}}\exp^{-\frac{\epsilon^{2}}{2\sigma_{n}^{2}}}
-$}. The above equations \ref{eqBayesianLinearRegression} can be combined to result in the likelihood $\Pr[Y\mid X, w]$
+Here, $w$ are the parameters of the function, such that $w_{0}$ denotes the intercept and $w_{1}$ denotes the slope of the regression model. The measurements are corrupted by independent white noise $\epsilon$, such that the noise is a random variable sampled from a white noise Gaussian\footnote{$\Pr[\epsilon] = \mathcal{N}(0, \sigma_{n}) = \frac{1}{\sqrt{2\pi\sigma_{n}^{2}}}\exp^{-\frac{\epsilon^{2}}{2\sigma_{n}^{2}}}
+$} with variance $\sigma_{n}^{2}$. The above equations \ref{eqBayesianLinearRegression} can be combined to result in the likelihood $\Pr[Y\mid X, w]$
 
 \begin{equation}\label{eqBayesianLikelihood}
 \begin{aligned}
 \Pr[Y \mid X, w]  & = \prod \Pr[y_{i}\mid x_{i}, w]\\
                 & = \prod \mathcal{N}[[1, x_{i}]w , \sigma_{n}^{2}]\\
-                & = \mathcal{N}(X^{T} w, \sigma_{n}^{2}I)    
+                & = \mathcal{N}(X^{T} w, \sigma_{n}^{2}I_N)    
 \end{aligned}
 \end{equation}
 
-The notation $\Pr[Y \mid X, w]$ symbolizes probability distribution of observations $Y$ at the inputs $X$ given the parameter $w$. The notation $\mathcal{N}[\mu , \Sigma]$ symbolizes a multi-variate Gaussian distribution for mean vector $\mu$ and covariance matrix $\Sigma$. 
+The notation $\Pr[Y \mid X, w]$ symbolizes probability distribution of observations $Y$ at the inputs $X$ given the parameter $w$. The notation $\mathcal{N}[\mu , \Sigma]$ symbolizes a multi-variate Gaussian distribution for mean vector $\mu$ and covariance matrix $\Sigma$. $I_N$ is an identity matrix of size $N \times N$.
 
 \marginnote{\textsl{Prior}}[1cm]
 While performing Bayesian inference we specify a prior distribution to encode our assumptions on the parameters before we look at the observations. For this case, we put a zero mean Gaussian prior on our weights.
@@ -186,7 +186,17 @@ w_{1}
 0 & 1
 \end{bmatrix} \right ]
 \end{equation}
+\end{mdframed}
 
+\begin{figure}[!ht]
+  \centering
+            \includegraphics[width=0.45\textwidth]
+        {images/part1/priorBLR}
+        \label{subFigpriorBLR}
+        \caption{Prior: Contours of probability density for a prior on parameters $w$ as defined by equation \ref{eqExperimentalPrior}}
+\end{figure}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
 Using equations \ref{eqExperimentalPrior} and \ref{eqBayesianFunctionalPosterior} we can calculate the posterior distribution for the parameters. For a noise model of $\Pr[\epsilon] = \mathcal{N}(0, (\sigma_{n}=0.1)^2)$ the posterior distribution comes out as the figure \ref{subFigposteriorBLR}
 
 \begin{equation}\label{eqExperimentalPosterior}
@@ -207,37 +217,37 @@ This simple example demonstrates how to estimate the parameters $w_{0}$ and $w_{
 
 \begin{figure}[!ht]
   \centering
-    \subfigure[{Contours of probability density for a prior on parameters $w$ as defined by equation \ref{eqExperimentalPrior}}]
-  {
-        \includegraphics[width=0.29\textwidth]
-        {images/part1/priorBLR}
-        \label{subFigpriorBLR}
-  }\quad
 \subfigure[{Contours of probability density for posterior distribution of parameters $w$ using equations \ref{eqExperimentalPrior} and \ref{eqBayesianPosterior}. The predicted intercept is $0.2576$ and the predicted slope is $0.4584$}]
   {
-        \includegraphics[width=0.29\textwidth]
+        \includegraphics[width=0.45\textwidth]
         {images/part1/posteriorBLR}
         \label{subFigposteriorBLR}
   }\quad
 \subfigure[{Linear Prediction based on the posterior, given the Dataset $\mathcal{D}_{1}$ prior $\Sigma_{P}$and noise $\sigma_{n}$. The predicted linear line does not pass through the data points but between them.}]
   {
-        \includegraphics[width=0.29\textwidth]
+        \includegraphics[width=0.45\textwidth]
         {images/part1/predictionsBLR}
         \label{subFigpredictionsBLR}
   }\quad
-       \caption{Prior, Posterior and Prediction in Bayesian Linear Regression}
+       \caption{Posterior and Prediction in Bayesian Linear Regression}
        \label{figPriorAndPosterior}
 \end{figure}
 
-While the Bayesian Linear Regression framework provides an opportunity to encode prior assumptions in terms of distributions of the parameters. A much more elegant and expressive method is by using Gaussian Processes to perform regression. Gaussian Processes are a distribution over functions and hence enable us to encode prior knowledge directly in the functional space. 
+While the Bayesian Linear Regression framework provides an opportunity to encode prior assumptions in terms of distributions of the parameters. A much more elegant and expressive method is by using GPs to perform regression. GPs are a distribution over functions and hence enable us to encode prior knowledge directly in the functional space. 
 
 \marginnote{\textsl{Non-parametric models}}[1cm]
-Learning algorithms are mainly divided into two main types. The first is defined by parametric models which can only represent a limited hypothesis space. They use parameters to describe the function between input and output domain. For example the weight parameters $w$ in Bayesian Linear Regression. The second are non-parametric models whose hypothesis space grows with the size of data \cite{ghahramani2013bayesian}. Non-parametric models use data to represent functions, Gaussian Process Regression is a type of non-parametric model. One can imagine a non-parametric model like a stretched rubber sheet: whenever it sees data it deforms accordingly to compensate for the new data point. Hence the more data it sees the more it starts mimicking the actual function. 
+Learning algorithms are mainly divided into two main types. The first is defined by parametric models which can only represent a limited hypothesis space. They use parameters to describe the function between input and output domain. For example the weight parameters $w$ in Bayesian Linear Regression. The second are non-parametric models whose hypothesis space grows with the size of data \cite{ghahramani2013bayesian}. Non-parametric models use data to represent functions, GP Regression is a type of non-parametric model. One can imagine a non-parametric model like a stretched rubber sheet: whenever it sees data it deforms accordingly to compensate for the new data point. Hence the more data it sees the more it starts mimicking the actual function. 
 
 \marginnote{\textsl{Gaussian Process}}[1cm]
-Gaussian Process or Kriging was first used in the context of Geo-statistics research by Daniel Krige \cite{krige1951statistical}, this was later formalized by Matheron in his seminal work "Principals of Geo-statistics" \cite{matheron1963principles}. Recently, interest in the Gaussian Process (GP) grew in the machine learning community from neural networks research. It was shown that a Bayesian neural network becomes a Gaussian process as the number of neurons tends to infinity \cite{neal2012bayesian}. Gaussian processes are probabilistic distributions over functions, which provide a Bayesian non-parametric approach to smoothing and interpolation. A Gaussian Process can be fully parameterized by its mean and covariance function. More generally, a Gaussian Process is a method to probabilistically define a family of functions, chapter \ref{chapGp} expands GP in more detail. 
+Kriging was first used in the context of Geo-statistics research by Daniel Krige \cite{krige1951statistical}, this was later formalized by Matheron in his seminal work "Principals of Geo-statistics" \cite{matheron1963principles}. Recently, interest in the GPs grew in the machine learning community from neural networks research. It was shown that a Bayesian neural network becomes a GP as the number of neurons tends to infinity \cite{neal2012bayesian}. GPs are probabilistic distributions over functions, which provide a Bayesian non-parametric approach to smoothing and interpolation. Regression performed through GPs are generalizations of the Kriging algorithm. 
 
-\section{Outline}\label{secOutline}
+Informally, a GP is a method to probabilistically define a family of functions. A GP can be completely parametrized by its mean and covariance function. The mean function defines the trend-line of the family of functions, while the covariance defines the spatial dependency of input-points. Throughout this thesis we will manipulate the covariance function to encode prior known information into a GP Regression framework. 
+
+
+chapter \ref{chapGp} expands GP in more detail. 
+
+\section{Layout}\label{secOutline}
+\textbf{Outine of the thesis, and on a new page}
 This thesis is divided into three main parts, each part is then divided into individual chapters and their constituent sections. This part sets up the prerequisites required to understand the concepts introduced in the next two parts. The first chapter demonstrates the need for performing regression in aircraft design tasks and describes a very basic Bayesian Linear Regression scheme. 
 
 \marginnote{\textsl{Chapter \ref{chapGp}}}[1cm]
@@ -247,6 +257,8 @@ Chapter \ref{chapGp} shows the key processes involved in a GP regression framewo
 Chapter \ref{chapScalingGPR} deals with the problem of scaling GP regression to massively many points. Traditional GPs are computationally infeasible on a standard laptop if the number of data points increase $\mathcal{O}(10^4)$. There exist two main methods to scale a GP regression, one using reduced set of inducing points while another based on mixture of experts methodology. This chapter draws heavily from the works of \cite{quinonero2005unifying, seeger2003fast, Snelson06sparsegaussian, Titsias09variationallearning} for the approximation method of inducing points and \cite{cao2014generalized, tresp2000bayesian, chen2009bagging, deisenroth2015distributed} for the approximation method of mixture of experts, please refer to the individual publications for more detail. We demonstrate the limitations and capabilities of both the methods on a toy dataset, giving directions to choosing optimal parameters and extracting the best possible result.  
 
 \textbf{Description of the other two parts}
+
+\textbf{Contributions}
 
 %%% Local Variables: 
 %%% mode: latex

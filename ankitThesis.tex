@@ -26,11 +26,14 @@
 % Include user macros
 \include{0-configuration/macros}
 
-\includeonly{2-chapters/2-01-introduction, 2-chapters/2-02-gpTheory, 2-chapters/2-03-scalingUpGPs, 2-chapters/2-04-basicCovariances,  2-chapters/2-05-combiningBasicKernels} %part 1
-%\includeonly{ 2-chapters/2-02-gpTheory, 2-chapters/2-03-scalingUpGPs}%, 2-chapters/2-04-basicCovariances} %part BLR
-%\includeonly{2-chapters/2-04-basicCovariances, 2-chapters/2-05-combiningBasicKernels} %part 2
-%\includeonly{2-chapters/2-04-basicCovariances}%, 2-chapters/2-05-combiningBasicKernels} %part 2
-%\includeonly{2-chapters/2-05-combiningBasicKernels} %part 2
+\includeonly{2-chapters/2-01-introduction} %part 1
+\includeonly{ 2-chapters/2-02-gpTheory}
+\includeonly{2-chapters/2-03-scalingUpGPs}
+\includeonly{2-chapters/2-04-basicCovariances} 
+\includeonly{2-chapters/2-05-combiningBasicKernels} %part 2
+\includeonly{2-chapters/2-III-overview}%, 
+\includeonly{2-chapters/2-06-multiTaskLearning}%, 
+\includeonly{2-chapters/2-07-addingEquations}
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%
@@ -76,12 +79,15 @@
 \include{2-chapters/2-03-scalingUpGPs}
 
 \part{Incorporating structure in Gaussian Process Regression}\label{partIncorporatePattern}
+\include{2-chapters/2-II-overview}
 \include{2-chapters/2-04-basicCovariances}
 \include{2-chapters/2-05-combiningBasicKernels}
 
-\part{Incorporating multiple outputs Gaussian Process Regression}\label{partIncorporateMultipleOutputs}
-\include{2-chapters/2-06-addingEquations}
-\include{2-chapters/2-07-multiTaskExtrapolation}
+\part{Incorporating multiple outputs in Gaussian Process Regression}\label{partIncorporateMultipleOutputs}
+\include{2-chapters/2-III-overview}
+\include{2-chapters/2-06-multiTaskLearning}
+\include{2-chapters/2-07-addingEquations}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Appendices are included here %%%

@@ -10,11 +10,14 @@ k(x_{1}, x_{2}) =  & k_{1}(x_{1}, x_{2}) + k_{2}(x_{1}, x_{2})  \label{eqCh5Addi
 k(x_{1}, x_{2}) =  & k_{1}(x_{1}, x_{2}) \times k_{2}(x_{1}, x_{2}) \label{eqCh5MultiplyingCovariances} \\
 k(x_{1}, x_{2}) =  & q(x_{1})k_{1}(x_{1}, x_{2})q(x_{2}) \label{eqCh5MultiplyingWithFunction} \\
 k(x_{1}, x_{2}) =  & k_{1}(h(x_{1}), h(x_{2})) \label{eqCh5ComposedCovariances} \\
-k(x_{1}, x_{2}) =  & g(g(k_{1}(x_{1}, x_{2}), x_{1}), x_{2} ) \label{eqCh5LinearOperatorCovariances}
+k(x_{1}, x_{2}) =  & g(g(k_{1}(x_{1}, x_{2}), x_{1}), x_{2} ) \label{eqCh5LinearOperatorCovariances} \\
+k(x_{1}, x_{2}) = & \int k_{1}(x_{1}, u)k_{2}(u, x_{2})du \label{eqConvolutionProcess}
 \end{align}
 
 
-Here, $k_{1}(x_{1}, x_{2})$ and $k_{2}(x_{1}, x_{2})$ are valid covariance function, while $q(x)$ and $h(x)$ are any continuous functions. While, $g\left ( . \right ) \in \mathcal{C}^{2}$ is an linear operator, for more discussion on equation \ref{eqCh5LinearOperatorCovariances} refer to chapter \ref{chapAddingEquationsInGP}. Let us take the case for a 2-dimensional input vector $x$ such that $x = \{x^{1}, x^{2}\}$ ($x^{1}$, $x^{2}$ are values of $x$ in the two dimensions). Then the following covariance functions are also valid.
+Here, $k_{1}(x_{1}, x_{2})$ and $k_{2}(x_{1}, x_{2})$ are valid covariance function, while $q(x)$ and $h(x)$ are any continuous functions. Equation \ref{eqConvolutionProcess} defines a covariance function through convolution of two kernels, more discussion refer to section \ref{subsecConvolutedGP}, while for equation \ref{eqCh5LinearOperatorCovariances} defines transformation through a linear operator $g\left ( . \right ) \in \mathcal{C}^{2}$, for more discussion on this equation refer to chapter \ref{chapAddingEquationsInGP}. 
+
+Let us take the case for a 2-dimensional input vector $x$ such that $x = \{x^{1}, x^{2}\}$ ($x^{1}$, $x^{2}$ are values of $x$ in the two dimensions). Then the following covariance functions are also valid.
 
 \begin{align}
 k(x_{1}, x_{2}) = k_{1}(x_{1}^{1}, x_{2}^{1}) + k_{2}(x_{1}^{2}, x_{2}^{2}) \label{eqCh5AddingAcrossDimensionsCovariances} \\
@@ -114,6 +117,8 @@ This basic assumption is used in making simple models in several domains; for ex
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=blue!20]
 The value of these basic physical parameters such as slope (eg. Young's Modulus, coefficient of lift) and location of change in regime (eg. start of plasticity and separation of flow) are progressively fed into further simulations. Generally, the slope and location of change point are evaluated painstakingly using engineering judgment, this is a painfully slow and costly process. We propose to estimate the slope and location of change-point automatically using a GP with change point kernel. Using the CP kernel which transitions from linear domain (linear kernel) to non-linear domain (SE kernel), prior information of the transition is encoded in the kernel structure. 
+
+\textbf{Correct the units in aluminium}
 
 We perform our experiments on openly available Stress and Strain data of Aluminum Alloy 6061 \cite{kaufman1999properties} and Lift and Angle data of NACA 0012 airfoil\footnote{Airfoil data from: http://airfoiltools.com/airfoil/details?airfoil=n0012-il}. To estimate the CP hyper-parameters, we again perform a 10-fold cross validation. The dataset will be randomly partitioned into 10 subsets containing an equal number of points. Of the 10 subsets, a single subset is retained as the test dataset, and the remaining 9 (10 - 1) subsets are used as training data. The cross-validation process is then repeated 10 times (the folds), with each of the k subsets used exactly once as the validation data. The marginal-likelihood is optimized for each of the training dataset and location of change-point and slope of the linear regime is noted. We then compare their average with the values available in the literature. 
 \end{mdframed}
@@ -363,6 +368,7 @@ We next study the accuracy of distributed GP for different airfoils on the wing.
     {\includegraphics[width=0.45\textwidth]{images/part2/CRM-clean-testSnapshots_M850A20_cut4}\label{subfig:interpCut4}}
   \caption{Performance of distributed GP across cuts}
 \end{figure*}
+\textbf{If possible also plot the variance curves to access the uncertainity around second curve}
 
 Figure \ref{subfig:compasironOfCutsGPCRM} shows the RMSE performance across cuts. The performance of interpolation deteriorates as we go further away from the fuselage. This is primarily because as we go further away from the fuselage double shocks start appearing on the airfoil as observable from figure \ref{subfig:crmSnapshot}. Figure \ref{subfig:interpCut4} shows interpolation performed by the POD method and distributed GP methods at $\alpha = 2$ and $Mach = 0.85$. While, POD smooths out the double shock pattern distributed GP also lacks the accuracy observed in figure \ref{subfig:interpComparisonCRM}. 
 

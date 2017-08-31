@@ -41,11 +41,16 @@
 \newcommand*{\VEC}[1]  {\ensuremath{\boldsymbol{#1}}}
 \newcommand*{\FAM}[1]  {\ensuremath{\boldsymbol{#1}}}
 \newcommand*{\MAT}[1]  {\ensuremath{\boldsymbol{#1}}}
+\newcommand*{\FUNC}[1]  {\ensuremath{\mathit{#1}}}
+
 \newcommand*{\OP}[1]  {\ensuremath{\mathrm{#1}}}
 \newcommand*{\NORM}[1]  {\ensuremath{\left\|#1\right\|}}
 \newcommand*{\DPR}[2]  {\ensuremath{\left \langle #1,#2 \right \rangle}}
 \newcommand*{\calbf}[1]  {\ensuremath{\boldsymbol{\mathcal{#1}}}}
 \newcommand*{\shift}[1]  {\ensuremath{\boldsymbol{#1}}}
+
+% ISO 80000-2 for notations
+\newcommand{\myMatrix}[1]{\bm{\mathit{#1}}}
 
 \newcommand{\eqdef}{\stackrel{\mathrm{def}}{=}}
 \newcommand{\argmax}{\operatornamewithlimits{argmax}}
@@ -91,10 +96,6 @@
 \newcommand{\Image}{\ensuremath{\text{Im}}}
 \newcommand{\Span}{\ensuremath{\text{Span}}}
 
-\renewcommand*\lstlistingname{Matlab Code}
-\renewcommand{\lstlistlistingname}{List of \lstlistingname s}% List of Listings -> List of Algorithms
-\definecolor{MatlabCellColour}{RGB}{252,251,220}
-
 \newtheoremstyle{break}
   {11pt}{11pt}%
   {\itshape}{}%
@@ -117,3 +118,14 @@
 
 \parskip=5pt
 %\sloppy
+
+%
+\renewcommand*\lstlistingname{Matlab Code}
+\renewcommand{\lstlistlistingname}{List of \lstlistingname s}% List of Listings -> List of Algorithms
+\definecolor{MatlabCellColour}{RGB}{252,251,220}
+
+\lstMakeShortInline[style=Matlab-editor]@
+\lstnewenvironment{matlab}{\lstset{
+    style=Matlab-editor,
+    basicstyle=\color{black}\ttfamily\small
+}}{}

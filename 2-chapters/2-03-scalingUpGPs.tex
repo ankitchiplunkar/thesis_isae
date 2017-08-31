@@ -28,7 +28,8 @@ Here, $K(X^{m}, X^{m})$ is a $M \times M$ Gram matrix evaluated at inducing poin
                     captionpos=b, 
                     label={codeGramNystrom}, 
                     backgroundcolor = \color{MatlabCellColour},
-                    style=Matlab-editor]
+                    style=Matlab-editor,
+                    basicstyle=\color{black}\ttfamily\small]
                     {codes/chapter3/evaluateNystromGramMatrix.m}
 \end{mdframed}
 
@@ -76,6 +77,7 @@ By approximating the $K(X, X)$ using inducing points, we have effectively change
     \Pr[Y(X) \mid X, X^{m}, \theta, \sigma_{n}] = \mathcal{N}(0 , K_{approximate}(X, X') + \sigma^{2}_{n}I)
 \end{equation}
 
+\textbf{Add code for the optimization problem}
 
 The maximization of the marginal likelihood in equation \ref{equationApproximateML} with respect to ($X^{m}$; $\theta$), is prone to over-fitting especially when the number of inducing inputs is large. This means that if we keep on increasing the number of inducing points, a time will come when we will tend to decrease the accuracy of our predictions on the test data set. The variational approximation (detailed next) approach overcomes this issue of over-fitting by adding a regularization term penalizing over-fitting.
 
@@ -88,9 +90,11 @@ The $q(f)$ is written in terms of inducing points ($X^{m}$) and the KL divergenc
 F_{V} = log(\mathcal{N}[0, \sigma_{n}^{2}I + K_{nystorm}(X, X)]) - \textcolor{blue}{\frac{1}{2\sigma_{n}^{2}}Tr(K_{XX} - K_{nystorm}(X, X))}
 \end{equation}
 
+\textbf{Add code for the optimization problem}
+
 Notice the similarity between equation \ref{equationLowerBoundVarNLML} and \ref{eqnSparseNystormGram}. The novelty of the above objective function is that it contains a regularization term: $\textcolor{blue}{- \frac{1}{2\sigma ^{2}}Tr(K_{XX} - K_{nystorm}(X, X))}$. Thus, $F_{V}$ attempts to maximize the marginal likelihood as derived for Nystr\"{o}m approximation and simultaneously minimizes the trace. When the regularization term tends to zero ($K_{XX} = K_{nystorm}(X, X)$), which means that the inducing variables can exactly reproduce the true Gram Matrix. 
 
-The posterior distribution for variational inference approximation is same as the one derived for Nystr\"{o}m approximation. The difference between Nystr\"{o}m approximation and variational approximation is the addition of regularization parameter ($\textcolor{blue}{- \frac{1}{2\sigma ^{2}}Tr(K_{XX} - K_{nystorm}(X, X))}$) while optimizing $X^{m}$ and $\theta$, this additional term reduces over-fitting.
+\sloppy The posterior distribution for variational inference approximation is same as the one derived for Nystr\"{o}m approximation. The difference between Nystr\"{o}m approximation and variational approximation is the addition of regularization parameter ($\textcolor{blue}{- \frac{1}{2\sigma ^{2}}Tr(K_{XX} - K_{nystorm}(X, X))}$) while optimizing $X^{m}$ and $\theta$, this additional term reduces over-fitting.
 
 \subsection{Experiments}\label{subsecNystromExperiments}
 In this section, we conduct experiments on a toy-data set to observe the accuracy of Nystr\"{o}m approximation for varying number and location of inducing points. The basic toolbox used for this paper is GPML provided with \cite{rasmussen2006gaussian} on MATLAB 2014b. All experiments were performed on an Intel quad-core processor with 4Gb RAM. 
@@ -104,7 +108,8 @@ The toy data set ($\mathcal{D}_{3}$) was generated at 1000 input points $X = \{[
                     captionpos=b, 
                     label={codeDataset3}, 
                     backgroundcolor = \color{MatlabCellColour},
-                    style=Matlab-editor]
+                    style=Matlab-editor,
+                    basicstyle=\color{black}\ttfamily\small]
                     {codes/chapter3/generatingDataset3.m}
 \end{mdframed}
 
@@ -139,7 +144,7 @@ In the year 2006 Netflix organized a machine learning competition, to create a r
 
 Mixture of experts in GPs use bagging, where subsets of data are generated, individual GPs are trained on these subsets, and their results are finally combined \cite{chen2009bagging}. If the data set is partitioned  into $N_{experts}$ subsets, such as $\mathcal{D}^{(i)} = {X^{(i)}, Y^{(i)}}, i \in 1, \ldots N_{experts}$. Then each subset of data $\mathcal{D}^{(i)}$ learns an individual GP model, which are be combined together to give the final predictions . Due to this independent learning, choosing hyper-parameters, and calculating predictions become easily parallelizable and indifferent to the computational infrastructure. 
 
-Initially, these model types were used to highlight local features in the data \cite{rasmussen2002infinite}. Later,  \cite{ng2014hierarchical} proposed to use the parallel feature to speed up predictions. Instead of learning a different GP for each subset, we tie all the different experts using one single set of hyperparameters. This is equivalent to assuming one single GP for the whole data-set, thus there is no correlation across experts, i.e. the experts are independent of each other. This tying of experts greatly reduces the number of hyper-parameters, acts as a regularization, and inhibits over-fitting. Equation \ref{distributedGPPrior} denotes an independent GP prior for each expert $\mathcal{D}^{(i)}$ such that the hyper-parameters $\theta$ and $\sigma_{n}$ are same for all experts.
+\sloppy Initially, these model types were used to highlight local features in the data \cite{rasmussen2002infinite}. Later,  \cite{ng2014hierarchical} proposed to use the parallel feature to speed up predictions. Instead of learning a different GP for each subset, we tie all the different experts using one single set of hyperparameters. This is equivalent to assuming one single GP for the whole data-set, thus there is no correlation across experts, i.e. the experts are independent of each other. This tying of experts greatly reduces the number of hyper-parameters, acts as a regularization, and inhibits over-fitting. Equation \ref{distributedGPPrior} denotes an independent GP prior for each expert $\mathcal{D}^{(i)}$ such that the hyper-parameters $\theta$ and $\sigma_{n}$ are same for all experts.
 
 \begin{equation}\label{distributedGPPrior}
     \Pr[y^{(i)} \mid x^{(i)}, \theta, \sigma_{n}] = GP(0, K(x^{(i)}, x^{(i)'}, \theta) + \sigma^{2}_{n}I) 
@@ -151,7 +156,8 @@ The sample code \ref{codeClusteringIntoExperts} presents a method to randomly cl
                     captionpos=b, 
                     label={codeClusteringIntoExperts}, 
                     backgroundcolor = \color{MatlabCellColour},
-                    style=Matlab-editor]
+                    style=Matlab-editor,
+                    basicstyle=\color{black}\ttfamily\small]
                     {codes/chapter3/clusteringPointsInExperts.m}
 \end{mdframed}
 
@@ -187,14 +193,15 @@ Since the experts are independent of each other, we can construct a posterior di
 \subsection{Combining experts}\label{subSecCombiningExperts}
 There are several methods in the literature, which combine the posterior predictions of individual experts, and give a global estimate. The Product of Experts model, uses the independence assumption between experts, and multiplies the individual posterior distribution\footnote{$\Pr[y(x_{*}) \mid x_{*}, \mathcal{D}, \theta] \propto \prod \Pr[y^{(i)} \mid x^{(i)}, \mathcal{D}^{(i)}, \theta]$}, but these predictions tend to be overconfident. Another method called the generalized Product of Experts (gPOE), assigns a participation factor to each expert, this is based on the amount of uncertainty in prediction (more confident experts have higher say in prediction)\cite{cao2014generalized}. The Bayesian Committee Machine (BCM) imposes the independence assumption between each expert pair using Bayes Rule, but can result in bad predictions when leaving data regime \cite{tresp2000bayesian}. 
 
-This thesis will use robust Bayesian Committee Machine (rBCM) model to combine the posterior distributions of experts \cite{deisenroth2015distributed}. The rBCM model is an amalgamation of all the above three mentioned methods, it combines the confidence weighting parameter of gPOE, with the Bayesian formulation in BCM technique, to generate the following posterior distributions.
+This thesis will use robust Bayesian Committee Machine (rBCM) model to combine the posterior distributions of experts \cite{deisenroth2015distributed}. The rBCM model is an aggregation of all the above three mentioned methods, it combines the confidence weighting parameter of gPOE, with the Bayesian formulation in BCM technique, to generate the following posterior distributions.
 
-\begin{equation}\label{eqCovarianceDGP}
-    Cov(y(x_{*}))^{^-2} = \sum_{i} \beta_{i}\sigma_{(i)}^{-2} + (1- \sum_{i} \beta_{i})(K_{x_{*}x_{*}})^{-2}
-\end{equation}
 \begin{equation}\label{eqMeanDGP}
     m(y(x_{*})) = (Cov(y(x_{*})))^{-2}\sum_{i} \beta_{i}(\sigma^{(i)})^{-2}m^{(i)}(x_{*})
 \end{equation}
+\begin{equation}\label{eqCovarianceDGP}
+    Cov(y(x_{*}))^{^-2} = \sum_{i} \beta_{i}\sigma_{(i)}^{-2} + (1- \sum_{i} \beta_{i})(K_{x_{*}x_{*}})^{-2}
+\end{equation}
+
 
 $K_{x_{*}x_{*}}$ is the auto-covariance of the prior at prediction point $x_{*}$. $\beta_{k}$ determines the influence of experts on the final predictions \cite{cao2014generalized} and is given as $\beta_{i} = \frac{1}{2}(\log K_{x_{*}x_{*}}^{2} - \log(\sigma^{(i)})^{2})$. Experts which are very confident of their predictions at $x_{*}$ will tend to have low $\sigma^{(i)}$ thereby leading to a higher influence factor $\beta_{i}$.
 
@@ -211,7 +218,8 @@ The sample code \ref{codelmdDGP} defines the function `logMarginalLikelihoodDGP'
                     captionpos=b, 
                     label={codelmdDGP}, 
                     backgroundcolor = \color{MatlabCellColour},
-                    style=Matlab-editor]
+                    style=Matlab-editor,
+                    basicstyle=\color{black}\ttfamily\small]
                     {codes/chapter3/logMarginalLikelihoodDGP.m}
 \end{mdframed}
 
@@ -250,10 +258,9 @@ Figure \ref{boxPlotsOfPerformance_243} are 10-fold RMSE box-plots for different 
 \section{Discussion}
 The calculation of posterior in GPs becomes computationally intractable for large data sets. Calculating the precision matrix is an operation of computational complexity $\mathcal{O}(N^{3})$, putting a limit of $N \sim 10^4$ data points for model building. This chapter describes the state of art for scaling up GPs for regression tasks. There exist two methods to scale up GPs, the first called sparse methods, they use a set of inducing inputs to reduce the computational cost of calculating the precision matrix. The second called distributed GP they divide the data set into smaller subsets called experts, distributing the model building into several batches. 
 
-Sparse methods use Nystr\"{o}m approximation rewriting the Gram matrix as equation \ref{subSecSamplingFunctionsGPPrior}, thereby reducing the computational complexity to $\mathcal{O}(NM^{2})$ (M << N), $M$ being the number of inducing points. Through experiments on a toy-dataset, it can be shown that we can set $M \sim N/10$ when inducing points are randomly distributed, and $M \sim N/50$ when the locations of inducing points are optimized. This approximation pushes the limit of GP Regression to $N \sim 10^6$ data points. Distributed GPs distribute the GP Regression tasks into several batches, thereby reducing the computational complexity to $\mathcal{O}(NP^{3})$ (P<<N), $P$ being the number of points in an expert. Through experiments on a toy-dataset we demonstrate that $P \sim N/100$ does not effects the regression task significantly. In fact we can further reduce $P$ if we enable repetition of points between experts. This enables to scale GPs to any number of data-points, we will demonstrate this by running a GP regression on millions of data-points in this manuscript (section \ref{chapCombiningBasicCovariances}). 
+Sparse methods use Nystr\"{o}m approximation rewriting the Gram matrix as equation \ref{subSecSamplingFunctionsGPPrior}, thereby reducing the computational complexity to $\mathcal{O}(NM^{2})$ (M << N), $M$ being the number of inducing points. Through experiments on a toy-dataset, it can be shown that we can set $M \sim N/10$ when inducing points are randomly distributed, and $M \sim N/50$ when the locations of inducing points are optimized. This approximation pushes the limit of GP Regression to $N \sim 10^6$ data points. Distributed GPs distribute the GP Regression tasks into several batches, thereby reducing the computational complexity to $\mathcal{O}(NP^{3})$ (P<<N), $P$ being the number of points in an expert. Through experiments on a toy-dataset we demonstrate that $P \sim N/100$ does not effects the regression task significantly. In fact we can further reduce $P$ if we enable repetition of points between experts. This enables to scale GPs to any number of data-points.
 
 There are several reasons why GPs should be preferred to perform regression tasks. GPs provide a probabilistic framework to define a family of functions, while the covariance functions allows to incorporate a wide range of assumptions (part \ref{partIncorporatePattern}). GPs are computationally tractable, given a covariance function and observations, the predictive distribution can be calculated exactly. By providing a closed form expression of marginal likelihood GPs provide a powerful method to automatically select hyperparameters. Although GPs suffer in presence of large data sets, there exist several approximate methods to scale GPs to millions of data points. 
 
-
-
+During the detailed design phase of aircraft design cycle, high-fidelity code is used to explore the design space. This code is costly, mostly due to fine granularity of the meshes used. If we wish to use a surrogate model to explore the design space, then that surrogate model should be able to handle the large number of mesh points. Thankfully, due to the methods described in current chapter we can scale GP regression to $N \sim 10^6$. We will demonstrate this by running a GP regression on millions of data-points in a CFD mesh. This surrogate model was used in a recent airbus flight test campaign to compare pressures predicted from a high-fidelity CFD computation to pressures measured on the wing, in real time.
 
