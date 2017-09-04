@@ -1,11 +1,9 @@
 % Function to evaluate the gram matrix
 function gramMatrix = evaluateGramMatrix(covarianceFunction, theta, x1, x2)
 
-	for i=1:length(x1)
-		for j=1:length(x2)
-			gramMatrix(i, j) = covarianceFunction(theta, x1(i), x2(j));
-		end
-	end	
+    [X1, X2] = meshgrid(x1, x2);
+    % evaluating element wise gram matrix
+    gramMatrix = covarianceFunction(theta, X1, X2);
 
 end
 
@@ -17,7 +15,7 @@ theta(1) = 1; % Amplitude Hyper-parameter
 theta(2) = 0.2; % Length Scale Hyper-parameter
 
 % Visualizing the Gram matrix
-gramMatrix = evaluateGramMatrix(covarianceFunction, theta, xStar, xStar);
+gramMatrix = evaluateGramMatrix(SEKernel, theta, xStar, xStar);
 imagesc(gramMatrix); % Plotting the Gram Matrix
 
                         

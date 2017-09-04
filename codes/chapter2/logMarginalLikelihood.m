@@ -17,11 +17,3 @@ normalizationTerm = -1*N*log(2*pi)/2;
 logMarginalLikelihood = dataFitTerm + complexityTerm + normalizationTerm;
 
 end
-
-% Optimizing the log marginal likelihood 
-theta = [1, 0.2];
-% Amplitude hyp = 1
-% Length Scale = 0.2
-
-options = optimoptions('fminunc','GradObj','off', 'MaxIter', 100); % indicate gradient is provided
-optimizedTheta = fminunc(@(x) -1*logMarginalLikelihood(x, SEKernel, xData, yData), theta, options);

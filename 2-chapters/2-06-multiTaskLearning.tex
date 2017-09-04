@@ -1,26 +1,34 @@
 \chapter{Multi-task learning for extrapolation}
 \label{chapMultiTaskExtrapolation}
-In the current part we are interested in learning relationships in presence of multiple outputs, or learning an unknown functional relationship between an input space $X \in \mathbb{R}^{D_{inputs}}$ and outputs  $X \in \mathbb{R}^{D_{outputs}}$ ($D_{outputs}>1$). Performing regression on multiple-outputs can be split into two categories, firstly when we wish to discover relationships across several outputs, and secondly when we wish to enforce a known relationship between outputs as a bias into our learning algorithm.
+In the current part we are interested in learning relationships in presence of multiple outputs, or learning an unknown functional relationship between an input space $X \in \mathbb{R}^{D_{inputs}}$ and outputs  $X \in \mathbb{R}^{D_{outputs}}$ ($D_{outputs}>1$). Performing regression on multiple-outputs can be split into two categories, first when we wish to discover relationships across multiple outputs, and second when we wish to enforce a known relationship between outputs (as a bias) into our learning algorithm.
 
-When no information is between dependent outputs, we are interested in learning their interaction properties. This is setting also called as `multi-task learning' in machine learning literature. Several real world problems often exhibit strong correlations between many output variables, for example correlations across spatial coordinates ($x, y, z$) in an experiment. Learning relationships across outputs can improve the efficiency and prediction accuracy for the models, when compared to training the models separately \cite{caruana1998multitask}. These types of models are commonly called as Cokriging in Geostatistics \cite{helterbrand1994universal, chilès1999geostatistics, ver1998constructing}, or multi-task GP in machine learning \cite{alvarez2011kernels, bonilla_multi-task_2008, Boyle05dependentgaussian}.
+When no information of interaction is available between outputs, we are interested in learning their interaction properties. Several real world problems often exhibit strong correlations between many output variables, for example correlations across spatial coordinates ($x, y, z$) in an experiment. This setting is also called as `Multi-Task Learning' in machine learning literature. Learning relationships across outputs can improve the efficiency and prediction accuracy for the models, when compared to training the models separately \cite{caruana1998multitask}. In GP literature these models are referred a Multi Task GP (MTGP) \cite{alvarez2011kernels, bonilla_multi-task_2008, Boyle05dependentgaussian}, while Cokriging in Surrogate Modelling literature \cite{helterbrand1994universal, chilès1999geostatistics, ver1998constructing}.
 
-When a relationship is known between outputs, enforcing such a relationship in a learning algorithm will mean that we have implemented a correct bias. Several types of relationships are exist in engineering design problems between outputs. The outputs can be results from multi-fidelity computer codes \cite{kennedy2000predicting, forrester2007multi, le2013multi}. The outputs can be related through a known equation, for example if we know that $acceleration = d(velocity)/d(time)$ and we measure both velocity and acceleration how to enforce the known equation into our model \cite{ginsbourger2013invariances, sarkka2011linear}. The outputs can be related through a known computer code, for example stress and forces in a known CSM code \cite{Constantinescu2013}. 
+When a relationship is known between outputs, enforcing such a relationship in a learning algorithm will mean that we have implemented a correct bias. Several types of known relationships exist in engineering design problems. The outputs can be results from multi-fidelity computer codes \cite{kennedy2000predicting, forrester2007multi, le2013multi}, they can be related through a known equation \cite{ginsbourger2013invariances, sarkka2011linear} (for example if we know that $acceleration = d(velocity)/d(time)$ and we measure both velocity and acceleration how to enforce the known equation into our model), or they can be related through a known computer code \cite{Constantinescu2013}(for example stress and forces in a known CSM code). 
 
-We split the part \ref{partIncorporateMultipleOutputs} of this thesis into two chapters. The current chapter (chapter \ref{chapMultiTaskExtrapolation})will describe the basics of cokriging/multi-task learning GP, present the cokriging interpolation model for outputs from a series of multi-fidelity simulations, and then propose a method to extrapolation high-fidelity simulations in presence of low-fidelity simulations. The next chapter \ref{chapAddingEquationsInGP} will describe how to encode known relationships between outputs, the most common form of this model is called as Gradient Enhanced Kriging (GEK) in the literature. Chapter \ref{chapAddingEquationsInGP} describes a more general class of these models, these can enable us to perform integral enhanced kriging, quadratic enhanced kriging or any functional relationship across outputs kriging. 
+We split the part \ref{partIncorporateMultipleOutputs} of this thesis into two chapters. The current chapter (chapter \ref{chapMultiTaskExtrapolation}) will describe the basics of cokriging/multi-task learning GP, present the cokriging interpolation model for outputs from a series of multi-fidelity simulations, and then propose a method to extrapolation high-fidelity simulations in presence of low-fidelity simulations. The next chapter \ref{chapAddingEquationsInGP} will describe how to encode known relationships between outputs, the most common form of this model is called as Gradient Enhanced Kriging (GEK) in the literature. Chapter \ref{chapAddingEquationsInGP} describes a more general class of these models, these can enable us to perform integral enhanced kriging, quadratic enhanced kriging or any functional relationship across outputs kriging. 
 
-The current chapter unfolds as follows, section \ref{secMTGP} describes the various methods available in literature to perform Multi-Task GP (MTGP). Section \ref{secMultiFidelityMTGP} describes multi-task GP model in presence of outputs from different fidelitys, we also compare a normal MTGP with multi-fidelity GP. Section \ref{secMTGPExtrapolation} describes our model of extrapolation in MTGP. This chapter is influenced from the works of \cite{forrester2007multi, alvarez2011kernels, bonilla_multi-task_2008, Boyle05dependentgaussian, kennedy2000predicting, le2013multi}.
+The current chapter unfolds as follows, section \ref{secMTGP} describes the various methods available in literature to perform Multi-Task GP (MTGP). Section \ref{secMultiFidelityMTGP} describes MTGP model in presence of outputs coming from simulations with different accuracy. Section \ref{} then compares the prediction capabilities of a normal MTGP with multi-fidelity GP. Section \ref{secMTGPExtrapolation} describes our model of extrapolation for certification. This chapter is influenced from the works of \cite{forrester2007multi, alvarez2011kernels, bonilla_multi-task_2008, Boyle05dependentgaussian, kennedy2000predicting, le2013multi}.
 
 \section{Multi-task Gaussian Process}\label{secMTGP}
-Suppose we have a \(D_{inputs}\) dimensional input space and a \(D_{outputs}\) (\(D_{outputs} > 1\) ) dimensional output space. Such that \(\{(x_{i}^{j}, y_{i}^{j})\}\) for \(i \in [1; N_{j}]\) are the training datasets for the \(j^{th}\) output. Here \(N_{j}\) is the number of measurement points for the \(j^{th}\) output, while \(x_{i}^{j} \in \mathbb{R}^{D_{inputs}}\) and \(y_{i}^{j} \in \mathbb{R}\). We next define \(x^{j} = \{x_{1}^{j}; x_{2}^{j}; \ldots ; x_{N_{j}}^{j}\}\) and \(y^{j} = \{y_{1}^{j}; y_{2}^{j}; \ldots ; y_{N_{j}}^{j}\}\) as the full matrices containing all the training points for the \(j^{th}\) output such that \(x^{j} \in \mathbb{R}^{N_{j} \times D_{inputs}}\) and \(y^{j} \in \mathbb{R}^{N_{j}}\). If \(\Sigma N_{j} = N\) for \(i \in [1, D]\). Hence \(N\) represents the total number of training points for all the outputs combined
+Suppose we have a \(D_{inputs}\) dimensional input space and a \(D_{outputs}\) (\(D_{outputs} > 1\) ) dimensional output space. Such that \(\{(x_{i}^{j}, y_{i}^{j})\}\) for \(i \in [1; N_{j}]\) are the training datasets for the \(j^{th}\) output. Here \(N_{j}\) is the number of measurement points for the \(j^{th}\) output, while \(x_{i}^{j} \in \mathbb{R}^{D_{inputs}}\) and \(y_{i}^{j} \in \mathbb{R}\). We next define \(x^{j} = \{x_{1}^{j}; x_{2}^{j}; \ldots ; x_{N_{j}}^{j}\}\) and \(y^{j} = \{y_{1}^{j}; y_{2}^{j}; \ldots ; y_{N_{j}}^{j}\}\) as the full matrices containing all the training points for the \(j^{th}\) output such that \(x^{j} \in \mathbb{R}^{N_{j} \times D_{inputs}}\) and \(y^{j} \in \mathbb{R}^{N_{j}}\). If \(\Sigma N_{j} = N\) for \(j \in [1, D_{outputs}]\). Hence \(N\) represents the total number of training points for all the outputs combined
 
 \subsection{An extra dimension}\label{subsecAnExtraDimension}
-One simple way of building joint model for multiple outputs is by treating them as a single-output GP but with extra dimension of the input dimension (equation \ref{eqMTGPDimension}) \cite{osborne2010bayesian}. 
+One simple way of building joint model for multiple outputs is by treating them as a single-output GP but with an extra dimension, the extra dimension denoting the output number (equation \ref{eqMTGPDimension}) \cite{osborne2010bayesian}. 
 
 \begin{equation}\label{eqMTGPDimension}
     y^{j}(x_{i}^{j}) = y_{full}(x_{i}^{j}, j)
 \end{equation}
 
-Henceforth we define the joint output vector \(y_{full} = [y^{1}; y^{2}; \ldots; y^{D_{outputs}}]\) such that all the output values are stacked one after the other, while \(Y \in \mathbb{R}^{N}\). Similarly, we define the joint input matrix as \(x_{full} = [x^{1}, 1; x^{2}, 2; x^{3}, 3, \ldots, x^{D_{outputs}, D_{outputs}}]\), having one extra dimension representing the output number, such that \(X \in \mathbb{R}^{N \times (D_{inputs}+1)}\). We can define a zero mean GP for the full set of inputs and outputs $\{x_{full}, y_{full}\}$, as equation \ref{eq:mogpJointPrior}.
+Henceforth we define the joint output vector \(y_{full} = [y^{1}; y^{2}; \ldots; y^{D_{outputs}}]\) such that all the output values are stacked one after the other, while \(Y \in \mathbb{R}^{N}\). Similarly, we define the joint input matrix as \(x_{full} = [x^{1}, 1; x^{2}, 2; x^{3}, 3, \ldots, x^{D_{outputs}}, D_{outputs}]\), having one extra dimension representing the output number, such that \(X \in \mathbb{R}^{N \times (D_{inputs}+1)}\). We can define a zero mean GP prior for the full set of inputs and outputs $\{x_{full}, y_{full}\}$, as equation \ref{eq:mogpJointPrior}.
+
+\begin{figure}[!ht]
+  \centering
+        \includegraphics[width=0.45\textwidth]
+        {images/part3/outputsAsAnExtraDimension}
+        \label{figoutputsAsAnExtraDimension}
+        \caption{The outputs can also be represented as an extra dimension.}
+\end{figure}
 
 \begin{equation}\label{eq:mogpJointPrior}
 \begin{aligned}
@@ -68,6 +76,25 @@ k_{output}(2, 2) \odot \myMatrix{K}_{input}(x^{2}, x^{2})
 
 Figure \ref{subFigdrawsBonillaKernel} is a joint draws from such a kernel function between outputs $y^{1}$ and $y^{2}$. The matrix $k_{output} = [4, 0.2; 0.2, 1]$ while the covariance function between inputs $\FUNC{k_{input}}(x_{1}, x_{2})$ is a SE kernel with hyper-parameters $(\theta = [1, 0.2])$. We can observe that the variance of output $y^{1}$ is twice that of output $y^{2}$, this is because $\sqrt{k_{output}(1, 1)/k_{output}(2, 2)} = 2$.
 
+\begin{figure}[!ht]
+  \centering
+    \subfigure[{Joint draws from such a simple multi-task kernel function between outputs $y^{1}$ and $y^{2}$. The matrix $k_{output} = [4, 0.2; 0.2, 1]$ while the covariance function between inputs $\FUNC{k_{input}}(x_{1}, x_{2})$ is a SE kernel with hyper-parameters $(\theta = [1, 0.2])$. We can observe that the variance of output $y^{1}$ is twice that of output $y^{2}$, this is because $\sqrt{k_{output}(1, 1)/k_{output}(2, 2)} = 2$.}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/part3/drawsBonillaKernel}
+        \label{subFigdrawsBonillaKernel}
+  }\quad
+\subfigure[{Joint draws from a `Linear Model of Coregionalization' kernel function between outputs $y^{1}$ and $y^{2}$. We use two latent functions for figure; the kernels between output dimensions are $k_{output}^{1} = [4, 0.2; 0.2, 1]$ and $k_{output}^{2} = [1, 0.2; 0.2, 1]$, while the covariance function between inputs are SE kernel with hyper-parameters $(\theta = [1, 0.2])$ for the first latent process and $(\theta = [1, 0.1])$ for the second latent process. The length-scale of the functions is determined by the smallest length-scale of the latent processes.}]
+  {
+        \includegraphics[width=0.45\textwidth]
+        {images/part3/drawsLCMKernel}
+        \label{subFigdrawsLCMKernel}
+  }\quad
+
+       \caption{Joint draws defined by multi-task priors: the solid black line defines the mean function, shaded blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The dashed lines represent five functions drawn at random from a GP prior. We can observe that figure \ref{subFigdrawsLCMKernel} varies faster when compared to figure \ref{subFigdrawsBonillaKernel} due to smaller length scale hyper-parameter in one of the latent functions.       }
+       \label{figJointPriors}
+\end{figure}
+
 \subsection{Linear Model of Coregionalization}\label{subsecLMC}
 The next method considers the output variables as a linear combination of independent latent Gaussian Processes. It is called the Linear Model of Coregionalization in kriging literature \cite{goovaerts1997geostatistics} or Semiparametric Latent Factor Model in MTGP literature \cite{seeger2005semiparametric}. 
 
@@ -106,24 +133,7 @@ Note, when $T = 1$ and $D_{outputs} > 1$ the Linear Model of Coregionalization i
 \textbf{Check again}
 Figure \ref{subFigdrawsLCMKernel} shows 3 joint draws from a `Linear Model of Coregionalization' kernel function between outputs $y^{1}$ and $y^{2}$. We use two latent functions for figure; the kernels between output dimensions are $k_{output}^{1} = [4, 0.2; 0.2, 1]$ and $k_{output}^{2} = [1, 0.2; 0.2, 1]$, while the covariance function between inputs are SE kernel with hyper-parameters $(\theta = [1, 0.2])$ for the first latent process and $(\theta = [1, 0.1])$ for the second latent process. The length-scale of the functions is determined by the smallest length-scale of the latent processes.
 
-\begin{figure}[!ht]
-  \centering
-    \subfigure[{Joint draws from such a simple multi-task kernel function between outputs $y^{1}$ and $y^{2}$. The matrix $k_{output} = [4, 0.2; 0.2, 1]$ while the covariance function between inputs $\FUNC{k_{input}}(x_{1}, x_{2})$ is a SE kernel with hyper-parameters $(\theta = [1, 0.2])$. We can observe that the variance of output $y^{1}$ is twice that of output $y^{2}$, this is because $\sqrt{k_{output}(1, 1)/k_{output}(2, 2)} = 2$.}]
-  {
-        \includegraphics[width=0.45\textwidth]
-        {images/part3/drawsBonillaKernel}
-        \label{subFigdrawsBonillaKernel}
-  }\quad
-\subfigure[{Joint draws from a `Linear Model of Coregionalization' kernel function between outputs $y^{1}$ and $y^{2}$. We use two latent functions for figure; the kernels between output dimensions are $k_{output}^{1} = [4, 0.2; 0.2, 1]$ and $k_{output}^{2} = [1, 0.2; 0.2, 1]$, while the covariance function between inputs are SE kernel with hyper-parameters $(\theta = [1, 0.2])$ for the first latent process and $(\theta = [1, 0.1])$ for the second latent process. The length-scale of the functions is determined by the smallest length-scale of the latent processes.}]
-  {
-        \includegraphics[width=0.45\textwidth]
-        {images/part3/drawsLCMKernel}
-        \label{subFigdrawsLCMKernel}
-  }\quad
 
-       \caption{Joint draws defined by multi-task priors: the solid black line defines the mean function, shaded blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The dashed lines represent five functions drawn at random from a GP prior. We can observe that figure \ref{subFigdrawsLCMKernel} varies faster when compared to figure \ref{subFigdrawsBonillaKernel} due to smaller length scale hyper-parameter in one of the latent functions.       }
-       \label{figJointPriors}
-\end{figure}
 
 \subsection{Convoluted Gaussian Process}\label{subsecConvolutedGP}
 The next extension to creating MTGP covariances is assuming that outputs are generated from a convolution of latent GPs \cite{higdon2002space, Boyle05dependentgaussian}. First and second order
@@ -315,24 +325,83 @@ Figure \ref{subFigboxPlotsToyDataJoint} shows the accuracy of the three methods 
 
 Multi-fidelity covariance model works so efficiently because the formulation of the second output, the second output is a combination of a multiplication term to the first output $\textcolor{blue}{f^2/2}$ and a new term $\textcolor{red}{0.1cos(f^{1}(x))}$. This is exactly matching the assumptions in the multi-fidelity covariance function. The independent assumption cannot learn the relationship between the outputs, while the multi-task covariance cannot effectively capture the new term $\textcolor{red}{0.1cos(f^{1}(x))}$.
 
-\section{Multi-task for Certification}\label{subsecMTGPExtrapolation}
-In this section, we would like to concentrate on the flight-test phase of the aircraft. The goal of an aircraft designer during the flight test phase, is to prove to the certification authorities that the loads predicted during the design cycle phase of the aircraft are equal to the loads experienced by the aircraft during the flight-test phase. Unfortunately, an aircraft manufacturer has access to only a few of test aircrafts during the flight test phase, and each flight-test campaign costing millions of euros. 
+\section{Multi Task Gaussian Process for Extrapolation}\label{subsecMTGPExtrapolation}
+In this section we would like to extend the MTGP formulation for extrapolation cases. This is a very viable scenario during the flight-test phase of an aircraft. The goal of an aircraft designer during the flight test phase, is to prove that the loads predicted during the design of the aircraft are equal to the loads experienced by the aircraft during the flight-test phase. 
 
-This again brings us into the multi-fidelity case, we have access to a relatively simulation model produced during the design phase, and the results of flight-test experiments produced during the certification phase. The results of the simulation model should match the results of the flight-test model. This is not always true, since during simulation the assumptions and inability to model every detail come into play. To resolve this issue the engineering team performs model updating, individual parameters in the simulation model are fine-tuned so as to `update' the simulation model, bringing it as close to the flight test results. The updated model can then be used as a replacement to flight-tests and be used to perform extrapolations in the limit loads conditions.
+More importantly, the aircraft design should sustain the limit load cases. The probability that an aircraft will suffer the limit loads during its life cycle is $10^{-6}$.  This means that to save costs, an aircraft is designed in such a manner that it can sustain limit loads, but will undergo irreparable \cite{de2016airworthiness}. Unfortunately during the flight test phase, we only have access to a few flight test aircrafts. We are thus in a predicament, we cannot perform the limit loads test, on our flight-test aircrafts, but we have to demonstrate the values of limit loads to certification authorities.
 
-We wish to replace this model updating phase with a cokriging model. Using the multi-task and multi-fidelity formulation described in chapter \ref{secMTGP} we can encode the simulation model as a prior information. This helps in providing the correct bias and using the years of hard work encoded into the simulation model as a benchmark for learning. 
+To resolve this issue the aircraft designer tries to update the simulation model. Individual parameters in the simulation model are fine-tuned so as to bring it as close to the flight test data. The updated model can then be used as a replacement to the flight-tests and be used to perform extrapolations in the limit loads conditions.
 
-\textbf{we are tackling experiments hence the noise is not zero}
-\textbf{we are also tackling lagged data and hence we will use the delta deflection in the model}
+We wish to replace this model updating phase with a cokriging model. We have access to both a relatively cheap simulation model produced during the design phase, and costly  flight-test experiments. Using the MTGP and multi-fidelity formulation described in section \ref{secMTGP} we can encode the simulation model as a prior information. This helps in providing the correct bias and using the years of hard work encoded into the simulation model as a prior information for learning the flight-test model.
 
+% This again brings us into the multi-fidelity case, For the aircraft to be certified, the predictions of the simulation model should match the results of the flight-test phase. This is not always true, since the simulation model is a representation of the true aircraft and contains, several approximations and assumptions. 
+
+\subsection{Proposed method}
+There are currently three methods to perform extrapolation:
 \begin{enumerate}
-\item Model update the simulation model
-\item Create a surrogate model using flight test experiments, learn pattern automatically
-\item Use the simulation model as mean function and learn the difference between the two and learn the pattern automatically
-\item Use multi-fidelity modelling 
-\item Use multi-fidelity modelling but with noise and time-lag
+\item \textbf{Build a flight-test surrogate model}: We can build a GP model purely using data from flight-test. As discussed in chapter \ref{} using a simple covariance structure will not help us in performing extrapolation. This means we would have to either use a Spectral Mixture to automatically detect patterns \cite{wilson2014thesis}, or iteratively adjust the covariance function to detect patterns \cite{duvenaud-thesis-2014}. Unfortunately, flight-test data is very costly and thus we might not have access to a huge amount of data to learn detailed patterns. Moreover, by not using the information of a simulation model we are effectively putting years of hard-work into waste. 
+
+\item \textbf{Update the simulation model}: This is the standard methodology used by design team during the certification process. The results of flight-test are compared to the results of prediction of simulation model. A simulation model has several parameters, which are fine-tuned to decrease the difference between flight-test data and simulation results. This is a costly and time-consuming process, requiring a team of several dozen engineers working on a tight certification schedule. 
+
+\item \textbf{Use multi-fidelity modelling} If we assume the simulation model as a low-fidelity model, and flight-test data as results from a high-fidelity model. This means that we can use the multi-fidelity formulation described in section \ref{secMultiFidelityMTGP}.
 \end{enumerate}
 
+Suppose we have a \(D_{inputs}\) dimensional input space, and two outputs $f^{s}$, $y^{e}$ which represent the simulation model and flight-test data respectively. The experiments are performed at the input points $x^{e}$ for $x^e \in \mathbb{R}^{N_{e} \times D_{inputs}}$, while the simulation model can be evaluated exactly at all points in the input domain.
+
+\begin{equation}
+    \Pr[f^{s}(x)] = GP(\bar{f^{s}(x)}, k^{s} = 0)
+\end{equation}
+
+Here, $\bar{f^{s}(x)}$ signifies evaluation of the simulation model at input point $x$, since the simulation model is deterministic the covariance term. We can also signify the experimental observations as:
+
+\begin{equation}
+    y^{e}(x) = f^{e}(x) + \epsilon_{n_{e}} 
+\end{equation}
+
+Here, $f^{e}(x)$ is the latent physical process of the flight-test, while $\epsilon_{n_{e}}$ is experimental error. For the current case let's assume the experimental error is sampled from a white noise gaussian , $\epsilon_{n_{e}} \sim \mathcal{N}(0, \sigma_{n_{e}}^2)$. We can therefore, write the joint prior between the experimental measurement ($y^{e}$) and simulation model ($f^{s}$) as:
+
+\begin{equation}
+\begin{aligned}
+     \Pr \begin{bmatrix}
+f^{s}\\ 
+y^{e}
+\end{bmatrix}  & = GP\left ( \begin{bmatrix}
+\bar{f^{s}(x)}\\ 
+r(x^{e})*\bar{f^{s}(x)}
+\end{bmatrix}, \begin{bmatrix} k^{s}(x^{s}, x^{s}) & r(x^{s})k^{s}(x^{s}, x^{e})   \\
+           r(x^{e})k^{s}(x^{e}, x^{s}) & r(x^{e})^2k^{s}(x^{e}, x^{e}) + k^{\delta}(x^{e}, x^{e}) + \sigma_{n_{e}}^2 \times I_{N_{e}}\end{bmatrix}   \right )
+           \end{aligned}
+\end{equation}
+
+Since, the simulation model is deterministic, hence the covariance of simulation model is zero ($k^s = 0$).
+
+\begin{align}
+\Pr \begin{bmatrix}
+f^{s}\\ 
+y^{e}
+\end{bmatrix}    = GP \left ( \begin{bmatrix}
+\bar{f^{s}(x)}\\ 
+r(x^{e})*\bar{f^{s}(x)}
+\end{bmatrix}, \begin{bmatrix} 0 & 0   \\
+           0 & k^{\delta}(x^{e}, x^{e}) + \sigma_{n_{e}}^2 \times \mathbb{I}_{N_{e}}\end{bmatrix} \right ) 
+\end{align}
+
+Since the cross-covariance between simulation model and experimental data is zero, the two GPs are independent. We can thus write the GP prior for only the experimental data as equation \ref{eqIndependentGPExp}.
+
+\begin{equation}\label{eqIndependentGPExp}
+\Pr[y^{e}] = GP \left( r(x^{e})*\bar{f^{s}(x)}, \quad k^{\delta}(x^{e}, x^{e}) + \sigma_{n_{e}}^2 \times \mathbb{I}_{N_{e}} \right)
+\end{equation}
+
+The above form of the GP prior means that, the modified form of the simulation model can be treated as the mean of the GP prior, while the $k^{\delta}$ learns the difference between the two models. 
+
+
+\begin{figure}[!ht]
+  \centering
+    \includegraphics[width=0.45\textwidth]
+        {images/part3/measuredVssimulatedCl}
+        \label{subFigmeasuredVssimulatedCl}
+       \caption{}
+\end{figure}
 \subsection{Experiments}
 
 \paragraph{Toy-dataset}
@@ -342,6 +411,14 @@ The multi-task GP methods introduced in this chapter are pretty common in the li
 \textbf{Often this is not the case and hence they perform model updating.}
 \textbf{We propose to leverage the information of simulations to perform this exrapolation}
 
+\begin{figure}[!ht]
+  \centering
+        \includegraphics[width=0.45\textwidth]
+        {images/part3/boxPlotsClAlphaAccuracyMeasure}
+        \label{subFigboxPlotsClAlphaAccuracyMeasure}
+       \caption{}
+       \label{}
+\end{figure}
 
 Show that co-kriging fails in extrapolation
 

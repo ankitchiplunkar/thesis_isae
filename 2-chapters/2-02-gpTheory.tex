@@ -110,7 +110,7 @@ The Matlab Code \ref{codeCovarianceFUnction} below is a sample of SE covariance 
                     basicstyle=\color{black}\ttfamily\small,
                     backgroundcolor = \color{MatlabCellColour}]
 % Standard exponential covariance function
-standardExponentialCovarianceFunction = @(theta, x1, x2)(theta(1).^2*exp(-(x1 - x2)^2/(2*theta(2).^2))); 
+SEKernel = @(theta, x1, x2)(theta(1).^2*exp(-(x1 - x2).^2/(2*theta(2).^2))); 
 % theta(1): is the amplitude hyperparameter
 % theta(2): is the length-scale hyperparameter
 \end{lstlisting}
@@ -128,7 +128,8 @@ k(x_{1*}, x_{1*}) & k(x_{1*}, x_{2*}) & \ldots & k(x_{1*}, x_{N*})
 \end{matrix} \right ] 
 \end{equation}
 
-The Matlab Code \ref{codeGramMatrix} below is a sample function to evaluate the Gram Matrix. The function  evaluateGramMatrix will later be used regularly to calculate, the posterior mean, posterior variance (code \ref{codePosterior}) and choosing hyper-parameters (code \ref{codeOptimizingLML}). \textbf{Avoid the two loops using meshgrid}
+The Matlab Code \ref{codeGramMatrix} below is a sample function to evaluate the Gram Matrix. The function  evaluateGramMatrix will later be used regularly to calculate, the posterior mean, posterior variance (code \ref{codePosterior}) and choosing hyper-parameters (code \ref{codeOptimizingLML}). 
+
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
 \lstinputlisting[caption={Plotting the Gram Matrix}, 
@@ -162,7 +163,7 @@ Figure \ref{figGPCovarianceMatrix} shows the covariance matrix for SE kernel wit
 
 To generate a random Gaussian vector $f(X_{*})$ of length $N_{*}$, we first calculate the Cholesky decomposition\footnote{Cholesky Decomposition is also called the square-root of matrix and is defined for positive definite matrices} of the covariance matrix $K(X_{*}, X_{*}) = LL^{T}$, where $L$ is a lower triangular matrix. We then generate a random vector $U$, such that $U = \mathcal{N}(0, I)$ and $I$ is an identity matrix of size $N_{*}$.  The random vector can then be computed as $f(X_{*}) = m(X_{*}) + LU$, and when plotted with the inputs $X_{*}$, gives a randomly drawn function. The Matlab Code \ref{codeSamplingFUnction} shows how can we draw functions randomly from a GP prior.
 % Adding the algorithm
-\textbf{Make a function to draw random samples from a given mean function and covariance function, use it extensively}
+
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
 \lstinputlisting[caption={Sampling a random function from the prior}, 
                     captionpos=b, 
@@ -232,7 +233,6 @@ The term $K(X_{*}, X)( K(X, X) )^{-1}f(X)$ is the predicted mean of the posterio
 We again use the dataset $\mathcal{D}_{1}$ to calculate the posterior distribution. The Matlab Code \ref{codePosterior} shows how to calculate the posterior mean and variance. Notice, that calculating the posterior mean and variance are only a few lines of code. 
 
 .% Adding the algorithm
-\textbf{Insert a function to calculate the posterior}
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
 \lstinputlisting[caption={Calculating and plotting the mean, the variance and a sample of the posterior}, 
                     captionpos=b, 
@@ -282,7 +282,15 @@ Such that $\epsilon$ is an independent random noise sampled from a white noise G
 
 Here, $\delta_{xx'}$ is a Kronecker delta function, which is one if $x = x'$ and zero otherwise. Since the noise is independent for each observation, there is no noise term for covariances across inputs. The joint distribution of the training outputs $Y(X)$ and true physical process $f(X_{*})$ according to the above prior becomes:
 
-\textbf{add a code for noisy covariance function}
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\lstinputlisting[caption={Matlab code for a noisy SE covariance function}, 
+                    captionpos=b, 
+                    label={codeNoisySE}, 
+                    backgroundcolor = \color{MatlabCellColour},
+                    style=Matlab-editor,
+                    basicstyle=\color{black}\ttfamily\small]
+                    {codes/chapter2/noisySEKernel.m}
+\end{mdframed}
 
 \begin{equation}\label{equationJointPriorNoisy}
 \Pr\left [ \begin{matrix}
@@ -333,7 +341,6 @@ Figure \ref{figGPNoisyPosteriors} shows the posterior GP after adding observed d
 \end{figure}
 
 \subsection{Interpretation of posterior}
-\textbf{Improve the short handof Kxx}
 We will now introduce a short hand notation and replace the lengthy notation $K(X, X)$ with $K_{XX}$ and $K(X, X_{*})$ with $K_{XX_{*}}$. For the case where we have only one test point $x_{*}$, we can write the predictive mean and variance in short-hand as:
 
   \begin{equation}\label{eqNoisyPredictiveMean}
@@ -453,9 +460,8 @@ Directly maximizing the marginal likelihood with respect to the hyper-parameters
 \log(\Pr [Y \mid X, \theta ]) = \textcolor{blue}{-\frac{1}{2}Y^{T}[K_{XX}+ \sigma_{noise}^{2}I]^{-1}Y} - \textcolor{red}{\log\left |  K_{XX}+ \sigma_{noise}^{2}I\right |} - \textcolor{green}{\frac{N}{2}\log(2\pi)}
   \end{equation}
 
-The log marginal likelihood is composed of three terms data-fit term $( \textcolor{blue}{\frac{1}{2}Y^{T}K_{XX}^{-1}Y})$, a model complexity term $( \textcolor{red}{\log\left |  K_{XX}\right |})$, and a normalizaion term $\textcolor{green}{\frac{N}{2}\log(2\pi)}$. It performs a trade-off between the data-fit term and the complexity term. The optimization of log marginal likelihood provides the best compromise in terms of explaining the existing data set \{($x_{i}, y_{i}$)\} and the initial assumptions encoded in the prior. The Matlab code \ref{codeOptimizingLML} defines the function `log Marginal Likelihood' (equation \ref{eqExactNLML}), which is maximized later in the code.
+The log marginal likelihood is composed of three terms data-fit term $( \textcolor{blue}{\frac{1}{2}Y^{T}K_{XX}^{-1}Y})$, a model complexity term $( \textcolor{red}{\log\left |  K_{XX}\right |})$, and a normalizaion term ($\textcolor{green}{\frac{N}{2}\log(2\pi)}$). It performs a trade-off between the data-fit term and the complexity term. The optimization of log marginal likelihood provides the best compromise in terms of explaining the existing data set \{($x_{i}, y_{i}$)\} and the initial assumptions encoded in the prior. The Matlab code \ref{codeOptimizingLML} defines the function `log Marginal Likelihood' (equation \ref{eqExactNLML}), which is maximized later in the code.
 
-\textbf{Add the noise term in the noisy covariance}
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
 \lstinputlisting[caption={Optimizing the Log Marginal Likelihood}, 
                     captionpos=b, 
