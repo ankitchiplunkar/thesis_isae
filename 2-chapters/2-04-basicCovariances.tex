@@ -1,6 +1,5 @@
 \chapter{Basic Covariance Functions}
 \label{chapBasicCovarianceKernels}
-\textbf{An ober view page would be nice}
 
 If we assume the mean function as zero, then a GP prior can be completely parametrized by its covariance function. Hence the problem of learning in a GP regression is exactly the problem of finding suitable properties of the covariance function \cite{rasmussen2006gaussian}. The covariance function consists of two parts a functional form, (which specifies the shape of functions in the hypothesis space) and a set of hyper-parameters (which define the probability of a function in the hypothesis space). In section \ref{secHyperParameter} we have seen in detail how to automatically choose hyper-parameters, the part \ref{partIncorporatePattern} of this thesis will detail how to choose the functional form. 
 
@@ -81,7 +80,7 @@ Let us revisit the experiment performed in section \ref{secBayesianModelling} bu
 Figure \ref{subFigdrawsLinear} shows draws from a GP prior with mean zero and Linear kernel as defined in the above paragraph. The solid black line defines the mean function, shaded blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The dashed lines represent five functions drawn at random from a GP prior. Random functions drawn from a linear GP are linear. Figure \ref{subFigposteriorLinearNoisy_1} show draws from a GP posterior with mean zero and Linear kernel  as defined in above paragraph and conditioned on the first data point $X = -0.5, Y = 0$. The posterior mean passes from the data point, random functions drawn from a linear GP are linear.
 \end{mdframed}
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
   \centering
     \subfigure[{Draws from a GP prior with mean zero and Linear kernel ($k(x_{1}, x_{2}) = \phi(x)^{T} \Sigma_{Prior} \phi(x')^{T} + \sigma_{n}^2\delta_{xx'}$) with $w_{0} = 1, w_{1} = 1$ and $\sigma_{n} = 0.1$. Random functions drawn from a linear GP are linear.}]
   {
@@ -104,7 +103,8 @@ Figure \ref{subFigdrawsLinear} shows draws from a GP prior with mean zero and Li
 Figure \ref{subFigmaximizingMarginalLikelihoodLinear} shows the contours of marginal likelihood with respect to intercept ($w_{0}$) and slope ($w_{1}$). The marginal likelihood is maximum for $w_{0} = 0.2576, w_{1} = 0.4584$, this same as posterior mean predicted in equation \ref{eqExperimentalPosterior}. This means that the data $\mathcal{D}_{1}$ has the highest possibility of coming from a dataset defined by a prior having these hyper-parameters. Figure \ref{subFigoptimizedPosteriorLinearNoisy_3} shows the posterior for same data set but for the hyper-parameters where marginal likelihood is maximum.
 \end{mdframed}
 
-\begin{figure}[!h]
+
+\begin{figure}[!ht]
   \centering
     \subfigure[{Marginal likelihood contours for varying bias and slope parameter. The noise hyper parameter is $(\sigma_{1} = [0.1])$. Marginal likelihood is maximum for $w_{0} = 0.2576, w_{1} = 0.4584$.}]
   {
@@ -182,7 +182,6 @@ The two hyper-parameters of the SE kernel are the amplitude hyper parameter ($\t
 
 As discussed earlier, the covariance function ($k_{SE}$) defines the measure of similarity between two input points, if two points have high value of covariance then their output values ($y$) will be similar. If we increase $\theta_{lengthScale}$ then $k_{SE}$ will also increase, for the same value of $\tau$ and $\theta_{amplitude}$. This means that, now the points for same value of $\tau$ will become more similar and hence the constituent functions in the hypothesis space will become more smooth. As length-scale increases the constituent functions tend to become smoother. Another way to interpret the effect of length-scale is by observing the power spectrum ($S_{SE}$). If we increase $\theta_{lengthScale}$ then $S_{SE}$ will start decreasing, for the same values of $s$ and $\theta_{amplitude}$. This means that less power will be allocated to higher frequencies and hence the constituent functions in the hypothesis space will become more smooth (Figure \ref{figGPPriors}). 
 
-\textbf{Add a figure here to illustrate Kse and Sse for different length scales}
 
 Note, as $\theta_{lengthScale}$ tends to infinity, SE kernel tends to a constant covariance function (Fourier transform of a constant function is a delta function). Whereas, if $\theta_{lengthScale}$ tends to zero, an SE kernel tends to a white noise kernel (Fourier transform of a delta function is a constant function).
 
@@ -208,7 +207,7 @@ exp[-\frac{\sqrt{5}\tau}{\theta_{lengthScale}}]
 
 When $\nu = 1/2$ the Mat\'ern kernel is also called the Ornstein-Uhlenbeck or Exponential kernel, this creates a hypothesis space of non-differentiable continuous functions and was used to explain the Brownian motion \cite{uhlenbeck1930theory}. Figure \ref{subFigkernelFunctions} plots the covariance values of Exponential ($\nu=1/2$) and Mat\'ern/ ($\nu=3/2$) kernel (($\theta_{amplitude} = 1$) and ($\theta_{lengthScale} = 1$)) whereas figure \ref{subFigspectralFunctions} plots the power spectrum for same kernels. We can see that the power spectrum ($S(s)$) of the SE kernel has lowest power for higher frequencies followed by Mat\'ern ($\nu=3/2$) and Exponential kernel, meaning that the SE kernel has more smooth functions in its hypothesis space followed by Mat\'ern ($\nu=3/2$) and Exponential kernel. 
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
   \centering
     \subfigure[{Kernel density for exponential, Mat\'ern ($\nu=3/2$)and SE kernel. The hyper-parameters are amplitude ($\theta_{amplitude} = 1$) and length-scale ($\theta_{lengthScale} = 1$)}]
   {
@@ -263,7 +262,7 @@ Figure \ref{figCh4Priors} shows 5 random functions drawn for a zero mean GP with
 Figure \ref{figpreOptimizedPosteriorCh5} shows the posterior GP conditioned on the dataset $\mathcal{D}_{2}$ for three different covariance functions with same hyper-parameters, these hyper-parameters are not optimized with respect to the marginal likelihood. For similar values of hyper-parameters and dataset, Exponential kernel has highest variance followed by Mat\'ern and SE kernel. This is a consequence of the bias vs variance trade-off since the SE kernel has the most restrictive hypothesis space (infinite differentiability is a stricter assumption), followed by Mat\'ern $\nu=3/2$ and Exponential kernel.
 \end{mdframed}
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
   \centering
     \subfigure[{Draws from a GP posterior with mean zero and Exopnential kernel (figure \ref{subFigpriorDrawsEXP}) conditioned on the data $\mathcal{D}_{2}$. The posterior mean passes through the data points, random functions drawn from exponential kernel are non-differentiable}]
   {
@@ -296,7 +295,7 @@ This experiment only shows the different posteriors obtained for same observatio
 
 \end{mdframed}
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
   \centering
     \subfigure[{Draws from a GP posterior, conditioned on the dataset $\mathcal{D}_{1}$ with mean zero and Exponential kernel with hyper-parameters ($\theta_{lengthscale} = 0.215$, $\theta_{amplitude} = 0.312$ and $\sigma_{n} = 2.8e^-5$) that maximize the marginal likelihood $max(ML) = -1$.}]
   {
@@ -385,9 +384,9 @@ Here, the poles of the polynomial denote the modal frequencies, while other moda
 \end{figure*}
 
 \renewcommand{\arraystretch}{1.2}
-\begin{table}[!h]
+\begin{table}[!ht]
     \centering
-\begin{tabularx}{0.915\textwidth}{c|c|c}
+\begin{tabularx}{\textwidth}{c|c|c}
   \hline
   Measurement & Auto-correlation & Power Spectrum \\
   \hline
@@ -429,7 +428,6 @@ While the modal parameters can be chosen by minimizing the least square error, h
 Here, $n$ denotes the number of data-points to fit, $ML$ denotes the marginal likelihood of the fit and $N_{hyp}$ denote the number of hyper-parameters to fit. The BIC performs a trade-off between the data-fit term $N\ln(ML)$ and the complexity penalty term $N_{hyp}\ln(N)$, basically penalizing for over-fitting. Lowest value of BIC is preferred. 
 \end{mdframed}
 
-\textbf{Define an algorithm here on how to find the Q etc}
 
 Generally, identification of modal frequencies requires engineering judgment, i.e. engineers have to look at the stabilization diagrams and figure out the optimal value of modal order. Using the Spectral mixture kernel we have encoded the knowledge of peaks in the power spectrum which in combination with BIC has eliminated the need to perform costly engineering judgment exercises and made the process automatic. We now compare the accuracy of finding modal frequencies using a spectral mixture kernel vs NeXT methodology for a toy-dataset, and then later for a real dataset of HTC building \cite{brincker2000modal}.
 
@@ -441,7 +439,7 @@ All experiments were performed on an Intel quad-core processor with 4Gb RAM. The
 Table \ref{tabComparisonOfModalFrequenciesToyData} shows the comparison of frequencies for Modal frequencies predicted using NeXT algorithm and Spectral Mixture algorithm. We can observe that the NeXT method cannot predict the third frequency with enough accuracy. This is because thee third frequency has the hignest value of damping.
 
 \renewcommand{\arraystretch}{1}
-\begin{table}[!h]
+\begin{table}[!ht]
     \centering
 \begin{tabular}{|l|l|l|l|}
   \hline
@@ -475,7 +473,7 @@ We now apply our methodology on real ambient response of Heritage Court Building
 Table \ref{tabComparisonOfModalFrequenciesToyData} shows the comparison of Modal frequencies predicted in \cite{brincker2000modal} with Spectral Mixture algorithm. The results of the two methods are very similar, although the frequencies obtained by spectral mixture GP are completely automatic. 
 
 \renewcommand{\arraystretch}{1}
-\begin{table}[!h]
+\begin{table}[!ht]
     \centering
 \begin{tabular}{|l|l|l|}
   \hline
@@ -507,11 +505,11 @@ Figure \ref{subfigStablizationHTCData} shows the stabilization diagram with incr
 
 In the current setting of the Spectral Mixture model we propose an automatic way to identify the most important frequencies of a structural system. Neither the mode shapes nor the damping ratios are estimated in the current format. In future we would like to derive a method to estimate mode-shape and damping ratio such that the contributions of neighbouring Gaussians are also taken into account. 
 
-\section{Discussion}
+\section{Summary and discussion}
 This chapter discuss only a small number of possible covariance functions, table \ref{tabListOfCovarianceFUnctions} provides a list of basic covariance functions that we have encountered thus far. Several other other functional forms of the covariance function exist the literature, for example Gibbs kernel, Rational Quadratic kernel, Periodic kernel etc for more detailed list please refer to works of \cite{Rasmussen2005, duvenaud2013structure, wilson2014thesis}. . 
 
 %\renewcommand{\arraystretch}{1}
-\begin{table}[!h]
+\begin{table}[!ht]
     \centering
 \begin{tabularx}{\textwidth}{|l|l|X|}
   \hline

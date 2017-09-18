@@ -15,7 +15,7 @@ k(x_{1}, x_{2}) = & \int k_{1}(x_{1}, u)k_{2}(u, x_{2})du \label{eqConvolutionPr
 \end{align}
 
 
-Here, $k_{1}(x_{1}, x_{2})$ and $k_{2}(x_{1}, x_{2})$ are valid covariance function, while $q(x)$ and $h(x)$ are any continuous functions. Equation \ref{eqConvolutionProcess} defines a covariance function through convolution of two kernels, more discussion refer to section \ref{subsecConvolutedGP}, while for equation \ref{eqCh5LinearOperatorCovariances} defines transformation through a linear operator $g\left ( . \right ) \in \mathcal{C}^{2}$, for more discussion on this equation refer to chapter \ref{chapAddingEquationsInGP}. 
+Here, $k_{1}(x_{1}, x_{2})$ and $k_{2}(x_{1}, x_{2})$ are valid covariance function, while $q(x)$ and $h(x)$ are any continuous functions. Equation \ref{eqConvolutionProcess} defines a covariance function through convolution of two kernels, while for equation \ref{eqCh5LinearOperatorCovariances} defines transformation through a linear operator $g\left ( . \right ) \in \mathcal{C}^{2}$, for more discussion on this equation refer to chapter \ref{chapAddingEquationsInGP}. 
 
 Let us take the case for a 2-dimensional input vector $x$ such that $x = \{x^{1}, x^{2}\}$\footnote{The superscript is used to number of dimension and does not denote the power.} ($x^{1}$, $x^{2}$ are values of $x$ in the first and second dimension respectively). Then the following covariance functions are also valid.
 
@@ -127,7 +127,7 @@ We perform our experiments on openly available Stress and Strain data of Aluminu
 Table \ref{tabComparisonOfYoungModulus6061Data} shows the results of physical parameters for AL 6061 when calculated using change-point kernel vs that available in the literature. We can observe that the change-point automatically predicts the correct values of Young's Modulus and start of non-linearity.
 
 
-\begin{table}[!h]
+\begin{table}[!ht]
     \centering
 \begin{tabular}{|l|l|l|}
   \hline
@@ -279,7 +279,7 @@ We interpolate the pressure $p_{j}(\omega_{i})$ by simply multiplying the kernel
 \Pr[p_{j}(\omega_{i})] = GP \left( 0, k(x_{1}, x_{2}) = \prod_{i=1}^{D_{inputs}} k_{Mat \nu =5/2}(x_{1}^{i}, x_{2}^{i}) \right)
 \end{equation}
 
-The transonic regime often contains a shock on the surface of the wing. This shock almost creates a discontinuity in the pressure field. We know from section \ref{} that Neural Network kernels can represent these type of almost discontinous functions in its hypothesis space. Hence while to interpolating in transonic regime we use the Neural Network kernel in the dimension of shock. For example, if we know that the shock appears on the chord-wise direction, then we can represent the pressure as equation \ref{eqTransonicPressureGP}.
+The transonic regime often contains a shock on the surface of the wing. This shock almost creates a discontinuity in the pressure field. We know from section \ref{subSecCh4NNkernel} that Neural Network kernels can represent these type of almost discontinous functions in its hypothesis space. Hence while to interpolating in transonic regime we use the Neural Network kernel in the dimension of shock. For example, if we know that the shock appears on the chord-wise direction, then we can represent the pressure as equation \ref{eqTransonicPressureGP}.
 
 \begin{equation}\label{eqTransonicPressureGP}
 \Pr[p_{j}(\omega_{i})] = GP \left( 0, k(x_{1}, x_{2}) = k_{NN}(x_{1}^{chord}, x_{2}^{chord}) \times \prod_{i=1}^{D_{inputs-1}} k_{Mat \nu =5/2}(x_{1}^{i}, x_{2}^{i}) \right)
@@ -396,11 +396,12 @@ The current section presents a comparison between two different surrogate model 
 
 Plots like figure \ref{subfig:alphaSweepCut4} give a quick understanding of the flight regime for very few simulation runs. These plots can also be used to find transition regimes from single shock to double shock, which are very interesting performance points. In the future we wish to improve reconstruction of double shock patterns by improving the length scale and improve the choice of experts for distributed GP.
 
-\section{Discussion}\label{subsec:ExpressingStructureKernelConclusion}
+\section{Summary and discussion}\label{subsec:ExpressingStructureKernelConclusion}
 In the last two chapters we have tried to answer the question: How to add \textit{apriori} information of a pattern in a learning algorithm? We present a small sneak peek into the wide variety of available covariance functions. Due to the ability to create new kernels, encoding prior information into the structure can be performed easily. If we have an \textit{apriori} information about the pattern of function to be learned, then embedding this information into the GP algorithm greatly improves accuracy and cost of prediction. Table \ref{tabListOfCovarianceFUnctions} lists a few commonly known combination of covariance functions known in the literature. 
 
 %\renewcommand{\arraystretch}{1}
-\begin{table}[!h]
+\begin{comment}
+\begin{table}[!ht]
     \centering
 \begin{tabularx}{\textwidth}{|l|l|X|}
   \hline
@@ -420,7 +421,7 @@ Additive GPs & \small  $\prod_{i}(1+k^{i}_{SE}) ]$ \normalsize& \cite{duvenaud20
   \label{tabListOfCombinationOfCovarianceFunctions}
   \caption{Combination of covariance functions available in literature}
   \end{table}
-
+\end{comment}
 Section \ref{secSingleDimension} describes how to combine kernels to create one-dimensional kernels. While, section \ref{subsubsecCh4ApplicationCP} describes how to build kernels for higher dimensions. There are two main contributions of this chapter, first we develop a novel methodology to detect the start of a non-linear regime in an engineering design problem. This is thanks to the CP kernel which lets us define change from one regime to another \cite{chiplunkar:hal-01555401}. Second, we encode the information of shock to interpolate pressures in the transonic regime. This strategy gives significant gains in accuracy when compared to the standard POD based for aerodynamic interpolation \cite{oatao18004}. 
 
-In the next two chapters we will tackle the remaining two questions posed in section \ref{} of the thesis. Chapter \ref{chapAddingEquationsInGP} discusses how to encode prior information of relationships between measurements into a GP regression. While chapter \ref{chapMultiTaskExtrapolation} discusses how to perform extrapolation given a computer simulation of experiments. 
+In the next two chapters we will tackle the remaining two questions posed in section \ref{chapIntroduction} of the thesis. Chapter \ref{chapAddingEquationsInGP} discusses how to encode prior information of relationships between measurements into a GP regression. While chapter \ref{chapMultiTaskExtrapolation} discusses how to perform extrapolation given a computer simulation of experiments. 
