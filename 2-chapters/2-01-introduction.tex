@@ -7,7 +7,7 @@
 In the past decade due to the boom in Information Technology (IT) companies, more investment has gone into developing both computational infrastructure and methods. One of the ubiquitous methods developed due to this investment is that of Machine Learning. Learning algorithms look for patterns in data to learn from them and make decisions. They are used in web search, optimization, spam filtering, ad placement, stock trading, healthcare, manufacturing, space exploration, particle physics, security, and lot more. The speed and adaptability of learning methods are changing everything around us one algorithm at a time \cite{domingos2015master}. The World Economic Forum, Davos 2016 \cite{schwab2016fourth} has dubbed this as the fourth industrial revolution; first was steam powered, second was electrically powered, third was IT powered, fourth will be powered by artificial intelligence algorithms.
 
 \marginnote{\textsl{Aircraft design}}[1cm]
-In comparison aircraft design is almost a century old field, the first successful flight being by the Wright brothers in 1903 \cite{wright1934we}. Currently, the design of an aircraft is a highly-iterative optimization process. Based on the initial target objectives and general trends, aircraft designers define the objectives for domain specific departments (eg. aerodynamics design or structural design). These objectives further trickle down to more dedicated teams and tasks (eg airfoil design or fuselage design). This gives rise to a huge Multi-Disciplinary Optimization (MDO) problem. Teams come up with individual constraints, they iterate around their domains, interact with neighboring domains and negotiate overlapping constraints. Teams negotiate and solidify individual objectives and constraints to find the optimized design for an aircraft. An optimized design as close to the initial target objectives, while taking into account the sparse infrastructure, human and economic limitations. This is a massive MDO problem spanning almost a decade, costing billions and involving thousands of people. 
+In comparison aircraft design is almost a century old field, the first successful flight being by the Wright brothers in 1903 \cite{wright1934we}. Currently, the design of an aircraft is a highly-iterative optimization process. Based on the initial target objectives and general trends, aircraft designers define the objectives for domain specific departments (eg. aerodynamics design or structural design). These objectives further trickle down to more dedicated teams and tasks (eg airfoil design or fuselage design). This gives rise to a huge Multi-Disciplinary Optimization (MDO) problem. Teams come up with individual constraints, they iterate around their domains, interact with neighboring domains and negotiate overlapping constraints. Teams negotiate and solidify individual objectives and constraints to find the optimized design for an aircraft, while taking into account the sparse infrastructure, human and economic limitations. This is a massive MDO problem spanning almost a decade, costing billions and involving thousands of people. 
 
 \begin{figure}[!ht]
 \label{figPhasesOfAircraftDesign}
@@ -21,10 +21,10 @@ In comparison aircraft design is almost a century old field, the first successfu
 
 \section{Aircraft design cycle}\label{secSircraftDesignCycle}
 \marginnote{\textsl{Design phases}}[1cm]
-To simplify this process an aircraft design is broken down into several design phases (figure \ref{figPhasesOfAircraftDesign}). Each phase requires an ever increasing amount of predictions and fidelity. Preliminary design phase requires a few low-fidelity design trade-offs between major disciplines. Whereas, during detailed design phase, intensive intra-disciplinary and inter-disciplinary optimization's take place. Finally, during the flight-test and certification phase capability to predict real-time can provide significant gains in reducing the flight-test phase. These analyses cover large parts of flight envelope and require high-fidelity predictions. Hence the capability to accurately and quickly predict is an integral part of an aircraft design cycle \cite{raymer2012aircraft}. 
+To simplify this process an aircraft design is broken down into several design phases (figure \ref{figPhasesOfAircraftDesign}). Each phase requires an ever increasing amount of predictions and fidelity of the target objectives (aircraft weight or lift to drag ratio). Preliminary design phase requires a few low-fidelity design trade-offs between major disciplines, whereas detailed design phase, requires intensive intra-disciplinary and inter-disciplinary optimization. Finally, during the flight-test and certification phase, capability to predict target objectives in real-time can provide significant gains. These analyses cover large parts of the flight envelope and require high-fidelity predictions. Hence the capability to accurately and quickly predict the target objectives is an integral part of an aircraft design cycle \cite{raymer2012aircraft}. 
 
 \marginnote{\textsl{Need for Speed}}[1cm]
-In the last decade high-fidelity, physics based, mathematical simulations have become central to designing an aircraft. However, high-fidelity simulations are computationally expensive, this is the case for several Computational Fluid Dynamics (CFD) and Finite Element Method (FEM) based solvers. Due to this high cost high-fidelity simulations are launched only for a few carefully chosen design configurations. This results in inefficient exploration of the the design space and thus a non-optimal design. A common strategy to speed up simulations is by reducing the physical complexity of the model to make quick predictions. As an example linear potential flows (simpler aerodynamic model), or coarser FEM meshes (simpler structural model) are regularly used during the preliminary design phase \cite{cummings2015applied}. While this is an acceptable practice during the preliminary design phase, during the detailed design phase physical complexity is needed to find a robust optimum design point \cite{raymer2012aircraft}.
+In the last decade, high-fidelity physics-based, mathematical simulations have become central to designing an aircraft. However, high-fidelity simulations are computationally expensive, this is the case for several Computational Fluid Dynamics (CFD) and Finite Element Method (FEM) based solvers. Due to this high cost, high-fidelity simulations are launched only for a few carefully chosen design configurations. This results in inefficient exploration of the design space and thus a non-optimal design. A common strategy to speed up simulations is by reducing the physical complexity of the model to make quick predictions. As an example, linear potential flows (simpler aerodynamic model), or coarser FEM meshes (simpler structural model) are regularly used during the preliminary design phase \cite{cummings2015applied}. While this is an acceptable practice during the preliminary design phase, during the detailed design phase, physical complexity is needed to find a robust optimum design point \cite{raymer2012aircraft}.
 
 \marginnote{\textsl{Need for accuracy}}[1cm]
 Instead of approximating physical complexity, surrogate models\footnote{Surrogate models, learning algorithms and machine learning models will be used interchangeably throughout this manuscript} simplify mathematical complexity \cite{verveld2016reduced}. Surrogate models learn patterns between the input and output dataset and then are used to make predictions on the desired point. This property is very useful in quickly exploring the design space and finding a robust design point \cite{forrester2008engineering}. Moreover, surrogate models are commonly passed across disciplines to perform inter-disciplinary optimizations. For example, a loads department would prefer running a quick surrogate model over the costly CFD model while performing the load's loop \cite{bartoliAIAA2017, bartoliAGILE2017}.  
@@ -50,7 +50,7 @@ The main difference between the engineering design and surrogate modeling can be
 \end{figure}
 
 \marginnote{\textsl{Developing faster models}}[1cm]
-Since models are an integral part of any engineering design, model building in aircraft engineering was traditionally outsourced to research institutes. Researchers perform iterative experiments in a controlled environment and discover patterns between the physics of the system. For example, it took 200 years to iteratively develop the gas law \footnote{$Pressure \times Volume \propto numberOfMoles \times Temperature$}, Boyle's law in 1600's found the relation between Pressure and Volume, Charle's Law in 1787 discovered the relationship between Volume and Temperature, while Gay-Lussac's Law in 1809 discovered the relationship between Pressure and Temperature \cite{clapeyron1834memoire}. This is a rigorous and time-consuming method of developing models. Machine learning is a much more elegant method of building models. Using data and few basic assumptions, automatic models can be built between desired inputs and outputs. For example, while the first model of a neural network was proposed in 1950's \cite{mcculloch1943logical, rosenblatt1958perceptron}, neural networks are today used daily for tasks such as tagging cat photos on facebook and converting speech to text\footnote{I wrote a fourth of this thesis using a text to speech software}. In this thesis, we wish to automatically build models for aircraft design tasks primarily to be used during the detailed design phase and certification phase. 
+Since models are an integral part of any engineering design, model building in aircraft engineering was traditionally outsourced to research institutes. Researchers perform iterative experiments in a controlled environment and discover patterns between the physics of the system. For example, it took 200 years to iteratively develop the gas law \footnote{$Pressure \times Volume \propto numberOfMoles \times Temperature$}, Boyle's law in 1600's found the relation between Pressure and Volume, Charle's Law in 1787 discovered the relationship between Volume and Temperature, while Gay-Lussac's Law in 1809 discovered the relationship between Pressure and Temperature \cite{clapeyron1834memoire}. This is a rigorous and time-consuming method of developing models. Machine learning is a much more elegant method of building models. Using data and few basic assumptions, automatic models can be built between desired inputs and outputs. For example, while the first model of a neural network was proposed in 1950's \cite{mcculloch1943logical, rosenblatt1958perceptron}, neural networks are today used daily for tasks such as tagging cat photos on Facebook and converting speech to text\footnote{I wrote a fourth of this thesis using a text to speech software}. In this thesis, we wish to automatically build models for aircraft design tasks primarily to be used during the detailed design phase and certification phase. 
 
 
 \section{Machine Learning}\label{secMachineLearning}
@@ -96,83 +96,73 @@ One method to overcome this trade-off is by using lots and lots of data. Data ac
 
 Unfortunately in aircraft design, generating a huge amount of accurate data is a costly exercise, for example a high fidelity CFD simulation runs for weeks \cite{murthy2014computational, jameson2012computational, forrester2008engineering} and a flight-test campaign costs millions of euros \cite{fox2004test}. On another hand due to centuries of research and tinkering, we have a treasure trove of prior information about the physical systems. We propose to build better machine learning models by integrating the time-tested prior knowledge of physical systems with experimental data. 
 
-\begin{mdframed}[hidealllines=true,backgroundcolor=blue!20]
-\marginnote{\textsl{Contribution}}[1cm]
-The main contribution of this thesis is to provide a framework on how to combine the prior knowledge from a physical system and add it to a learning algorithm. A model generated from merging of the two methodologies will be both consistent with the physics of the system and be quicker to evaluate. We integrate three types of prior knowledge by answering the following questions:
-\begin{enumerate}
-\item \textbf{Pattern}: How to add \textit{apriori} information of a pattern in a learning algorithm? For example, given that shock is a discontinuous change in pressure, how to predict the position of shock on an airfoil (part \ref{partIncorporatePattern}). 
-\item \textbf{Relationships}: How to add \textit{apriori} information of relationships between measurements? For example given $Loads = \int Pressures$, how to make a robust loads model when we measure both pressures and loads (chapter \ref{chapAddingEquationsInGP}).
-\item \textbf{Simulation model}: How to merge \textit{apriori} information of simulations with experiments? For example, given a simulation model and experimental data how to perform extrapolations on experimental data(chapter \ref{chapMultiTaskExtrapolation}). 
-\end{enumerate}
-
 To integrate the prior information we propose to use a Bayesian inference for model building. Bayesian inference is a method of statistical inference in which Bayes theorem is used to update an initial probability (prior) as more and more evidence becomes available the final probability (posterior) gives our estimate. More specifically, we will use the Gaussian Processes (GP) Regression framework which is a subset of the Bayesian Inference algorithms to define prior information of physical systems. But, before deep diving into the details of GP let us have a look at a simple Bayesian Linear Regression algorithm.
-\end{mdframed}
 
 \section{Bayesian Linear Regression}\label{secBayesianModelling}
-\sloppy Suppose we have access to a training set of observations (or outputs) $\VEC{y} = (y(\VEC{x_{1}}), \ldots , y(\VEC{x_{i}}), \ldots , y(\VEC{x_{N}}))^T$, evaluated at a set of known inputs $\myMatrix{X} = (\VEC{x_{1}}, \ldots , \VEC{x_{i}}, \ldots, \VEC{x_{N}})^T$, and we wish to predict $y(x_{*})$ at a test input $x_{*}$. The input and output can be multi-dimensional; $x_{i} \in \mathbb{R}^{D_{inputs}}$ and $y(x_{i}) \in \mathbb{R}^{D_{outputs}}$. The process of learning the transformation function $f$ to make a prediction at a new point is called regression. In the following section we follow the formulation for Bayesian Linear Regression provided by \cite{mackay2003information}.
+\sloppy Suppose we have access to a training set of observations (or outputs) $\VEC{y} = (y(\VEC{x_{1}}), \ldots , y(\VEC{x_{i}}), \ldots , y(\VEC{x_{N}}))^T$, evaluated at a set of known inputs $\myMatrix{X} = (\VEC{x_{1}}, \ldots , \VEC{x_{i}}, \ldots, \VEC{x_{N}})^T$, and we wish to predict $y(x_{*})$ at a test input $x_{*}$. The input and output can be multi-dimensional; $\VEC{x_{i}} \in \mathbb{R}^{D_{inputs}}$ and $\\VEC{y(x_{i})} \in \mathbb{R}^{D_{outputs}}$. The process of learning the transformation function `$f$' to make a prediction at a new point is called regression. In the following section we follow the formulation for Bayesian Linear Regression provided by \cite{mackay2003information}.
 
 \marginnote{\textsl{Basis functions}}[1cm]
-A simple method to perform regression is by assuming a form of the function $f$, then minimizing the error between the true measurements and the assumed form to estimate the parameters of $f$. The function is written in terms of basis functions $\phi(x)$. For example when $\phi(x) = \{1, x\}^{T}$ we are performing linear regression, when $\phi(x) = \{1, x, x^{2}, \ldots, x^{L}\}^{T}$ we are performing $L^{th}$ order polynomial regression. We will focus on linear regression in this section and hence $\phi(x) = \{1, x\}^{T}$.
+A simple method to perform regression is by assuming a form of the function $f$, then minimizing the error between the true measurements and the assumed form to estimate the parameters of $f$. The function is written in terms of basis functions $\phi(x)$. For example when $\phi(x) = \{1, \VEC{x}\}^{T}$ we are performing linear regression, when $\phi(x) = \{1, \VEC{x}, \VEC{x^{2}}, \ldots, \VEC{x^{L}}\}^{T}$ we are performing $L^{th}$ order polynomial regression. We will focus on linear regression in this section and hence $\phi(x) = \{1, \\VEC{x}\}^{T}$.
 
 \begin{equation}\label{eqBayesianLinearRegression}
-f(x_{i}) = \begin{Bmatrix}
-1 & x
+f(\VEC{x}) = \begin{Bmatrix}
+1 & \VEC{x}
 \end{Bmatrix}  \begin{Bmatrix}
 w_{0}\\ 
-w_{1}
+\VEC{w_{1}}
 \end{Bmatrix}
-\quad \quad y(x_{i}) = f(x_{i}) + \epsilon
+\quad \quad y(\VEC{x_{i}}) = f(\VEC{x_{i}}) + \epsilon
 \end{equation}
 
 \marginnote{\textsl{Likelihood}}[1cm]
-Here, $w$ are the parameters of the function, such that $w_{0} \in \mathbb{R}$ denotes the intercept and $w_{1} \in \mathbb{R^{D_{inputs}}}$ denotes the slope of the regression model. The measurements are corrupted by independent white noise $\epsilon$, such that the noise is a random variable sampled from a white noise Gaussian\footnote{$\Pr[\epsilon] = \mathcal{N}(0, \sigma_{n}) = \frac{1}{\sqrt{2\pi\sigma_{n}^{2}}}\exp^{-\frac{\epsilon^{2}}{2\sigma_{n}^{2}}}
-$} with variance $\sigma_{n}^{2}$. The above equations \ref{eqBayesianLinearRegression} can be combined to result in the likelihood $\Pr[Y\mid X, w]$
+Here, $\VEC{w}$ are the parameters of the function, such that $w_{0} \in \mathbb{R}$ denotes the intercept and $\VEC{w_{1}} \in \mathbb{R}^{D_{inputs}}$ denotes the slope of the regression model. The measurements are corrupted by independent white noise $\epsilon$, such that the noise is a random variable sampled from a white noise Gaussian\footnote{$\Pr[\epsilon] = \mathcal{N}(0, \sigma_{n}) = \frac{1}{\sqrt{2\pi\sigma_{n}^{2}}}\exp^{-\frac{\epsilon^{2}}{2\sigma_{n}^{2}}}
+$} with variance $\sigma_{n}^{2}$. The above equations \ref{eqBayesianLinearRegression} can be combined to result in the likelihood $\Pr[\VEC{y} \mid \myMatrix{X}, \VEC{w}]$
 
 \begin{equation}\label{eqBayesianLikelihood}
 \begin{aligned}
-\Pr[Y \mid X, w]  & = \prod \Pr[y_{i}\mid x_{i}, w]\\
-                & = \prod \mathcal{N}[[1, x_{i}]w , \sigma_{n}^{2}]\\
-                & = \mathcal{N}(X^{T} w, \sigma_{n}^{2}I_N)    
+\Pr[\VEC{y} \mid \myMatrix{X}, \VEC{w}]  & = \prod \Pr[y_{i} \mid \VEC{x_{i}}, \VEC{w}]\\
+                & = \prod \mathcal{N}[[1, \VEC{x_{i}}]\VEC{w} , \sigma_{n}^{2}]\\
+                & = \mathcal{N}(\myMatrix{X^{T}} \VEC{w}, \sigma_{n}^{2}\myMatrix{I_N})    
 \end{aligned}
 \end{equation}
 
-The notation $\Pr[Y \mid X, w]$ symbolizes the probability distribution of observations $Y$ at the inputs $X$ given the parameter $w$. The notation $\mathcal{N}[\mu , \Sigma]$ symbolizes a multi-variate Gaussian distribution for mean vector $\mu$ and covariance matrix $\Sigma$. $I_N$ is an identity matrix of size $N \times N$.
+The notation $\Pr[\VEC{y} \mid \myMatrix{X}, \VEC{w}]$ symbolizes the probability distribution of observations $\VEC{y}$ at the inputs $\myMatrix{X}$ given the parameter $\VEC{w}$. The notation $\mathcal{N}[\VEC{\mu} , \myMatrix{\Sigma}]$ symbolizes a multi-variate Gaussian distribution for mean vector $\VEC{\mu}$ and covariance matrix $\myMatrix{\Sigma}$. $\myMatrix{I_N}$ is an identity matrix of size $N \times N$.
 
 \marginnote{\textsl{Prior}}[1cm]
 While performing Bayesian inference we specify a prior distribution to encode our assumptions on the parameters before we look at the observations. For this case, we put a zero mean Gaussian prior on our weights.
 
 \begin{equation}\label{eqBayesianPrior}
-\Pr[w] = \mathcal{N}(0, \Sigma_{Prior})
+\Pr[\VEC{w}] = \mathcal{N}(0, \myMatrix{\Sigma_{Prior}})
 \end{equation}
 
-The prior distribution on $w$ induces a prior distribution over functions parametrized by $w$, effectively we are defining family of functions $(\Pr[f(x_{i})] = \mathcal{N}(0, x_{i}^{T}\Sigma_{Prior}x_{i}))$ by placing a prior distribution over $w$. Once we have a prior distribution encoding our beliefs, we use Bayes rule to look at the observations and get a posterior distribution of parameters.
+The prior distribution on $\VEC{w}$ induces a prior distribution over functions parametrized by $\VEC{w}$, effectively we are defining the family of functions $(\Pr[f(\VEC{x})] = \mathcal{N}(0, \VEC{x^{T}}\myMatrix{\Sigma_{Prior}}\VEC{x}))$ by placing a prior distribution over $\VEC{w}$. Once we have a prior distribution encoding our beliefs, we use the Bayes rule to look at the observations and get a posterior distribution of parameters.
 
 \begin{equation*}
 posterior = \frac{likelihood \times prior}{marginal \quad likelihood}
 \end{equation*}
 \begin{equation}\label{eqBayesRule}
-\Pr[w \mid Y, X] = \frac{\Pr[Y \mid X, w] \times \Pr[w]}{\Pr[Y \mid X]}
+\Pr[\VEC{w} \mid \VEC{y}, \myMatrix{X}] = \frac{\Pr[\VEC{y} \mid \myMatrix{X}, \VEC{w}] \times \Pr[\VEC{w}]}{\Pr[\VEC{y} \mid \myMatrix{X}]}
 \end{equation}
 
 \marginnote{\textsl{Marginal Likelihood}}[1cm]
-The \textsl{marginal likelihood} is a normalization constant, for more details please refer to section \ref{secHyperParameter}. After, using the equation \ref{eqBayesianLikelihood}, \ref{eqBayesianPrior} and \ref{eqBayesRule} we can get the posterior distribution of weights as:
+The \textsl{marginal likelihood} ($\Pr[\VEC{y} \mid \myMatrix{X}]$) is a normalization constant, for more details please refer to section \ref{secHyperParameter}. After, using the equation \ref{eqBayesianLikelihood}, \ref{eqBayesianPrior} and \ref{eqBayesRule} we can get the posterior distribution of weights as:
 
 \begin{equation}\label{eqBayesianPosterior}
-\Pr[w \mid Y, X]  = \mathcal{N}\left ( \frac{1}{\sigma_{n}^{2}} A^{-1}X Y , A^{-1} \right )
+\Pr[\VEC{w} \mid \VEC{y}, \myMatrix{X}]  = \mathcal{N}\left ( \frac{1}{\sigma_{n}^{2}} \myMatrix{A^{-1}}\myMatrix{X}\VEC{y} , \myMatrix{A^{-1}} \right )
 \end{equation}
 
-Here, $A = \sigma_{n}^{-2}XX^{T} + \Sigma_{Prior}^{-2}$. Thus the posterior distribution for function $f$ at test point $x_{*}$ becomes:
+Here, $\myMatrix{A} = \sigma_{n}^{-2}\myMatrix{X}\myMatrix{X^{T}} + \myMatrix{\Sigma_{Prior}^{-2}}$. Thus the posterior distribution for function $f$ at test point $\VEC{x_{*}}$ becomes:
 
 \begin{equation}\label{eqBayesianFunctionalPosterior}
-\Pr[f \mid x_{*}, X, y]  = \mathcal{N}\left ( \frac{1}{\sigma_{n}^{2}} x_{*}A^{-1}XY , x_{*}^{T}A^{-1}x_{*} \right )
+\Pr[f \mid \VEC{x_{*}}, \myMatrix{X}, \VEC{y}]  = \mathcal{N}\left ( \frac{1}{\sigma_{n}^{2}} \VEC{x_{*}}\myMatrix{A^{-1}}\myMatrix{X}\VEC{y} , \VEC{x_{*}^T}\myMatrix{A^{-1}}\VEC{x_{*}} \right )
 \end{equation}
 
 \marginnote{\textsl{Posterior}}[1cm]
-The mean $\frac{1}{\sigma_{n}^{2}} x_{*}A^{-1}XY$ can be used as a prediction at the test point $x_{*}$, while the variance is a measure of uncertainty for this prediction. We can thus obtain the prediction $f(x_{*})$, using a prior set of beliefs (equation \ref{eqBayesianPrior}) and updating those beliefs using observations. 
+The mean $\frac{1}{\sigma_{n}^{2}} \VEC{x_{*}}\myMatrix{A^{-1}}\myMatrix{X}\VEC{y}$ can be used as a prediction at the test point $\VEC{x_{*}}$, while the variance is a measure of uncertainty for this prediction. We can thus obtain the prediction $f(\VEC{x_{*}})$, using a prior set of beliefs (equation \ref{eqBayesianPrior}) and updating those beliefs using observations. 
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
 \marginnote{\textsl{Experiment}}[1cm]
-Suppose we have a toy dataset $\mathcal{D}_{1} = \{X = [-0.5, 0.33, 0.66], Y = [0, 0.5, 0.5]\}$ and want to find a function that fits this dataset using Bayesian Linear Regression. If we assume a prior distribution of parameter $w$ as defined by equation \ref{eqExperimentalPrior}, then the probability density of $w$ will look like figure \ref{subFigpriorBLR}.
+Suppose we have a toy dataset $\mathcal{D}_{1} = \{\myMatrix{X} = [-0.5, 0.33, 0.66], \VEC{y} = [0, 0.5, 0.5]\}$ and want to find a function that fits this dataset using Bayesian Linear Regression. If we assume a prior distribution of parameter $\VEC{w}$ as defined by equation \ref{eqExperimentalPrior}, then the prior probability density of $\VEC{w}$ will look like figure \ref{subFigpriorBLR}.
 
 \begin{equation}\label{eqExperimentalPrior}
 \Pr \left [\begin{pmatrix}
@@ -181,7 +171,7 @@ w_{1}
 \end{pmatrix} \right ] = \mathcal{N}\left [ \begin{pmatrix}
 0\\ 
 0
-\end{pmatrix}, \Sigma_{P} = \begin{bmatrix}
+\end{pmatrix}, \myMatrix{\Sigma_{P}} = \begin{bmatrix}
 1 & 0\\ 
 0 & 1
 \end{bmatrix} \right ]
@@ -197,7 +187,7 @@ w_{1}
 \end{figure}
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
-Using equations \ref{eqExperimentalPrior} and \ref{eqBayesianFunctionalPosterior} we can calculate the posterior distribution for the parameters. For a noise model of $\Pr[\epsilon] = \mathcal{N}(0, (\sigma_{n}=0.1)^2)$ the posterior distribution comes out as the figure \ref{subFigposteriorBLR}
+Using equations \ref{eqExperimentalPrior} and \ref{eqBayesianFunctionalPosterior} we can calculate the posterior distribution for the parameters. For a noise model of $\Pr[\epsilon] = \mathcal{N}(0, \sigma_{n}^2=0.1^2)$ the posterior distribution comes out as the figure \ref{subFigposteriorBLR}
 
 \begin{equation}\label{eqExperimentalPosterior}
 \Pr \left [\begin{pmatrix}
@@ -239,27 +229,81 @@ While the Bayesian Linear Regression framework provides an opportunity to encode
 Learning algorithms are mainly divided into two main types. The first is defined by parametric models which can only represent a limited hypothesis space. They use parameters to describe the function between input and output domain. For example the weight parameters $w$ in Bayesian Linear Regression. The second are non-parametric models whose hypothesis space grows with the size of data \cite{ghahramani2013bayesian}. Non-parametric models use data to represent functions, GP Regression is a type of non-parametric model. One can imagine a non-parametric model like a stretched rubber sheet: whenever it sees data it deforms accordingly to compensate for the new data point. Hence the more data it sees the more it starts mimicking the actual function. 
 
 \marginnote{\textsl{Gaussian Process}}[1cm]
-Kriging was first used in the context of Geo-statistics research by Daniel Krige \cite{krige1951statistical}, this was later formalized by Matheron in his seminal work "Principals of Geo-statistics" \cite{matheron1963principles}. Recently, interest in the GPs grew in the machine learning community from neural networks research. It was shown that a Bayesian neural network becomes a GP as the number of neurons tends to infinity \cite{neal2012bayesian}. GPs are probabilistic distributions over functions, which provide a Bayesian non-parametric approach to smoothing and interpolation. Regression performed through GPs are generalizations of the Kriging algorithm. 
+Kriging was first used in the context of Geo-statistics research by Daniel Krige \cite{krige1951statistical}, this was later formalized by Matheron in his seminal work "Principals of Geo-statistics" \cite{matheron1963principles}. Recently, interest in GPs grew in the machine learning community from neural networks research. It was shown that a Bayesian neural network becomes a GP as the number of neurons tends to infinity \cite{neal2012bayesian}. GPs are probabilistic distributions over functions, which provide a Bayesian non-parametric approach to smoothing and interpolation. Regression performed through GPs are generalizations of the Kriging algorithm. 
 
 Informally, a GP is a method to probabilistically define a family of functions. A GP can be completely parametrized by its mean and covariance function. The mean function defines the trend-line of the family of functions, while the covariance defines the spatial dependency of input-points. Throughout this thesis we will manipulate the covariance function to encode prior known information into a GP Regression framework. 
 
-
-chapter \ref{chapGp} expands GP in more detail. 
-
 \section{Layout}\label{secOutline}
-\textbf{Outine of the thesis, and on a new page}
 This thesis is divided into three main parts, each part is then divided into individual chapters and their constituent sections. This part sets up the prerequisites required to understand the concepts introduced in the next two parts. The first chapter demonstrates the need for performing regression in aircraft design tasks and describes a very basic Bayesian Linear Regression scheme. 
 
 \marginnote{\textsl{Chapter \ref{chapGp}}}[1cm]
-Chapter \ref{chapGp} shows the key processes involved in a GP regression framework. GPs as distributions over functions have a rich history in geo-statistics and machine learning. The second chapter heavily draws ideas from \cite{krige1951statistical, matheron1963principles} of the geo-statistics community and \cite{Stein1999Springer, kennedy2000predicting, Rasmussen2005, mackay2003information} of the machine-learning community, showing a process flow of how to perform regression using GPs. The remaining chapter unfolds as follows, section \ref{secPrior} describes the key constituents of a GP and how to draw random functions from a GP. Section \ref{secPosterior} describes how to perform prediction in presence and absence of measurement noise. Section \ref{secHyperParameter} introduces marginal likelihood as a form of evaluation method to automatically choose hyper-parameters. 
+Chapter \ref{chapGp} shows the key processes involved in a GP regression framework. GPs as distributions over functions have a rich history in geo-statistics and machine learning. The second chapter heavily draws ideas from \cite{krige1951statistical, matheron1963principles} of the geo-statistics community and \cite{Stein1999Springer, kennedy2000predicting, Rasmussen2005, mackay2003information} of the machine-learning community, showing a workflow of how to perform regression using GPs. The remaining chapter unfolds as follows, section \ref{secPrior} describes the key constituents of a GP and how to draw random functions from a GP. Section \ref{secPosterior} describes how to perform prediction in presence and absence of measurement noise. Section \ref{secHyperParameter} introduces marginal likelihood as a form of evaluation method to automatically choose hyper-parameters. 
 
 \marginnote{\textsl{Chapter \ref{chapScalingGPR}}}[1cm]
-Chapter \ref{chapScalingGPR} deals with the problem of scaling GP regression to massively many points. Traditional GPs are computationally infeasible on a standard laptop if the number of data points increase $\mathcal{O}(10^4)$. There exist two main methods to scale a GP regression, one using reduced set of inducing points while another based on mixture of experts methodology. This chapter draws heavily from the works of \cite{quinonero2005unifying, seeger2003fast, Snelson06sparsegaussian, Titsias09variationallearning} for the approximation method of inducing points and \cite{cao2014generalized, tresp2000bayesian, chen2009bagging, deisenroth2015distributed} for the approximation method of mixture of experts, please refer to the individual publications for more detail. We demonstrate the limitations and capabilities of both the methods on a toy dataset, giving directions to choosing optimal parameters and extracting the best possible result.  
+Chapter \ref{chapScalingGPR} deals with the problem of scaling GP regression to massively many points. Traditional GPs are computationally infeasible on a standard laptop if the number of data points increase $\mathcal{O}(10^4)$. There exist two main methods to scale a GP regression, one using a reduced set of inducing points while another based on mixture of experts methodology. This chapter draws heavily from the works of \cite{quinonero2005unifying, seeger2003fast, Snelson06sparsegaussian, Titsias09variationallearning} for the approximation method of inducing points and \cite{cao2014generalized, tresp2000bayesian, chen2009bagging, deisenroth2015distributed} for the approximation method of mixture of experts, please refer to the individual publications for more detail. We demonstrate the limitations and capabilities of both the methods on a toy dataset, giving directions to choosing optimal parameters and extracting the best possible result.  
 
-\textbf{Description of the other two parts}
+\marginnote{\textsl{Part \ref{partIncorporatePattern}}}[1cm]
+A GP prior can be fully parametrized by its mean and covariance function, from now on we only concentrate on manipulating the covariance function to embed the desired \textit{apriori} information into a GP prior. Part \ref{partIncorporatePattern} demonstrates how to incorporate an \textit{apriori} pattern into a regression framework. It consists of two chapters, chapter \ref{chapBasicCovarianceKernels} describes basic covariance functions, while chapter \ref{chapCombiningBasicCovariances} explains how to make new covariance functions by combining the earlier described basic covariance functions. This part has been inspired from the works of \cite{bishop2006pattern, mackay2003information, duvenaud-thesis-2014, wilson2014thesis, lloyd2014automatic, durrande2001etude, durrande2013anova}. 
 
-\textbf{Contributions}
+\marginnote{\textsl{Chapter \ref{chapBasicCovarianceKernels}}}[1cm]
+Chapter \ref{chapBasicCovarianceKernels} describes different types of covariance functions and their corresponding family of functions. Patterns such as smoothness (section \ref{subSecCh4SEKernel}), linearity (section \ref{subSecCh4LinearKernel}), differentiability (section \ref{subsecCh4MaternKernel}), etc. can be easily encoded using simple covariance functions. We briefly list the properties of basic stationary and non-stationary covariance functions, while also giving an example to demonstrate effects of choosing different covariance functions on the final regression model (section \ref{subsecCH4Experiments}). Stationary kernels have an interesting property that their Fourier transforms exist and are more interpretable. We exploit this knowledge to learn modal properties of a structure from their dynamic excitations (section \ref{subSecSMKernelApplication}). 
 
+\marginnote{\textsl{Chapter \ref{chapCombiningBasicCovariances}}}[1cm]
+Chapter \ref{chapCombiningBasicCovariances} provides intuition on what happens when we combine different covariance functions. We first look at the effects of simply adding or multiplying covariances in one-dimensional inputs (section \ref{secSingleDimension}), and then investigate how to create covariance functions for multi-dimensional inputs (section \ref{secMultiDimensionalKernels}). We use these kind of covariance functions to detect onset of plasticity in Tensile experiments on AL 6061 (section \ref{subsubsecCh4ApplicationCP}) and interpolate pressures in the Transonic regime (section \ref{subecInterpolationOfAerodynamicPressures}). 
+
+\marginnote{\textsl{Part \ref{partIncorporateMultipleOutputs}}}[1cm]
+Several real-world problems often exhibit strong correlations between output variables, for example, correlations across spatial coordinates ($x, y, z$) in an experiment. Part \ref{partIncorporateMultipleOutputs} of this thesis demonstrates how to incorporate an \textit{apriori} information among multiple outputs, this is also called as `Multi-Task Gaussian Process' (MTGP) in GP literature. This part is split into two chapters, chapter \ref{chapMultiTaskExtrapolation} describes the MTGP for the case of multi-fidelity simulations, while chapter \ref{chapAddingEquationsInGP} describes the MTGP for the case when we have \textit{apriori} information of relationships between outputs. This chapter has been inspired from the works of \cite{forrester2007multi, alvarez2011kernels, bonilla_multi-task_2008, Boyle05dependentgaussian, kennedy2000predicting, le2013multi, Constantinescu2013, journals/jmlr/AlvarezLL09, jidling2017linearly, ginsbourger2013invariances, sarkka2011linear}
+
+\marginnote{\textsl{Chapter \ref{chapMultiTaskExtrapolation}}}[1cm]
+Chapter \ref{chapMultiTaskExtrapolation} we describe how to build GP regression models in presence of multi-fidelity simulations. The \textit{apriori} information that we have in this case is that one simulation is more accurate than the other. The chapter starts by presenting MTGP models when no information of dependency between outputs exists (section \ref{secMTGP}), we then present the multi-fidelity model (section \ref{secMultiFidelityMTGP}). Finally, we expand the multi-fidelity model to the case of extrapolating experimental data using a simulation model (section \ref{subsecMTGPExtrapolation}). 
+
+\marginnote{\textsl{Chapter \ref{chapAddingEquationsInGP}}}[1cm]
+Finally, chapter \ref{chapAddingEquationsInGP} demonstrates how to build an MTGP model if we know a relationship in form of an operation between two outputs. We first tackle the case of linear operators (section \ref{subsecLinearOperators}) and then expand the case to non-linear operators (section \ref{subsecNonLinearOperators}). We then give methods to scale MTGP models to large number of data-points, mainly by applying already seen techniques in chapter \ref{chapScalingGPR}. 
+
+\section{Contributions}\label{secCh1Contributions}
+Before highlighting the contributions of this thesis it is important to understand the research work in context of a CIFRE thesis. A CIFRE thesis is different from common PhD thesis because the student is an employee of the host company and is linked to the research university. This means that the research should preferably be application oriented, trying to solve some industry specific problem.
+
+The main theme of this thesis is applying the developments in supervised Machine learning community to problems in  Engineering design. We choose GP regression as our supervised Machine Learning algorithm and we solve problems in Aircraft design. The developments proposed in this thesis can be further divided into two subgroups. First, where we have made contributions to the GP regression community. Second, where we have applied a formalism from GP regression literature to problems in aircraft design. Table \ref{tabListOfContributions} highlights the main contributions of this thesis.
+
+\begin{table}[!ht]
+\centering
+\begin{tabularx}{\textwidth}{|l|X|X|}
+  \hline
+  & GP + Aircraft Design & GP Regression \\
+  \hline 
+  \hline
+Chapter \ref{chapBasicCovarianceKernels}& Identifying Structural dynamic parameters \cite{chiplunkar2017operational} &\\
+\hline
+Chapter \ref{chapCombiningBasicCovariances} & Identifying onset of non-linearity \cite{chiplunkar:hal-01555401} &\\
+\hline
+Chapter \ref{chapCombiningBasicCovariances} & Interpolate Shock position \cite{oatao18004} &\\
+\hline
+Chapter \ref{chapMultiTaskExtrapolation} & Extrapolate using simulation model &\\
+\hline
+Chapter \ref{chapAddingEquationsInGP} & Adding flight mechanics to GP \cite{oatao18001} &\\
+\hline
+Chapter \ref{chapAddingEquationsInGP} & & Scaling multi-task GP  \cite{icpram16Ankit, oatao18000}  \\
+  \hline 
+  \end{tabularx}
+  \label{tabListOfContributions}
+  \caption{List of contributions}
+  \end{table}
+
+When we are applying GP regression framework to Aircraft design problems, we are effectively combining the prior knowledge coming from decades of experimentation and adding it to a learning algorithm. A model generated from merging of the two methodologies will be both consistent with the physics of the system and be quicker to evaluate. We integrate three types of prior knowledge by answering the following questions:
+
+\begin{enumerate}
+\item \textbf{Pattern}: How to add \textit{apriori} information of a pattern in a learning algorithm? For example, given that shock is a discontinuous change in pressure, how to predict the position of shock on an airfoil (part \ref{partIncorporatePattern}). 
+\item \textbf{Simulation model}: How to merge \textit{apriori} information of simulations with experiments? For example, given a simulation model and experimental data how to perform extrapolations on experimental data(chapter \ref{chapMultiTaskExtrapolation}). 
+\item \textbf{Relationships}: How to add \textit{apriori} information of relationships between measurements? For example given $Loads = \int Pressures$, how to make a robust loads model when we measure both pressures and loads (chapter \ref{chapAddingEquationsInGP}).
+\end{enumerate}
+
+The Matlab codes available in this manuscript are only for improving the understanding. The basic toolbox used for this section is GPML provided with \cite{Rasmussen2005}, any new functions have been grafted into this basic toolbox. The code of this manuscript is available at \url{https://github.com/ankitchiplunkar/thesis_isae}. 
+
+
+
+
+% \end{mdframed}
+\textbf{codes}
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "isae-report-template"

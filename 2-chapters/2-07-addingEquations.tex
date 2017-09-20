@@ -213,7 +213,7 @@ In the next section, we compare the prediction capabilities of independent GP, w
 \section{Experiments}\label{sec:results}
 In this section, we provide a numerical illustration to the theoretical derivations in the earlier sections. We start with a synthetic problem where we try to learn the model over quadratic relationships. We compare the cross-validation error values of independent GP regression with that of multi-fidelity GP and relationship enforced joint MTGP. Finally, we study the effect of choosing different prior for the independent function $f^2$ on a dataset for flight-loads estimation for the horizontal tail plane.
 
-The basic toolbox used for this paper is GPML provided with \cite{Rasmussen2005}, we generate covariance functions to handle relationships as described in equations \ref{eq:exactJointCovariance} using the ``Symbolic Math Toolbox" in MATLAB 2014b (code \ref{codeJointCovariance} and \ref{codeNonLinearJointCovariance}). 
+The basic toolbox used for this section is GPML provided with \cite{Rasmussen2005}, we generate covariance functions to handle relationships as described in equations \ref{eq:exactJointCovariance} using the ``Symbolic Math Toolbox" in MATLAB 2014b (code \ref{codeJointCovariance} and \ref{codeNonLinearJointCovariance}). 
 
 \subsection{Quadratic relation on Synthetic Data}\label{sub:experimentsSyntheticData}
 We take the case of a quadratic operator \(\mathcal{L}(.)\) equation \ref{eq:quadraticRelationship}. 

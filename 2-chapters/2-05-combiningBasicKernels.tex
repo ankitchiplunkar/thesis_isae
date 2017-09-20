@@ -1,7 +1,7 @@
 \chapter{Combining Basic Covariance Functions}
 \label{chapCombiningBasicCovariances}
 
-What if, the kind of patterns that we wish to encode are not possible by using the basic kernels described in chapter \ref{chapBasicCovarianceKernels}? What if, we wish to encode several different patterns in our hypothesis space? Or what if, we want to build models for data sets with more than one input dimensions? Thankfully, many new kernels can be constructed by merging a few basic kernels, in this we answer the above questions. 
+What if the kind of patterns that we wish to encode are not possible by using the basic kernels described in chapter \ref{chapBasicCovarianceKernels}? What if we wish to encode several different patterns in our hypothesis space? Or what if we want to build models for data sets with more than one input dimension? Thankfully, many new kernels can be constructed by merging a few basic kernels, in this chapter we answer the above questions. 
 
 The original contribution of this chapter is to apply the newly created covariance functions to create engineering design models. The set of equations below are a few simple methods to create valid covariance functions \cite{bishop2006pattern, mackay2003information, durrande2001etude, durrande2013anova}. 
 
@@ -15,26 +15,26 @@ k(x_{1}, x_{2}) = & \int k_{1}(x_{1}, u)k_{2}(u, x_{2})du \label{eqConvolutionPr
 \end{align}
 
 
-Here, $k_{1}(x_{1}, x_{2})$ and $k_{2}(x_{1}, x_{2})$ are valid covariance function, while $q(x)$ and $h(x)$ are any continuous functions. Equation \ref{eqConvolutionProcess} defines a covariance function through convolution of two kernels, while for equation \ref{eqCh5LinearOperatorCovariances} defines transformation through a linear operator $g\left ( . \right ) \in \mathcal{C}^{2}$, for more discussion on this equation refer to chapter \ref{chapAddingEquationsInGP}. 
+Here, $k_{1}(x_{1}, x_{2})$ and $k_{2}(x_{1}, x_{2})$ are valid covariance function, while $q(x)$ and $h(x)$ are any continuous functions. Equation \ref{eqConvolutionProcess} defines a covariance function through convolution of two kernels, while equation \ref{eqCh5LinearOperatorCovariances} defines transformation through a linear operator $g\left ( . \right ) \in \mathcal{C}^{2}$, for more discussion on this equation refer to chapter \ref{chapAddingEquationsInGP}. 
 
-Let us take the case for a 2-dimensional input vector $x$ such that $x = \{x^{1}, x^{2}\}$\footnote{The superscript is used to number of dimension and does not denote the power.} ($x^{1}$, $x^{2}$ are values of $x$ in the first and second dimension respectively). Then the following covariance functions are also valid.
+Let us take the case of a 2-dimensional input vector\footnote{The superscript is used to number of dimension and does not denote the power.} $\VEC{x}$ such that $\VEC{x} = \{x^{1}, x^{2}\}$ ($x^{1}$, $x^{2}$ are coordinates of $\VEC{x}$ in the first and second dimension respectively). Then the following covariance functions are also valid.
 
 \begin{align}
-k(x_{1}, x_{2}) = k_{1}(x_{1}^{1}, x_{2}^{1}) + k_{2}(x_{1}^{2}, x_{2}^{2}) \label{eqCh5AddingAcrossDimensionsCovariances} \\
-k(x_{1}, x_{2}) = k_{1}(x_{1}^{1}, x_{2}^{1}) \times k_{2}(x_{1}^{2}, x_{2}^{2}) \label{eqCh5MultiplyingAcrossDimensionsCovariances} 
+k(\VEC{x_{1}}, \VEC{x_{2}}) = k_{1}(x_{1}^{1}, x_{2}^{1}) + k_{2}(x_{1}^{2}, x_{2}^{2}) \label{eqCh5AddingAcrossDimensionsCovariances} \\
+k(\VEC{x_{1}}, \VEC{x_{2}}) = k_{1}(x_{1}^{1}, x_{2}^{1}) \times k_{2}(x_{1}^{2}, x_{2}^{2}) \label{eqCh5MultiplyingAcrossDimensionsCovariances} 
 \end{align}
 
 The current chapter is written to provide intuition on what happens when we combine covariance functions. This chapter unfolds as follows; section \ref{secSingleDimension} provides intuition on combining kernels for one-dimensional inputs, while section \ref{secMultiDimensionalKernels} details how to create covariance functions for higher-dimensions (equation \ref{eqCh5AddingAcrossDimensionsCovariances} and \ref{eqCh5MultiplyingAcrossDimensionsCovariances}) inputs. 
 
 \section{One dimensional inputs}\label{secSingleDimension}
-Combining kernels can give rise to interesting features, in this section we provide intuition on combining kernels in one dimension. Section \ref{subsecStructureKernelsMultiplyingKernels} details of effects of multiplying kernels (equation \ref{eqCh5MultiplyingCovariances}) while section \ref{subsecStructureKernelsAddingKernels} describes effects of adding kernels (equation \ref{eqCh5AddingCovariances}). Section \ref{subsubsecCh4ApplicationCP} describes the change-point kernel, we use the change-point kernel to detect start of plasticity in elastic structures such as beams and start of flow separation on an airfoil \cite{chiplunkar:hal-01555401}. 
+Combining kernels can give rise to interesting features, in this section we provide intuition on combining kernels in one dimension. Section \ref{subsecStructureKernelsMultiplyingKernels} details effects of multiplying kernels (equation \ref{eqCh5MultiplyingCovariances}) while section \ref{subsecStructureKernelsAddingKernels} describes effects of adding kernels (equation \ref{eqCh5AddingCovariances}). Section \ref{subsubsecCh4ApplicationCP} describes the Change-Point (CP) kernel. We use the CP kernel to detect start of plasticity in elastic structures such as beams and start of flow separation on an airfoil \cite{chiplunkar:hal-01555401}. 
 
 
 \subsection{Multiplying Kernels} \label{subsecStructureKernelsMultiplyingKernels}
 Multiplying two covariance functions acts as an AND operator, the resulting kernel has high value only if we have high value on both the kernels. Multiplying a Linear kernel $T$ times, will result in a $T^{th}$ order polynomial regression (equation \ref{eqCh4PolynomialCovariance}). 
 
 \begin{equation}\label{eqCh4PolynomialCovariance}
-k_{Lin} = w_{0} + w_{1}x_{1}x_{2} \quad k_{Poly} = \prod_{i=1}^{T} \left (w_{0}^{i} + w_{1}^{i}x_{1}x_{2} \right)
+k_{Lin} = w_{0} + w_{1}x_{1}^T x_{2} \quad k_{Poly} = \prod_{i=1}^{T} \left (w_{0}^{i} + w_{1}^{i}x_{1}^T x_{2} \right)
 \end{equation}
 
 Equation \ref{eqMultiLinSECovariance} shows the prior obtained after multiplying a Linear and a SE kernel. This covariance function resembles a SE covariance function but with the amplitude hyper-parameter ($\theta_{amplitude} = \textcolor{red}{x_{1}x_{2}}$) proportional to the  distance. 
@@ -57,7 +57,7 @@ Figure \ref{subFigPriorMultiLinSE} shows random draws obtained using $k_{Multi}$
   {
         \includegraphics[width=0.45\textwidth]
         {images/part2/drawsSumLinSE}
-        %\label{}
+        \label{subFigPriorAddLinSE}
   }\quad
 
        \caption{Random draws from combining a Linear and SE kernel. The solid black line defines the mean function, shaded blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The dashed lines represent five functions drawn at random from a GP prior. Random functions drawn from a linear GP are linear.}
@@ -68,35 +68,37 @@ Figure \ref{subFigPriorMultiLinSE} shows random draws obtained using $k_{Multi}$
 \subsection{Adding Kernels} \label{subsecStructureKernelsAddingKernels}
 Adding two kernels acts as an OR operator, this means that the resulting kernel will have high value if either of the two kernels have high value \cite{durrande2011additive}. 
 
-Figure \ref{subFigPriorMultiLinSE} shows the prior obtained after adding a Linear and a SE kernel. The hyper-parameters of the linear kernel are $w_{0}=0$ and $w_{1}=1$, this means that there is no intercept and $k_{Lin}(x_{1}, x_{2}) = x_{1}x_{2}$. The hyper-parameters of the SE part are $\theta_{amplitude}=1$ and $\theta_{lengthScale}=1$, similar to figure \ref{subFigpriorDrawsSE}. 
+Figure \ref{subFigPriorAddLinSE} shows the prior obtained after adding a Linear and a SE kernel. The hyper-parameters of the linear kernel are $w_{0}=0$ and $w_{1}=1$, this means that there is no intercept and $k_{Lin}(x_{1}, x_{2}) = x_{1}^Tx_{2}$. The hyper-parameters of the SE part are $\theta_{amplitude}=1$ and $\theta_{lengthScale}=1$, similar to figure \ref{subFigpriorDrawsSE}. 
 
-The Linear kernel discussed in section \ref{subSecCh4LinearKernel} is a sum of three covariance function; a constant covariance ($\textcolor{red}{w_{0}}$), a linear covariance ($\textcolor{blue}{w_{1}x_{1}x_{2}}$) and a white noise covariance function ($\textcolor{green}{\sigma_{n}^2\delta_{xx'}}$) (equation \ref{eqDistributionOfLinearKernel}). Similarly, the noisy posterior case discussed in section \ref{figGPNoiseLessPosteriors} is a case of adding a SE kernel with a white noise kernel, a heteroscedastic\footnote{Noise depending on the inputs} noise model can be similarly created by adding several kernels together.
+The Linear kernel discussed in section \ref{subSecCh4LinearKernel} is a sum of three covariance functions; a constant covariance ($\textcolor{red}{w_{0}}$), a linear covariance ($\textcolor{blue}{w_{1}x_{1}x_{2}}$) and a white noise covariance function ($\textcolor{green}{\sigma_{n}^2\delta_{xx'}}$) (equation \ref{eqDistributionOfLinearKernel}). Similarly, the noisy posterior case discussed in section \ref{figGPNoiseLessPosteriors} is a case of adding a SE kernel with a white noise kernel, a heteroscedastic\footnote{Noise depending on the inputs} noise model can be similarly created by adding several kernels together.
 
 \begin{equation}\label{eqDistributionOfLinearKernel}
-k(x_{1}x_{2}) = \textcolor{red}{w_{0}} + \textcolor{blue}{w_{1}x_{1}x_{2}} + \textcolor{green}{\sigma_{n}^2\delta_{xx'}}
+k(x_{1}, x_{2}) = \textcolor{red}{w_{0}} + \textcolor{blue}{w_{1} x_{1}^T x_{2}} + \textcolor{green}{\sigma_{n}^2\delta_{xx'}}
 \end{equation}
 
-An interesting consequence of adding kernels is that, now we can decompose the result into additive parts. Suppose $k_{Sum}$ is a covariance function by adding $n$ covariance functions $k_{1}, k_{2}, \ldots, k_{n}$ (equation \ref{eqCh5AddingCovariances}), then the posterior mean and covariance can be written as equation \ref{eqCh5PosteriorSumMean} and \ref{eqCh5PosteriorSumVariance}. 
+An interesting consequence of adding kernels is that now we can decompose the result into additive parts. Suppose $k_{Sum}$ is a covariance function by adding $n$ covariance functions $k_{1}, k_{2}, \ldots, k_{n}$ (equation \ref{eqCh5AddingCovariances}), then the posterior mean and covariance can be written as equation \ref{eqCh5PosteriorSumMean} and \ref{eqCh5PosteriorSumVariance}. 
 
 \begin{align}\label{eqCh5PosteriorSumMean}
-\mathbf{E}[f(x) \mid X, Y, k_{Sum}] = \sum_{i=1}^{n} K_{i}(x_{*}X)( K_{Sum}(X, X))^{-1}Y
+\mathbf{E}[f(x) \mid \myMatrix{X}, \VEC{y}, k_{Sum}] = \sum_{i=1}^{n} \VEC{k_{i}(x_{*}X)}( \myMatrix{K_{Sum}(X, X)})^{-1} \VEC{y}
 \end{align}
 
 \begin{equation}\label{eqCh5PosteriorSumVariance}
-Cov[f(x) \mid X, Y, k_{Sum}] = \sum_{i=1}^{n} \left[ K_{i}(x_{*}x_{*}) - K_{i}(x_{*}X)( K_{Sum}(X, X) )^{-1}K_{i}(Xx_{*}) \right ]
+Cov[f(x) \mid \myMatrix{X}, \VEC{y}, k_{Sum}] = \sum_{i=1}^{n} \left[ k_{i}(x_{*}x_{*}) - \VEC{k_{i}(x_{*}X)}( \myMatrix{K_{Sum}(X, X)} )^{-1} \VEC{k_{i}(Xx_{*})} \right ]
 \end{equation}
 
-This comes very handy while iteratively discovering structure in the data. \cite{Rasmussen2005} use a sum of several kernels to interpolate $CO_{2}$ content in the atmosphere through the years. \cite{automaticStatistician} propose to automatically detect pattern by iteratively adding new kernels until the posterior error variance represents a white noise . 
+Note that the precision matrix $( \myMatrix{K_{Sum}(X, X)} )^{-1}$ cannot be decomposed into its constituent covariance matrices. This is not an issue since this strategy is used to separate/discover individual effects in the dataset. For example, if we make a covariance function by adding a Linear kernel and an SE kernel, we can seperate the Linear part of the dataset from the non-linear part. 
+
+This comes very handy while iteratively discovering structure in the data. One method to make an optimal covariance structure by hand is to iteratively add new kernels until the posterior error variance represents a white noise. \cite{Rasmussen2005} use a sum of several kernels to interpolate $CO_{2}$ content in the atmosphere through the years. \cite{durrande2013gaussian} use a sum of periodic kernels to detect which in genes are responsible for the 24-hour cycle in \textit{arabidopsis} plant. \cite{duvenaud2013structure, lloyd2014automatic} propose to automatically detect pattern by adding new kernels, and using the BIC measure to find the optimal covariance structure. 
 
 \subsection{Change-Point kernels}\label{subSecCh4CPKernel}
-The Change Point (CP) kernel was introduced to recognize changes in regimes, and adapt the covariance function accordingly. They were initially introduced to identify change points in time-series modelling \cite{osborne2010bayesian, saatcci2010gaussian}. These kernels can be defined through addition and multiplication with sigmoidal functions (equation \ref{eqCh4SigmoidalFUnction}). 
+The CP kernel was introduced to recognize changes in regimes, and adapt the covariance function accordingly. They were initially introduced to identify change points in time-series modelling \cite{osborne2010bayesian, saatcci2010gaussian}. These kernels can be defined through addition and multiplication with sigmoidal functions (equation \ref{eqCh4SigmoidalFUnction}). 
 
 \begin{align}
 sigm(x, \theta) & = \frac{1}{\theta_{intensity} + e^{\theta_{changeLocation}-x}} \label{eqCh4SigmoidalFUnction} \\
 CP(k_{1}, k_{2}, x_{1}, x_{2}) & = sigm(x_{1})k_{1}sigm(x_{2}) + (1-sigm(x_{1}))k_{2}(1-sigm(x_{2})) \label{eq:changePointKernel}
 \end{align}
 
-The hyper-parameters of this kernel are the $\theta_{changeLocation}$ which determines the location of the change point, and $\theta_{intensity}$ determine the intensity of change between the two patterns. Figure \ref{figdrawsCP} shows the randomly drawn functions from a change point kernel for varying values of $\theta_{intensity}$, where the regime changes from a Linear kernel to a SE kernel. The hyper-parameters of the linear kernel are $w_{0}=0$ and $w_{1}=1$, this means that there is no intercept and $k_{Lin}(x_{1}, x_{2}) = x_{1}x_{2}$. The hyper-parameters of the SE part are $\theta_{amplitude}=1$ and $\theta_{lengthScale}=1$, similar to figure \ref{subFigpriorDrawsSE}. We see that as the value of $\theta_{intensity}$ increases the regime change happens more rapidly, while if $\theta_{intensity}$ changes sign then the order of regime changes from SE kernel to Linear kernel.
+The hyper-parameters of this kernel are the $\theta_{changeLocation}$ which determines the location of the change point, and $\theta_{intensity}$ determine the intensity of change between the two patterns. Figure \ref{figdrawsCP} shows the randomly drawn functions from a change point kernel for varying values of $\theta_{intensity}$, where the regime changes from a Linear kernel to a SE kernel. The hyper-parameters of the linear kernel are $w_{0}=0$ and $w_{1}=1$, this means that there is no intercept and $k_{Lin}(x_{1}, x_{2}) = x_{1}^T x_{2}$. The hyper-parameters of the SE part are $\theta_{amplitude}=1$ and $\theta_{lengthScale}=1$, similar to figure \ref{subFigpriorDrawsSE}. We see that as the value of $\theta_{intensity}$ increases the regime change happens more rapidly, while if $\theta_{intensity}$ changes sign then the order of regime changes from SE kernel to Linear kernel.
 
 \begin{figure*}[!ht]
   \centering
@@ -113,14 +115,14 @@ The hyper-parameters of this kernel are the $\theta_{changeLocation}$ which dete
 \subsection{Application: Identifying onset of non-linearity  using CP kernel}\label{subsubsecCh4ApplicationCP}
 Several physical processes can be represented using a linear approximation in some part of their regime. This approximation is possible because the linear effects dominate in that part of the regime, but they eventually wear off and second and third order effects start becoming more powerful. 
 
-This basic assumption is used in making simple models in several domains; for example in a material during the elastic regime $Stress \propto Strain$ is a basic linear approximation. The proportionality constant between Stress and Strain is called as the Young's Modulus, which is unique for each materials. When the elastic regime starts wearing off, non-linear behaviour called plasticity starts taking over and the approximation $Stress \propto Strain$ is not valid anymore. Similarly in aerodynamics, when characterizing a flow over an airfoil during the Linear regime  $ Lift \propto Angle Of Attack$, the airflow is attached on the airfoil during this regime. When the airflow starts separating from the airfoil the non-linear effects start dominating. 
+This basic assumption is used in making simple models in several domains; for example in a material during the elastic regime $Stress \propto Strain$ is a basic linear approximation. The proportionality constant between Stress and Strain is called Young's Modulus, which is unique for each material. When the elastic regime starts wearing off, non-linear behaviour called plasticity starts taking over and the approximation $Stress \propto Strain$ is not valid anymore. Similarly in aerodynamics, when characterizing a flow over an airfoil during the Linear regime  $ Lift \propto Angle Of Attack$, the airflow is attached on the airfoil during this regime. When the airflow starts separating from the airfoil the non-linear effects start dominating. 
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=blue!20]
-The value of these basic physical parameters such as slope (eg. Young's Modulus, coefficient of lift) and location of change in regime (eg. start of plasticity and separation of flow) are progressively fed into further simulations. Generally, the slope and location of change point are evaluated painstakingly using engineering judgment, this is a painfully slow and costly process. We propose to estimate the slope and location of change-point automatically using a GP with change point kernel. Using the CP kernel which transitions from linear domain (linear kernel) to non-linear domain (SE kernel), prior information of the transition is encoded in the kernel structure. 
+The value of these basic physical parameters such as slope (eg. Young's Modulus, coefficient of lift) and location of change in regime (eg. start of plasticity and separation of flow) are progressively fed into further simulations. Generally, the slope and location of change points are evaluated painstakingly using engineering judgment, this is a slow and costly process. We propose to estimate the slope and location of change-point automatically using a GP with CP kernel. Using the CP kernel which transitions from linear domain (linear kernel) to non-linear domain (SE kernel), prior information of the transition is encoded in the kernel structure. 
 
 %\textbf{Correct the units in aluminium}
 
-We perform our experiments on openly available Stress and Strain data of Aluminum Alloy 6061 \cite{kaufman1999properties} and Lift and Angle data of NACA 0012 airfoil\footnote{Airfoil data from: http://airfoiltools.com/airfoil/details?airfoil=n0012-il}. To estimate the CP hyper-parameters, we again perform a 10-fold cross validation. The dataset will be randomly partitioned into 10 subsets containing an equal number of points. Of the 10 subsets, a single subset is retained as the test dataset, and the remaining 9 (10 - 1) subsets are used as training data. The cross-validation process is then repeated 10 times (the folds), with each of the k subsets used exactly once as the validation data. The marginal-likelihood is optimized for each of the training dataset and location of change-point and slope of the linear regime is noted. We then compare their average with the values available in the literature. 
+We perform our experiments on openly available Stress and Strain data of Aluminum Alloy 6061 \cite{kaufman1999properties} and Lift and Angle data of NACA 0012 airfoil\footnote{Airfoil data from: http://airfoiltools.com/airfoil/details?airfoil=n0012-il}. To estimate the CP hyper-parameters, we again perform a 10-fold cross validation. The dataset will be randomly partitioned into 10 subsets containing an equal number of points. Of the 10 subsets, a single subset is retained as the test dataset, and the remaining 9 (10 - 1) subsets are used as training data. The cross-validation process is then repeated 10 folds, with each of the k subsets used exactly once as the validation data. The marginal-likelihood is optimized for each of the training dataset and location of change-point and slope of the linear regime is noted. We then compare their average with the values available in the literature. 
 \end{mdframed}
 
 
@@ -144,7 +146,7 @@ Start of plasticity  & 0.94\% & 0.95\%\\
 
 Figure \ref{figPosteriorChangePointKernel} shows the posterior predictions when using the CP kernel. Figure \ref{subfig:clAlphaCovCP} is the posterior distribution for the case of NACA 0012 airfoil, the Linear and SE regimes are plotted independently. Figure \ref{subfig:stressStraincovCPPlot} shows the posterior distribution for the case of AL 6061. We can observe that the algorithm predicts a CP for the dataset, this is the point where the non-linear effects start dominating. 
 
-The marginal likelihood of a change-point kernel has many local minimas, there is a local minima at every observation point. This is because the kernel puts a non-linear regime at every observation point, hence a global optimizer should be used for optimization. The results of this study were be presented in the SIAM Uncertainty Quantification 2016 Conference \cite{chiplunkar:hal-01555401}.
+The marginal likelihood of a change-point kernel has many local minimas, there is a local minimum at every observation point. This is because the kernel puts a non-linear regime at every observation point, hence a global optimizer should be used for optimization. The results of this study were be presented in the SIAM Uncertainty Quantification 2016 Conference \cite{chiplunkar:hal-01555401}.
 
 \begin{figure}[!ht]
   \centering
@@ -158,22 +160,22 @@ The marginal likelihood of a change-point kernel has many local minimas, there i
 
 
 \section{Multi-dimensional kernels}\label{secMultiDimensionalKernels}
-In this section we develop intuitions on how to build kernels for higher-dimensional inputs. This section demonstrates what happens when we Add or Multiply kernels across dimensions (equation \ref{eqCh5AddingAcrossDimensionsCovariances} and \ref{eqCh5MultiplyingAcrossDimensionsCovariances}), while also provide kernels on how to perform sensitivity analysis or to encode lower-dimensional structure (equation \ref{eqCh5ComposedCovariances}). We then apply the multi-dimensional covariance function to interpolate aerodynamic pressure (section \ref{subecInterpolationOfAerodynamicPressures}), comparing the accuracy of GP interpolation with common Proper Orthogonal Decomposition technique \cite{oatao18004}. 
+In this section we develop intuitions on how to build kernels for higher-dimensional inputs. This section demonstrates what happens when we add or multiply kernels across dimensions (equation \ref{eqCh5AddingAcrossDimensionsCovariances} and \ref{eqCh5MultiplyingAcrossDimensionsCovariances}), while also provide kernels on how to perform sensitivity analysis or to encode lower-dimensional structure (equation \ref{eqCh5ComposedCovariances}). We then apply the multi-dimensional covariance function to interpolate aerodynamic pressure (section \ref{subecInterpolationOfAerodynamicPressures}), comparing the accuracy of GP interpolation with common POD technique \cite{oatao18004}. 
 
 \subsection{Adding across dimensions}
-Consider an input dataset which is multi-dimensional $x \in \mathbb{R}^{D_{inputs}}$. A simple additive kernel can be constructed by adding the kernels for individual dimensions \cite{hastie1990generalized}. This operation encodes the information that added dimensions are independent of each other (equation \ref{eq:SESum}). 
+Consider an input dataset which is multi-dimensional $\VEC{x} \in \mathbb{R}^{D_{inputs}}$. A simple additive kernel can be constructed by adding the kernels for individual dimensions \cite{hastie1990generalized}. This operation encodes the information that added dimensions are independent of each other (equation \ref{eq:SESum}). 
 
 \begin{equation}\label{eq:SESum}
-k(\tau, \theta) = \sum_{i=1}^{D_{inputs}} (\theta_{amplitude}^{i})^2 exp\left [ -\frac{(\tau^{i})^2}{2(\theta_{lengthScale}^{i})^2} \right ]
+k(\VEC{\tau}, \VEC{\theta}) = \sum_{i=1}^{D_{inputs}} (\theta_{amplitude}^{i})^2 exp\left [ -\frac{(\tau^{i})^2}{2(\theta_{lengthScale}^{i})^2} \right ]
 \end{equation}
 
 Here, $\tau^{i} = x^{i}_{1} - x^{i}_{2}$ is the distance between two input points at the $i^{th}$ dimension. Figure \ref{subFigdrawsSumMultiDimensional} is a randomly drawn function after adding two SE kernels, the hyper-parameters of both the SE kernels are $\theta_{amplitude}=1$ and $\theta_{lengthscale}=0.2$. 
 
 \subsection{Multiplying across dimensions}
-If we want to include interactions between two dimensions then their kernels can be multiplied together (equation \ref{eqCh5MultiplyingAcrossDimensionsCovariances}). A kernel which allows for interaction between all the possible $D_{inputs}$-dimensions can be constructed by multiplying all kernels for all the dimensions. The multi-dimensional Automatic Relevance Determination (ARD) kernel (equation \ref{eq:SEARD}) can be looked as a multiplication of several one-dimensional kernels with different length-scales \cite{Rasmussen2005}. It is called ARD because the value of length-scale determines which dimensions are more relevant.
+If we want to include interactions between two dimensions then their kernels can be multiplied together (equation \ref{eqCh5MultiplyingAcrossDimensionsCovariances}). A kernel which allows for interaction between all the possible $D_{inputs}$-dimensions can be constructed by multiplying all kernels for all the dimensions. The multi-dimensional Automatic Relevance Determination (ARD) kernel (equation \ref{eq:SEARD}) can be seen as a multiplication of several one-dimensional kernels with different length-scales \cite{Rasmussen2005}. It is called ARD because the value of length-scale determines which dimensions are more relevant.
 
 \begin{equation}\label{eq:SEARD}
-k(\tau, \theta) = (\theta_{amplitude})^2 \prod_{i=1}^{D_{inputs}}  exp\left [ -\frac{(\tau^{i})^2}{2(\theta_{lengthScale}^{i})^2} \right ]
+k(\VEC{\tau}, \VEC{\theta}) = (\theta_{amplitude})^2 \prod_{i=1}^{D_{inputs}}  exp\left [ -\frac{(\tau^{i})^2}{2(\theta_{lengthScale}^{i})^2} \right ]
 \end{equation}
 
 Figure \ref{subFigdrawsProdMultiDimensional} is obtained after multiplying 2 SE kernels, the hyper-parameters of both the SE kernels are $\theta_{amplitude}=1$ and $\theta_{lengthscale}=0.2$ 
@@ -196,35 +198,35 @@ Figure \ref{subFigdrawsProdMultiDimensional} is obtained after multiplying 2 SE 
        \label{figPrior2dimensional}
 \end{figure}
 
-Mat\'ern kernels have been found to have superior performance on datasets with high-dimensions \cite{le2013fastfood}. It is argued that the Mat\'ern kernel accounts for the concentration of measure effect in higher-dimensions. Imagine a high-dimensional orange (it is tough to imagine more than 3 dimensions), but if there was a high dimensional orange than most of its mass will be concentrated in its skin and not its pulp \cite{domingos2012few}. Since GP assigns use this measure of distance to learn patterns, we will use Mat\'ern kernel in high-dimensions to perform regression.
+Mat\'ern kernels have been found to have superior performance on datasets with high-dimensions \cite{le2013fastfood}. It is argued that the Mat\'ern kernel accounts for the concentration of measure effect in higher-dimensions. If there was a high dimensional orange than most of its mass will be concentrated in its skin and not its pulp \cite{domingos2012few}. 
 
 \subsection{Sensitivity analysis}
-\cite{duvenaud2011additive, durrande2013anova, chastaing2015anova} define a class of additive kernels which are formed upon adding several low-dimensional interactions. The equation \ref{eqANOVAdecomposition} is the basic form of covariance function which can be used to perform sensitivity analysis.
+\cite{duvenaud2011additive, durrande2013anova, chastaing2015anova} define a class of additive kernels which are formed upon adding several low-dimensional interactions. Equation \ref{eqANOVAdecomposition} is the basic form of covariance function which can be used to perform sensitivity analysis.
 
 \begin{align}
-k(x_{1}, x_{2}) & = (\theta)^2 \prod_{i=1}^{D_{inputs}} \left(1 + k^{i}(x_{1}^{i}, x_{2}^{i})\right) \label{eqANOVAdecomposition} 
+k(\VEC{x_{1}}, \VEC{x_{2}}) & = (\theta)^2 \prod_{i=1}^{D_{inputs}} \left(1 + k^{i}(x_{1}^{i}, x_{2}^{i})\right) \label{eqANOVAdecomposition} 
 \end{align}
 
 The above kernel will include all the possible interactions across dimensions. For example for a 3-dimensional input space, the above kernel will include all the first order terms (equation \ref{eqANOVAfirstOrder}), all the second order terms (equation \ref{eqANOVAsecondOrder}), and the third order term (equation \ref{eqANOVAthirdOrder}).
 
 \begin{align}
-k_{first-order}(x_{1}, x_{2}) =  & k^{1}(x_{1}^{1}, x_{2}^{1}) + k^{2}(x_{1}^{2}, x_{2}^{2}) + k^{3}(x_{1}^{3}, x_{2}^{3})\label{eqANOVAfirstOrder} \\
-k_{second-order}(x_{1}, x_{2})  = & k^{1}(x_{1}^{1}, x_{2}^{1}) \times k^{2}(x_{1}^{2}, x_{2}^{2}) + k^{2}(x_{1}^{2}, x_{2}^{2}) \times k^{3}(x_{1}^{3}, x_{2}^{3}) \\ & 
+k_{first-order}(\VEC{x_{1}}, \VEC{x_{2}}) =  & k^{1}(x_{1}^{1}, x_{2}^{1}) + k^{2}(x_{1}^{2}, x_{2}^{2}) + k^{3}(x_{1}^{3}, x_{2}^{3})\label{eqANOVAfirstOrder} \\
+k_{second-order}(\VEC{x_{1}}, \VEC{x_{2}})  = & k^{1}(x_{1}^{1}, x_{2}^{1}) \times k^{2}(x_{1}^{2}, x_{2}^{2}) + k^{2}(x_{1}^{2}, x_{2}^{2}) \times k^{3}(x_{1}^{3}, x_{2}^{3}) \\ & 
 +  k^{3}(x_{1}^{3}, x_{2}^{3}) \times k^{1}(x_{1}^{1}, x_{2}^{1}) \label{eqANOVAsecondOrder} \\
-k_{third-order}(x_{1}, x_{2}) = & k^{1}(x_{1}^{1}, x_{2}^{1}) \times k^{2}(x_{1}^{2}, x_{2}^{2}) \times k^{3}(x_{1}^{3}, x_{2}^{3})\label{eqANOVAthirdOrder} \\
+k_{third-order}(\VEC{x_{1}}, \VEC{x_{2}}) = & k^{1}(x_{1}^{1}, x_{2}^{1}) \times k^{2}(x_{1}^{2}, x_{2}^{2}) \times k^{3}(x_{1}^{3}, x_{2}^{3})\label{eqANOVAthirdOrder} \\
 \end{align}
 
 
-These kinds of kernels can be used to analyze the sensitivity of interactions between various dimensions (also called as ANalysis Of VAraince, ANOVA). 
+These kinds of kernels can be used to analyze the sensitivity of interactions between various dimensions (also called as ANalysis Of VAriance, ANOVA). 
 
 \subsection{Low dimensional structure}
-We can encode a low dimensional structure into family of functions by specifying the kernel as $k_{low} = k(x_{1}H, x_{2}H)$ (equation \ref{eqCh5ComposedCovariances}), here $H$ is a low rank matrix. 
+We can encode a low dimensional structure into family of functions by specifying the kernel as $k_{low} = k(\VEC{x_{1}}\myMatrix{H}, \VEC{x_{2}}\myMatrix{H})$ (equation \ref{eqCh5ComposedCovariances}), here $\myMatrix{H}$ is a low rank matrix. 
 
 \begin{align}\label{eq:SELowDimensional}
-k_{low}(\tau, \theta) = (\theta_{amplitude})^2  exp\left [  -\frac{1}{2}\tau\Sigma\tau^T \right ] 
+k_{low}(\VEC{\tau}, \VEC{\theta}) = (\theta_{amplitude})^2  exp\left [  -\frac{1}{2} \VEC{\tau} \myMatrix{\Sigma} \VEC{\tau}^T \right ] 
 \end{align}
 
-Here, $\Sigma$ is $HH^T$ which encodes the low dimensional structure. Figure \ref{subFigdrawsLowMultiDimensional} is obtained after encoding a low-dimensional into SE kernels, the hyper-parameters of the SE kernel are $\theta_{amplitude}=1$ and $\theta_{lengthscale}=0.2$ while $\Sigma = [1, 0; -1, 0]$. 
+Here, $\myMatrix{\Sigma}$ is $\myMatrix{H}\myMatrix{H}^T/(\theta_{lengthscale}^2)$ which encodes the low dimensional structure. Figure \ref{subFigdrawsLowMultiDimensional} is obtained after encoding a low-dimensional into SE kernels, the hyper-parameters of the SE kernel are $\theta_{amplitude}=1$ and $\theta_{lengthscale}=0.2$ while $\myMatrix{\Sigma} = \bigl( \begin{smallmatrix} 1 & 0\\ -1 & 0\end{smallmatrix}\bigr)$. 
 
 \begin{figure}[!ht]
   \centering
@@ -234,11 +236,11 @@ Here, $\Sigma$ is $HH^T$ which encodes the low dimensional structure. Figure \re
   \caption{Random draw from a 2 dimensional prior which encodes a \textbf{low-dimensional} structure. The hyper-parameters of the kernel are $\theta_{amplitude}=1$ and $\theta_{lengthscale}=1$}
 \end{figure}
 
-When $\Sigma$ is a diagonal matrix we get a ARD kernel
+When $\myMatrix{\Sigma}$ is a diagonal matrix we get a ARD kernel
 
 \begin{equation}
 \begin{aligned}
-k(\tau, \theta) & = (\theta_{amplitude})^2  exp\left [  -\frac{1}{2}\tau\Sigma\tau^T \right ] = 
+k(\VEC{\tau}, \VEC{\theta}) & = (\theta_{amplitude})^2  exp\left [  -\frac{1}{2} \VEC{\tau} \myMatrix{\Sigma} \VEC{\tau}^T \right ] = 
 (\theta_{amplitude})^2  exp\left [ \sum_{i=1}^{D_{inputs}} -\frac{(\tau^{i})^2}{2(\theta_{lengthScale}^{i})^2} \right ] \\
 & = (\theta_{amplitude})^2 \prod_{i=1}^{D_{inputs}}  exp\left [ -\frac{(\tau^{i})^2}{2(\theta_{lengthScale}^{i})^2} \right ]
 \end{aligned}
@@ -246,43 +248,43 @@ k(\tau, \theta) & = (\theta_{amplitude})^2  exp\left [  -\frac{1}{2}\tau\Sigma\t
 
 When the number of dimension increases significantly, the number of hyper-parameters also increases this makes the optimization of marginal likelihood inefficient. \cite{bouhlel2016improved} first reduce the dimensionality of the dataset and then perform interpolation thereby circumventing the problem of higher dimensions. \cite{garnett2013active, tripathy2016gaussian} use this covariance to reduce the dimensionality of input domain.
 
-In the current section we have seen how to build covariance functions for multi-dimensional inputs. We now apply multi-dimensional kernels to build a surrogate model for Aerodynamic pressures. We validate our method on 2 testcases: the first in subsonic regime on a Flap Track Fairing (FTF) and the second in transonic regime on NASA's Common Research Model (CRM) Wing. The reader can also note that, the results of these experiments were used during a recent Airbus Flight test campaign.
+In the current section we have seen how to build covariance functions for multi-dimensional inputs. We now apply multi-dimensional kernels to build a surrogate model for Aerodynamic pressures. We validate our method on 2 test cases: the first in subsonic regime on a Flap Track Fairing (FTF) and the second in transonic regime on NASA's Common Research Model (CRM) Wing. The reader can also note that the results of these experiments were used during a recent Airbus Flight test campaign.
 
 \subsection{Application: Interpolation of aerodynamic pressures}\label{subecInterpolationOfAerodynamicPressures}
 Accurate prediction of aerodynamic pressures at a flight configuration is computationally expensive. Hence, it becomes advantageous to use surrogate models as approximations of high-fidelity aerodynamic models. A popular method of surrogate modelling in the aerodynamics community is by interpolating Reduced Order Models (ROM). A set of aerodynamic pressure snapshots is generated by performing CFD simulations for different aerodynamic parameters (eg. angle of attack $\alpha$, Mach). Then orthogonal basis vectors are found in the parameter space for the set of pressures snapshots. Generally, Proper Orthogonal Decomposition (POD) \cite{tan2003proper, rosenbaum2013efficient, braconnier2011towards} (also called as Principal Component Analysis (PCA) or Singular Value Decomposition (SVD)) is used to find the linear subspace. Finally, the reduced models are interpolated at the desired point in the parameter-space \cite{beckert2001multivariate, barrault2004empirical}. 
 
 \paragraph{Proper Orthogonal Decomposition}
-Let us first start by defining a pressure snapshot. There exists a \(3\) dimensional spatial vector \(\omega_{i} \in  \mathbb{R}^{3}\) such that \(\omega_{i} = \{(\omega_{i}^{1}, \omega_{i}^{2}, \omega_{i}^{3})\}\). Here, \(i \in [1,N_{nodes}] \) are the spatial coordinates of the \(i^{th}\) pressure node in a CFD mesh containing \(N_{nodes}\) pressure nodes. Similarly there exists a \(D\) dimensional parameter vector \(d_{j} \in  \mathbb{R}^{D}\), for \(d_{j} = \{(d_{j}^{1}, d_{j}^{2}, \ldots ,d_{j}^{D})\}\). Here,   \(j \in [1,N_{parameter}] \) correspond to the \(j^{th}\) parameter set. The parameters can be any non-spatial parameter which are desired to be interpolated, some common examples include Mach, Angle of Attack for steady aerodynamics and time or frequency for unsteady aerodynamics. We will only concentrate on interpolating steady aerodynamics in this section.
+Let us first start by defining a pressure snapshot. There exists a \(3\) dimensional spatial vector \(\VEC{\omega_{i}} \in  \mathbb{R}^{3}\) such that \(\VEC{\omega_{i}} = \{(\omega_{i}^{1}, \omega_{i}^{2}, \omega_{i}^{3})\}\). Here, \(i \in [1,N_{nodes}] \) are the spatial coordinates of the \(i^{th}\) pressure node in a CFD mesh containing \(N_{nodes}\) pressure nodes. Similarly there exists a \(D\) dimensional parameter vector \(\VEC{d_{j}} \in  \mathbb{R}^{D}\), for \(\VEC{d_{j}} = \{(d_{j}^{1}, d_{j}^{2}, \ldots ,d_{j}^{D})\}\). Here,   \(j \in [1,N_{experiment}] \) correspond to the \(j^{th}\) parameter set, while $D$ corresponds to the number of parameters. The parameters can be any non-spatial parameter which are desired to be interpolated, some common examples include Mach, Angle of Attack for steady aerodynamics and time or frequency for unsteady aerodynamics. We will only concentrate on interpolating steady aerodynamics in this section.
 
-The pressure measured on the \(i^{th}\) pressure node for the \(j^{th}\) parameter set will be denoted as \(p_{j}(\omega_{i})\) defined by the equation \ref{eq:pijSnapshot}. We next define the matrix \(\Omega = \{\omega_{1}; \omega_{2}; \ldots ; \omega_{N_{nodes}}\}\) for \(\Omega \in \mathbb{R}^{N_{nodes} \times 3}\) containing the full spatial information of the aerodynamic mesh. Finally, the pressure snapshot for the CFD/experiment run \(j\) will be denoted as \(P_{j}(\Omega) = \{p_{j}(\omega_{1}); p_{j}(\omega_{2}); \ldots ; p_{j}(\omega_{N_{nodes}})\}\) for \(P_{j}(\Omega) \in \mathbb{R}^{N_{nodes}}\) defined by the equation \ref{eq:pressurefield}.
+The pressure measured on the \(i^{th}\) pressure node for the \(j^{th}\) parameter set will be denoted as \(p_{j}(\VEC{\omega_{i}}\) defined by equation \ref{eq:pijSnapshot}. We next define the matrix \(\myMatrix{\Omega} = \{\VEC{\omega_{1}}; \VEC{\omega_{2}}; \ldots ; \VEC{\omega_{N_{nodes}}}\}\) for \(\myMatrix{\Omega} \in \mathbb{R}^{N_{nodes} \times 3}\) containing the full spatial information of the aerodynamic mesh. Finally, the pressure snapshot for the CFD/experiment run \(j\) will be denoted as \(\VEC{P_{j}(\Omega)} = \{p_{j}(\VEC{\omega_{1}}); p_{j}(\VEC{\omega_{2}}); \ldots ; p_{j}(\VEC{\omega_{N_{nodes}}})\}\) for \(\VEC{P_{j}(\Omega)} \in \mathbb{R}^{N_{nodes}}\) defined by the equation \ref{eq:pressurefield}.
 
 \begin{equation} \label{eq:pijSnapshot}
-p_{j}(\omega_{i}) = f_{pressure}(\omega_{i}, d_{j})
+p_{j}(\VEC{\omega_{i}}) = f_{pressure}(\VEC{\omega_{i}}, \VEC{d_{j}})
 \end{equation} 
 \begin{equation}\label{eq:pressurefield}
-P_{j}(\Omega) = f_{pressure}(\Omega, d_{j})
+\VEC{P_{j}(\Omega)} = f_{pressure}(\myMatrix{\Omega}, \VEC{d_{j}})
 \end{equation} 
 
-Here, $f_{pressure}$ symbolizes the aerodynamic process which when applied to a spatial location ($\omega$) and an aerodynamic parameter ($d$) gives us the pressures, we eventually wish to approximate this process ($f_{pressure}$). The POD methodology decomposes the set of pressure snapshots ($P_{j}(\Omega)$) into their eigen vectors ($\phi^{l}(\Omega)$) and participation factors ($a^{l}(d_{j})$). To reconstruct the pressure snapshot at a new point $d_{new}$, the participation factors are interpolated and then linearly combined to give the new pressure snapshot (equation \ref{eq:interpPODEquation}). For more details please refer to appendix \textbf{reference to the appendix}
+Here, $f_{pressure}$ symbolizes the aerodynamic process which when applied to a spatial location ($\VEC{\omega}$) and an aerodynamic parameter ($\VEC{d}$) gives us the pressures, we eventually wish to approximate this process ($f_{pressure}$). The POD methodology decomposes the set of pressure snapshots ($\VEC{P_{j}(\Omega)}$) into their eigen vectors ($\VEC{\phi^{l}(\Omega)}$) and participation factors ($a^{l}(\VEC{d_{j}})$). To reconstruct the pressure snapshot at a new point $\VEC{d_{new}}$, the participation factors are interpolated and then linearly combined to give the new pressure snapshot (equation \ref{eq:interpPODEquation}). For more details please refer to appendix \textbf{reference to the appendix}
 
 \begin{equation}\label{eq:interpPODEquation}
-P_{new}(\Omega) = \sum_{l=1}^{p}a^{l}(d_{new}) \phi^{l}(\Omega)
+\VEC{P_{new}(\Omega)} = \sum_{l=1}^{p}a^{l}(\VEC{d_{new}}) \VEC{\phi}^l(\myMatrix{\Omega})
 \end{equation}
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=blue!20]
 \paragraph{Contribution}
 Due to the assumption of linear subspace, interpolation through ROM is highly efficient both in terms of cost and performance in the subsonic regime \cite{verveld2016reduced}. Unfortunately in the transonic regime, the shock creates a highly non-linear, almost discontinuous pressure distribution and the assumption of linear subspace does not hold \cite{li2016performance}. Although the performance of ROM interpolators can be improved with larger number of samples \cite{franz2014interpolation, forrester2008engineering}, we propose to improve the accuracy of prediction using distributed GP Regression for the same number of samples.  
 
-We interpolate the pressure $p_{j}(\omega_{i})$ by simply multiplying the kernels across dimensions (equation \ref{eqSubsonicPressureGP}). To interpolate in subsonic regime we multiply Mat\'ern $\nu=5/2$ across dimensions, a Mat\'ern kernel is chosen since it does not suffer from concentration of measure effect in higher dimensions. We are not interested in linearly seperating the effects of individual dimensions or discovering, hence a simple multiplicative kernel will suffice for this problem. 
+We interpolate the pressure $p_{j}(\omega_{i})$ by simply multiplying the kernels across dimensions (equation \ref{eqSubsonicPressureGP}). To interpolate in subsonic regime we multiply Mat\'ern $\nu=5/2$ across dimensions, a Mat\'ern kernel is chosen since it does not suffer from concentration of measure effect in higher dimensions. We are not interested in linearly separating the effects of individual dimensions, hence a simple multiplicative kernel will suffice for this problem. 
 
 \begin{equation}\label{eqSubsonicPressureGP}
 \Pr[p_{j}(\omega_{i})] = GP \left( 0, k(x_{1}, x_{2}) = \prod_{i=1}^{D_{inputs}} k_{Mat \nu =5/2}(x_{1}^{i}, x_{2}^{i}) \right)
 \end{equation}
 
-The transonic regime often contains a shock on the surface of the wing. This shock almost creates a discontinuity in the pressure field. We know from section \ref{subSecCh4NNkernel} that Neural Network kernels can represent these type of almost discontinous functions in its hypothesis space. Hence while to interpolating in transonic regime we use the Neural Network kernel in the dimension of shock. For example, if we know that the shock appears on the chord-wise direction, then we can represent the pressure as equation \ref{eqTransonicPressureGP}.
+The transonic regime often contains a shock on the surface of the wing. This shock almost creates a discontinuity in the pressure field. We know from section \ref{subSecCh4NNkernel} that Neural Network kernels can represent these type of almost discontinuous functions in its hypothesis space. Hence to interpolate in transonic regime we use the Neural Network kernel in the dimension of shock. For example, if we know that the shock appears on the chord-wise direction, then we can represent the pressure as equation \ref{eqTransonicPressureGP}.
 
 \begin{equation}\label{eqTransonicPressureGP}
-\Pr[p_{j}(\omega_{i})] = GP \left( 0, k(x_{1}, x_{2}) = k_{NN}(x_{1}^{chord}, x_{2}^{chord}) \times \prod_{i=1}^{D_{inputs-1}} k_{Mat \nu =5/2}(x_{1}^{i}, x_{2}^{i}) \right)
+\Pr[p_{j}(\VEC{\omega_{i}})] = GP \left( 0, k(\VEC{x_{1}}, \VEC{x_{2}}) = k_{NN}(x_{1}^{chord}, x_{2}^{chord}) \times \prod_{i=1}^{D_{inputs-1}} k_{Mat \nu =5/2}(x_{1}^{i}, x_{2}^{i}) \right)
 \end{equation}
 
 Here, $x_i^{chord}$ represents the chord wise dimension of the $i^{th}$ input, while $k_{NN}$ and $k_{Mat \nu =5/2}$ represent the Neural Network and Mat\'ern ($\nu=5/2$) kernels respectively.
@@ -291,26 +293,26 @@ Here, $x_i^{chord}$ represents the chord wise dimension of the $i^{th}$ input, w
 We now test the performance of distributed GP and POD+I on two sets of numerical experiments. Firstly, we test the accuracy on a detailed FTF design \cite{Bosco2016} in subsonic regime (section \ref{subSec:elsAResults}) based on simulation from the elsA code \cite{cambier2008status}. Finally, we compare the accuracy on CRM wing in the transonic regime using elsA solver and kOmega-SST turbulence model \cite{vassberg2014summary}. elsA\textsuperscript{\textregistered} \cite{cambier2008status} is a CFD simulation platform that allows representation of both internal and external aerodynamics from the low subsonic to the high supersonic flow regime.  
 
 \subsubsection{Interpolation in subsonic regime}\label{subSec:elsAResults}
-A Flap Track Fairing (FTF) is situated below the wing and is used to deploy flaps for landing and take-off configurations. A FTF experiences heavy dynamic excitation due to the exhaust coming from engine. The dynamic nature makes the design of FTF a challenging task, where each simulation can last for 2 days. If we can effectively interpolate pressure snapshots then a 2 day dynamic simulation can be reduced to a few hours. 
+A FTF is situated below the wing and is used to deploy flaps for landing and take-off configurations. A FTF experiences heavy dynamic excitation due to the exhaust coming from engine. The dynamic nature makes the design of FTF a challenging task, where each simulation can last for 2 days. If we can effectively interpolate pressure snapshots then a 2 day dynamic simulation can be reduced to a few hours. 
 
 Interpolation of FTF pressure snapshots has been earlier studied using POD methodology \cite{bosco2016nonlinear}. In this section we use this dataset to validate the interpolation capabilities of a distributed GP. 
 
 
 \begin{figure*}[!ht]
   \centering
-  \subfigure[Flap Track Fairing Pressure snapshot]
+  \subfigure[FTF Pressure snapshot]
   {\includegraphics[height=0.15\textheight]{images/part2/RANS_m6}\label{fig:ftf_snapshot}}\quad
-  \subfigure[Flap Track Fairing Degrees of Freedom]
+  \subfigure[FTF Degrees of Freedom]
   {\includegraphics[height=0.15\textheight]{images/part2/ftf_dof}\label{fig:ftf_dof}}\quad
-      \caption{Details of the Flap track Fairing}
+      \caption{Details of the FTF}
 \end{figure*}
 
 
-The FTF degrees of freedom chosen for this analysis are $\theta$, the rotation around the longitudinal axis of the FTF, and $\alpha$, the rotation around the {\it spigot} axis, main connection between the track and the wing structure figure \ref{fig:ftf_dof}. The surface mesh of the CFD skin contains almost 36k nodes more precisely $N_{nodes} = 36802$. We run the simulation for 9 different values of $\alpha$ and 9 different values of $\theta$, more precisely we have run the CFD-RANS computation for $N_{parameter} = 9\times9 = 81$ number of times. In this particular case Reynolds Averaged  Navier-Stokes, {\it RANS}, equations are used with Spalart-Allmaras turbulence model to simulate the flow around the FTF. Figure \ref{fig:ftf_snapshot} shows one particular pressure snapshot. 
+The FTF degrees of freedom chosen for this analysis are $\theta$, the rotation around the longitudinal axis of the FTF, and $\alpha$, the rotation around the {\it spigot} axis, main connection between the track and the wing structure figure \ref{fig:ftf_dof}. The surface mesh of the CFD skin contains almost 36 thousand nodes (more precisely $N_{nodes} = 36802$). We run the simulation for 9 different values of $\alpha$ and 9 different values of $\theta$ ($N_{experiment} = 9\times9 = 81$). In this particular case Reynolds Averaged  Navier-Stokes (RANS), equations are used with Spalart-Allmaras turbulence model to simulate the flow around the FTF. Figure \ref{fig:ftf_snapshot} shows one particular pressure snapshot. 
 
-We use Leave One Out (LOO) Cross Validation method to quantify the performance of the two methodologies. $[\alpha, \theta]$ pairs are removed one by one from the database to create a new training set. The new training set is used to perform interpolation according to POD+I and distributed GP. Pressure snapshot is reconstructed for the missing $[\alpha, \theta]$ pairs. The methods are finally compared by evaluating the Root Mean Square Error (RMSE) and time of prediction for each pair case. 
+We use the Leave One Out (LOO) Cross Validation method to quantify the performance of the two methodologies. $[\alpha, \theta]$ pairs are removed one by one from the database to create a new training set. The new training set is used to perform interpolation according to POD+I and distributed GP. Pressure snapshot is reconstructed for the missing $[\alpha, \theta]$ pairs. The methods are finally compared by evaluating the Root Mean Square Error (RMSE) and time of prediction for each pair case. 
 
-While performing distributed GP regression, we learn a GP model between $p_{ij}$ and input vector $X = [\omega_{i}^{1}, \omega_{i}^{2}, \omega_{i}^{3}, \alpha, \theta]$. We build a multi-dimensional kernel by multiplying 5 Mat\'ern kernels, different length-scale for each dimension. As discussed earlier we propose to use Mat\'ern kernel since the SE kernel has a very restrictive hypothesis space for high-dimensional regression.  Effectively we are learning a GP model for $N = 36802\times80 = 2.9$ million data-points. 
+While performing distributed GP regression, we learn a GP model between the input vector $\VEC{x} = [\omega_{i}^{1}, \omega_{i}^{2}, \omega_{i}^{3}, \alpha, \theta]$ and the pressures ($p_{ij}$). We build a multi-dimensional kernel by multiplying 5 Mat\'ern kernels, different length-scale for each dimension. As discussed earlier we propose to use Mat\'ern kernel since the SE kernel has a very restrictive hypothesis space for high-dimensional regression.  Effectively we are learning a GP model for $N = 36802\times80 = 2.9$ million data-points. 
 
 \begin{figure*}[!ht]
   \centering
@@ -322,38 +324,38 @@ While performing distributed GP regression, we learn a GP model between $p_{ij}$
   \caption{Results for elsA interpolation}
 \end{figure*}
 
-Figures \ref{subfig:RMSECFD} denote the RMSE estimates for different pairs. For RMSE, the distributed GP performs marginally better than POD. The outliers in the boxplots denote cases where the removed pairs are on the edges of database. Since the removed pairs are on the edges of database matrix, there are no CFD snapshots surrounding these pairs. Hence extrapolation is performed during the edge cases. POD has a RMSE of $0.48\pm0.27$ whereas distributed GP has a RMSE of $0.37\pm0.1$. The average distributed GP prediction is $20\%$ better than POD. Figure \ref{subfig:timeCFD} shows the time taken to perform prediction for the two model types. We are only comparing the time to perform interpolation, time to learn the model will be much longer. POD takes $2.35s\pm0.11s$ whereas distributed GP takes $37.84s\pm4.35s$ to perform the interpolation. The POD method is the faster sometimes performing 30 times faster than the distributed GP. 
+Figures \ref{subfig:RMSECFD} denote the RMSE estimates for different pairs. For RMSE, the distributed GP performs marginally better than POD. The outliers in the box-plots denote cases where the removed pairs are on the edges of the domain. Since the removed pairs are on the edges of the domain, there are no CFD snapshots surrounding these pairs. Hence we are extrapolating during the edge cases. POD has a RMSE of $0.48\pm0.27$ whereas distributed GP has a RMSE of $0.37\pm0.1$. The average distributed GP prediction is $20\%$ better than POD. Figure \ref{subfig:timeCFD} shows the time taken to perform prediction for the two model types. We are only comparing the time to perform interpolation, time to learn the model will be much longer. POD takes $2.35s\pm0.11s$ whereas distributed GP takes $37.84s\pm4.35s$ to perform the interpolation.  
 
-Although the GP technique can more efficiently capture non-linear behavior we see a relatively low improvement in performance for the amount of time invested. Deciding between the simple and time-tested POD method or costly and accurate distributed GP interpolation in the subsonic regime can be a tough task and mostly depends on the preferences of the final user.
+Although the GP technique can more efficiently capture non-linear behavior we see a relatively low improvement in performance for the amount of time invested. Deciding between the simple and time-tested POD method or costly and accurate distributed GP interpolation in the subsonic regime can be a delicate task and mostly depends on the preferences of the final user.
 
 \subsubsection{Interpolating in transonic regime}\label{subSec:resultsCRM}
-We now proceed to compare the accuracy of the two methods in transonic regime on the Common Research Model (CRM)  proposed by NASA. Since the introduction of the model for the 4th Drag Prediction Workshop \cite{vassberg2014summary}, the CRM has been become a very widely used test case for applied computational aerodynamics. Due to the widespread experience and availability of wind-tunnel test results for the CRM configuration, it is a natural case to benchmark interpolations. 
+We now proceed to compare the accuracy of the two methods in transonic regime on the CRM proposed by NASA. Since the introduction of the model for the 4th Drag Prediction Workshop \cite{vassberg2014summary}, the CRM has been become a very widely used test case for applied computational aerodynamics. Due to the widespread experience and availability of wind-tunnel test results for the CRM configuration, it is a natural case to benchmark interpolations. 
 
-Due to the shape of an airfoil, airflow is accelerated on the upper surface of the wing. This causes shocks to appear on the upper surface of the wing in the transonic regime. Shocks are sudden changes (almost discontinuous) in the pressure and are important for estimating performance of the aircraft \cite{jameson1974iterative, cole2012transonic}. Moreover an aircraft flies in the transonic regime for 80\% of its journey (cruise). Hence accurate prediction of location and strength of a shock is very important during design. Since POD is a linear subspace reduction method it has difficulty while a discontinous reconstructing shock regime \cite{verveld2016reduced}.
+Due to the shape of an airfoil, airflow is accelerated on the upper surface of the wing. This causes shocks to appear on the upper surface of the wing in the transonic regime. Shocks are sudden changes (almost discontinuous) in pressure and are important for estimating the performance of the aircraft \cite{jameson1974iterative, cole2012transonic}. Moreover, an aircraft flies in the transonic regime for 80\% of its journey (cruise). Hence accurate prediction of location and strength of a shock is very important during design. Since POD is a linear subspace reduction method it has difficulties in interpolating a discontinuous shock regime \cite{verveld2016reduced}.
 
 \begin{figure*}[!ht]
   \centering
-  \subfigure[{Common research model. The four red lines are the four cuts at $y/b = [0.105, 0.37, 0.5, 0.84]$. Here, $y$ denotes the y-distance from aircraft axis and $b$ denotes the span of one wing}.]
+  \subfigure[{CRM. The four red lines are the four cuts at $y/b = [0.105, 0.37, 0.5, 0.84]$. Here, $y$ denotes the y-distance from aircraft axis and $b$ denotes the span of one wing}.]
   {\includegraphics[width=0.45\textwidth]{images/part2/crm_Wing_design}\label{subfig:crmWing}}\quad
-    \subfigure[{Pressure snapshot on the Common Research model for $\alpha = 2$ and $Mach = 0.85$, using elsa solver and $\kappa - \omega$ SST turbulence model. We can observe double shock pattern appearing on the outer sections of the wing}]
+    \subfigure[{Pressure snapshot on the CRM for $\alpha = 2$ and $Mach = 0.85$, using elsa solver and $\kappa - \omega$ SST turbulence model. We can observe double shock pattern appearing on the outer sections of the wing}]
     {\includegraphics[width=0.45\textwidth]{images/part2/surfM85A2}\label{subfig:crmSnapshot}}
-  \caption{Common Research Model}
+  \caption{CRM}
 \end{figure*}
 
-Again we use the elsA\textsuperscript{\textregistered} solver to perform simulations on the design. We use the $\kappa - \omega$ SST turbulence model to perform predictions since it has good performance in the fuselage wing interaction regions \cite{menter2003ten, vassberg2014summary}. The CFD was run for a combination of 21 values of $\alpha \in [1: 0.1: 3]$ and 5 values of $Mach \in [0.84: 0.005: 0.86]$, hence $N_{parameter} = 21\times5 = 105$. Figure, \ref{subfig:crmSnapshot} shows one of the pressure snapshots for $\alpha = 2$ and $Mach = 0.85$. We then cut the wing at four distinct locations $y/b = [0.105, 0.37, 0.5, 0.84]$ (figure \ref{subfig:crmWing}) to clearly observe different types of aerodynamic behavior. Here, $y$ denotes the y-distance from aircraft axis and $b$ denotes the span of one wing. 
+Again we use the elsA\textsuperscript{\textregistered} solver to perform simulations on the design. We use the $\kappa - \omega$ SST turbulence model to perform predictions since it has good performance in the fuselage wing interaction regions \cite{menter2003ten, vassberg2014summary}. The CFD was run for a combination of 21 values of $\alpha \in [1: 0.1: 3]$ and 5 values of $Mach \in [0.84: 0.005: 0.86]$, hence $N_{experiment} = 21\times5 = 105$. Figure, \ref{subfig:crmSnapshot} shows one of the pressure snapshots for $\alpha = 2$ and $Mach = 0.85$. We then cut the wing at four distinct locations $y/b = [0.105, 0.37, 0.5, 0.84]$ (figure \ref{subfig:crmWing}) to clearly observe different types of aerodynamic behavior. Here, $y$ denotes the y-distance from aircraft axis and $b$ denotes the span of one wing. 
 
 As detailed in the earlier section we again use LOO-CV for comparing the performance of the two methods. The POD+I method has been run as described in Appendix \textbf{reference to appendix on PODi}. For GP regression, we learn a GP model between $p_{ij}$ and input vector $X = [chordDimension, \alpha, Mach]$. We build a multi-dimensional kernel by multiplying 2 Mat\'ern kernels (for $\alpha$ and $Mach$ dimensions) one Neural Network kernel (for spatial dimension). The shock will appear in the spatial dimension and hence using a Neural network kernel in that dimension lets us capture the discontinuity more accurately. 
 
 \begin{figure*}[!ht]
   \centering
-  \subfigure[{Normalized RMSE for the two different model types. POD has a RMSE of $0.32\pm0.23$ whereas distributed GP has a RMSE of $0.02\pm0.01$. The average distributed GP prediction is 16 times better than POD in transonic regime. The outliers in the boxplots denote cases where the removed pairs are on the edges of database. Since the removed pairs are on the edges of database matrix, there are no CFD snapshots surrounding these pairs. Hence extrapolation is performed during the edge cases.}]
+  \subfigure[{Normalized RMSE for the two different model types. POD has a RMSE of $0.32\pm0.23$ whereas distributed GP has a RMSE of $0.02\pm0.01$. The average distributed GP prediction is 16 times better than POD in transonic regime. The outliers in the box-plots denote cases where the removed pairs are on the edges of database. Since the removed pairs are on the edges of database matrix, there are no CFD snapshots surrounding these pairs. Hence extrapolation is performed during the edge cases.}]
   {\includegraphics[width=0.45\textwidth]{images/part2/rmseCRM_box}\label{subfig:RMSECRM}}\quad
     \subfigure[{Time taken to perform prediction for the two different model types. POD takes $0.5s\pm0.03s$ whereas distributed GP takes $40.6s\pm2.3s$ to perform the interpolation. This is the time to perform prediction and not learning the model. The average POD method is 80 times faster than distributed GP.}]
     {\includegraphics[width=0.45\textwidth]{images/part2/timeCRM_box}\label{subfig:timeCRM}}
   \caption{Results for CRM interpolation}
 \end{figure*}
 
-The above figures \ref{subfig:RMSECRM} denote the RMSE estimates for different pairs. POD has a RMSE of $0.32\pm0.23$ whereas distributed GP has a RMSE of $0.02\pm0.01$. The average distributed GP prediction is 16 times better than POD in transonic regime. The outliers in the boxplots denote cases where the removed pairs are on the edges of database. Since the removed pairs are on the edges of database matrix, there are no CFD snapshots surrounding these pairs. Hence extrapolation is performed during the edge cases. Figure \ref{subfig:timeCRM} shows the time taken to perform prediction for the three different model types. POD takes $0.5s\pm0.03s$ whereas distributed GP takes $40.6s\pm2.3s$ to perform the interpolation. In transonic regime GP has a significantly better error performance and becomes the obvious choice for interpolation.
+Figure \ref{subfig:RMSECRM} denote the RMSE estimates for different pairs. POD has a RMSE of $0.32\pm0.23$ whereas distributed GP has a RMSE of $0.02\pm0.01$. The average distributed GP prediction is 16 times better than POD in transonic regime. The outliers in the box-plots denote cases where the removed pairs are on the edges of the domain. Since the removed pairs are on the edges of the domain, there are no CFD snapshots surrounding these pairs. Hence we are extrapolating on the outliers. Figure \ref{subfig:timeCRM} shows the time taken to perform prediction for the three different model types. POD takes $0.5s\pm0.03s$ whereas distributed GP takes $40.6s\pm2.3s$ to perform the interpolation. In transonic regime GP has a significantly better error performance and becomes the obvious choice for interpolation.
 
 \begin{figure*}[!ht]
   \centering
@@ -364,7 +366,7 @@ The above figures \ref{subfig:RMSECRM} denote the RMSE estimates for different p
   \caption{Comparison of pressure interpolations for first cut $y/b = 0.105$. Here we compare the accuracy of prediction for interpolation and extrapolation cases.}
 \end{figure*}
 
-Figure \ref{subfig:interpComparisonCRM} shows the comparison between POD method and distributed GP for interpolation. Reconstruction is performed on the pressure snapshot at $\alpha = 2$ and $Mach = 0.85$ for the $y/b = 0.105$. We can observe that the shape of shock has been smoothed out by POD method. Figure \ref{subfig:exterpComparisonCRM} shows comparison between POD method and distributed GP for extrapolation. Reconstruction is performed on the hidden pressure snapshot of $\alpha = 2$ and $Mach = 0.84$ which is an extrapolation case. We can observe that POD introduces errors both for the intensity of shock, and location of shock for the extrapolation case, this explains the high amount of error in figure \ref{subfig:RMSECRM}.  
+Figure \ref{subfig:interpComparisonCRM} shows the comparison between POD method and distributed GP for interpolation. Reconstruction is performed on the pressure snapshot at $\alpha = 2$ and $Mach = 0.85$ for the $y/b = 0.105$. We can observe that the shape of shock has been smoothed out by the POD method. Figure \ref{subfig:exterpComparisonCRM} shows comparison between POD method and distributed GP for extrapolation. Reconstruction is performed on the hidden pressure snapshot of $\alpha = 2$ and $Mach = 0.84$ which is an extrapolation case. We can observe that POD introduces errors both for the intensity of shock, and location of shock for the extrapolation case, this explains the high amount of error in figure \ref{subfig:RMSECRM}.  
 
 \subsubsection{Comparison across cuts}
 We next study the accuracy of distributed GP for different airfoils on the wing. Using the methodology described earlier we build a distributed GP model for each airfoil and measure the accuracy of interpolation performed for each cut using the LOO-CV methodology. 
@@ -379,7 +381,7 @@ We next study the accuracy of distributed GP for different airfoils on the wing.
 \end{figure*}
 \textbf{If possible also plot the variance curves to access the uncertainity around second curve}
 
-Figure \ref{subfig:compasironOfCutsGPCRM} shows the RMSE performance across cuts. The performance of interpolation deteriorates as we go further away from the fuselage. This is primarily because as we go further away from the fuselage double shocks start appearing on the airfoil as observable from figure \ref{subfig:crmSnapshot}. Figure \ref{subfig:interpCut4} shows interpolation performed by the POD method and distributed GP methods at $\alpha = 2$ and $Mach = 0.85$. While, POD smooths out the double shock pattern distributed GP also lacks the accuracy observed in figure \ref{subfig:interpComparisonCRM}. 
+Figure \ref{subfig:compasironOfCutsGPCRM} shows the RMSE performance across cuts. The performance of interpolation deteriorates as we go further away from the fuselage. This is primarily because as we go further away from the fuselage double shocks start appearing on the airfoil as observable from figure \ref{subfig:crmSnapshot}. Figure \ref{subfig:interpCut4} shows interpolation performed by the POD method and distributed GP methods at $\alpha = 2$ and $Mach = 0.85$. While, POD smooths out the double shock pattern, distributed GP also lacks the accuracy observed in figure \ref{subfig:interpComparisonCRM}. 
 
 \begin{figure*}[!ht]
   \centering
@@ -390,14 +392,14 @@ Figure \ref{subfig:compasironOfCutsGPCRM} shows the RMSE performance across cuts
   \caption{Pressure reconstructions for constant $Mach = 0.845$ and sweeping $\alpha \in [1, 3]$}
 \end{figure*}
 
-Figures \ref{subfig:alphaSweepCut1} and \ref{subfig:alphaSweepCut4} show the evaluation of pressures upon varying $\alpha \in [1, 3]$ at locations $y/b = 0.105$ and $y/b = 0.84$ respectively. The color coding denotes coefficient of pressure for upper side of airfoil, The x-axis denotes chord-wise location and y-axis denotes $\alpha$. White lines denote presence of a pressure snapshot due to CFD run, everything in between is interpolation. Dashed black lines denote constant pressure contours Color between two contours has been smoothed for clarity. For figure \ref{subfig:alphaSweepCut1} we observe a strong shock near $\alpha = 3$ which slowly gets converted to a weak shock near $\alpha = 1$. The presence of a single shock is also the reason why distributed GP performs better at this cut location. For figure \ref{subfig:alphaSweepCut4} we observe a single shock near $\alpha = 3$ which slowly gets converted to a double shock pattern. The zone of from single to double shock is a very interesting point for performance, since the wing drag is minimum during this transition phase. Distributed GP starts performing badly near the transition phases, this can be observed by the small pools of $C_{P} = 0.5$ at the transition phase from single to double shock. 
+Figures \ref{subfig:alphaSweepCut1} and \ref{subfig:alphaSweepCut4} show the evaluation of pressures upon varying $\alpha \in [1, 3]$ at locations $y/b = 0.105$ and $y/b = 0.84$ respectively. The color coding denotes coefficient of pressure for the upper side of airfoil, The x-axis denotes chord-wise location and y-axis denotes $\alpha$. White lines denote presence of a pressure snapshot due to CFD run, everything in between is interpolation. Dashed black lines denote constant pressure contours Color between two contours has been smoothed for clarity. For figure \ref{subfig:alphaSweepCut1} we observe a strong shock near $\alpha = 3$ which slowly gets converted to a weak shock near $\alpha = 1$. The presence of a single shock is also the reason why distributed GP performs better at this cut location. For figure \ref{subfig:alphaSweepCut4} we observe a single shock near $\alpha = 3$ which slowly gets converted to a double shock pattern. The zone from single to double shock is a very interesting point for performance, since the wing drag is minimum during this transition phase. Distributed GP starts performing badly near the transition phases, this can be observed by the small pools of $C_{P} = 0.5$ at the transition phase from single to double shock. 
 
-The current section presents a comparison between two different surrogate model building methods: time-tested surrogate modelling methods such as POD coupled with spline interpolation and upcoming machine learning methods such as distributed GP for subsonic and transonic regimes. The distributed GP performs marginally better than POD technique in subsonic regime but is a many times slower. On the contrary for the case of transonic regime \ref{subSec:resultsCRM} distributed GP clearly outperforms POD+I method. This is mainly due to the presence of shock on the airfoil. 
+The current section presents a comparison between two different surrogate model building methods: time-tested surrogate modelling methods such as POD coupled with spline interpolation and upcoming machine learning methods such as distributed GP for subsonic and transonic regimes. The distributed GP performs marginally better than POD technique in subsonic regime but is many times slower. On the contrary for the case of transonic regime \ref{subSec:resultsCRM} distributed GP clearly outperforms POD+I method. This is mainly due to the presence of shock on the airfoil. 
 
 Plots like figure \ref{subfig:alphaSweepCut4} give a quick understanding of the flight regime for very few simulation runs. These plots can also be used to find transition regimes from single shock to double shock, which are very interesting performance points. In the future we wish to improve reconstruction of double shock patterns by improving the length scale and improve the choice of experts for distributed GP.
 
 \section{Summary and discussion}\label{subsec:ExpressingStructureKernelConclusion}
-In the last two chapters we have tried to answer the question: How to add \textit{apriori} information of a pattern in a learning algorithm? We present a small sneak peek into the wide variety of available covariance functions. Due to the ability to create new kernels, encoding prior information into the structure can be performed easily. If we have an \textit{apriori} information about the pattern of function to be learned, then embedding this information into the GP algorithm greatly improves accuracy and cost of prediction. Table \ref{tabListOfCovarianceFUnctions} lists a few commonly known combination of covariance functions known in the literature. 
+In the last two chapters we have tried to answer the question: How to add \textit{apriori} information of a pattern in a learning algorithm? We present a sample of the wide variety of available covariance functions. Due to the ability to create new kernels, encoding prior information into the structure can be performed easily. If we have an \textit{apriori} information about the pattern of function to be learned, then embedding this information into the GP algorithm greatly improves accuracy and cost of prediction. Table \ref{tabListOfCombinationOfCovarianceFunctions} lists a few commonly known combination of covariance functions known in the literature. 
 
 %\renewcommand{\arraystretch}{1}
 \begin{comment}
@@ -422,6 +424,6 @@ Additive GPs & \small  $\prod_{i}(1+k^{i}_{SE}) ]$ \normalsize& \cite{duvenaud20
   \caption{Combination of covariance functions available in literature}
   \end{table}
 \end{comment}
-Section \ref{secSingleDimension} describes how to combine kernels to create one-dimensional kernels. While, section \ref{subsubsecCh4ApplicationCP} describes how to build kernels for higher dimensions. There are two main contributions of this chapter, first we develop a novel methodology to detect the start of a non-linear regime in an engineering design problem. This is thanks to the CP kernel which lets us define change from one regime to another \cite{chiplunkar:hal-01555401}. Second, we encode the information of shock to interpolate pressures in the transonic regime. This strategy gives significant gains in accuracy when compared to the standard POD based for aerodynamic interpolation \cite{oatao18004}. 
+Section \ref{secSingleDimension} describes how to combine kernels to create one-dimensional kernels. While section \ref{subsubsecCh4ApplicationCP} describes how to build kernels for higher dimensions. There are two main contributions of this chapter, first we develop a novel methodology to detect the start of a non-linear regime in an engineering design problem. This is thanks to the change-point kernel which lets us define change from one regime to another \cite{chiplunkar:hal-01555401}. Second, we encode the information of shock to interpolate pressures in the transonic regime. This strategy gives significant gains in accuracy when compared to the standard POD based for aerodynamic interpolation \cite{oatao18004}. 
 
 In the next two chapters we will tackle the remaining two questions posed in section \ref{chapIntroduction} of the thesis. Chapter \ref{chapAddingEquationsInGP} discusses how to encode prior information of relationships between measurements into a GP regression. While chapter \ref{chapMultiTaskExtrapolation} discusses how to perform extrapolation given a computer simulation of experiments. 
