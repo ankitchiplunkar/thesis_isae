@@ -1,6 +1,18 @@
 \chapter{Combining Basic Covariance Functions}
 \label{chapCombiningBasicCovariances}
 
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\section*{Résumé}
+Beaucoup de nouveaux noyau peuvent être construits en fusionnant quelques noyaux de base. Si nous avons un \textit{apriori} informations sur le forme de fonction à être appris, l'intégration de cette information dans l'algorithme GP améliore considérablement la précision et le coût de la prédiction. La contribution initiale de ce chapitre est d'appliquer les fonctions de covariance nouvellement créées pour créer des modèles de conception technique.
+
+La Section \ref{secSingleDimension} décrit comment combiner des noyaux pour créer des noyaux unidimensionnels, tandis que la section \ref{subsubsecCh4ApplicationCP} décrit comment construire des noyaux pour des dimensions plus hautes. Il y a deux contributions principales de ce chapitre, d'abord nous développons une nouvelle méthodologie pour détecter le début d'un régime non-linéaire dans un problème de d'ingénierie. Ceci est grâce au noyau de point de changement qui nous laisse définir le changement d'un régime à un autre \cite{chiplunkar:hal-01555401}. Deuxièmement, nous codons les informations de choc pour interpoler des pressions au régime transsonique. Cette stratégie donne des gains significatifs de l'exactitude quand comparé à la POD standard basée pour l'interpolation aérodynamique \cite{oatao18004}.
+\end{mdframed}
+
+
+%\pagebreak
+
+\section{Introduction}
+
 What if the kind of patterns that we wish to encode are not possible by using the basic kernels described in chapter \ref{chapBasicCovarianceKernels}? What if we wish to encode several different patterns in our hypothesis space? Or what if we want to build models for data sets with more than one input dimension? Thankfully, many new kernels can be constructed by merging a few basic kernels, in this chapter we answer the above questions. 
 
 The original contribution of this chapter is to apply the newly created covariance functions to create engineering design models. The set of equations below are a few simple methods to create valid covariance functions \cite{bishop2006pattern, mackay2003information, durrande2001etude, durrande2013anova}. 
@@ -402,7 +414,7 @@ Plots like figure \ref{subfig:alphaSweepCut4} give a quick understanding of the 
 In the last two chapters we have tried to answer the question: How to add \textit{apriori} information of a pattern in a learning algorithm? We present a sample of the wide variety of available covariance functions. Due to the ability to create new kernels, encoding prior information into the structure can be performed easily. If we have an \textit{apriori} information about the pattern of function to be learned, then embedding this information into the GP algorithm greatly improves accuracy and cost of prediction. Table \ref{tabListOfCombinationOfCovarianceFunctions} lists a few commonly known combination of covariance functions known in the literature. 
 
 %\renewcommand{\arraystretch}{1}
-\begin{comment}
+%\begin{comment}
 \begin{table}[!ht]
     \centering
 \begin{tabularx}{\textwidth}{|l|l|X|}
@@ -423,7 +435,8 @@ Additive GPs & \small  $\prod_{i}(1+k^{i}_{SE}) ]$ \normalsize& \cite{duvenaud20
   \label{tabListOfCombinationOfCovarianceFunctions}
   \caption{Combination of covariance functions available in literature}
   \end{table}
-\end{comment}
+%\end{comment}
+
 Section \ref{secSingleDimension} describes how to combine kernels to create one-dimensional kernels. While section \ref{subsubsecCh4ApplicationCP} describes how to build kernels for higher dimensions. There are two main contributions of this chapter, first we develop a novel methodology to detect the start of a non-linear regime in an engineering design problem. This is thanks to the change-point kernel which lets us define change from one regime to another \cite{chiplunkar:hal-01555401}. Second, we encode the information of shock to interpolate pressures in the transonic regime. This strategy gives significant gains in accuracy when compared to the standard POD based for aerodynamic interpolation \cite{oatao18004}. 
 
 In the next two chapters we will tackle the remaining two questions posed in section \ref{chapIntroduction} of the thesis. Chapter \ref{chapAddingEquationsInGP} discusses how to encode prior information of relationships between measurements into a GP regression. While chapter \ref{chapMultiTaskExtrapolation} discusses how to perform extrapolation given a computer simulation of experiments. 

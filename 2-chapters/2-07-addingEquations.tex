@@ -35,7 +35,7 @@ Here \(\mathcal{L} \left ( . \right ) \in \mathcal{C}^{2}\) is an operator defin
    \end{pmatrix}
 \end{align}
 
-We will denote the Gram matrices for auto-covariances as $\myMatrix{K_{ii}}$ and cross-covariances as $\myMatrix{K_{ij}}$ for $i \neq j$. In next two sections, we assume one output function to be independent ($f^2$) and evaluate the remaining auto-covariance ($Cov(f^i(x), f^i(x))$) and cross-covariance ($Cov(f^i(x), f^j(x))$ for $i \neq j$) functions exactly, if the physical relation between them is linear or use an approximate joint-covariance, if the relationship between them is non-linear\cite{Constantinescu2013}.
+We will denote the Gram matrices for auto-covariances as $\myMatrix{K_{ii}}$ and cross-covariances as $\myMatrix{K_{ij}}$ for $i \neq j$. In next two sections, we assume one output function to be an independent ($f^2$) random variable and evaluate the remaining auto-covariance ($Cov(f^i(x), f^i(x))$) and cross-covariance ($Cov(f^i(x), f^j(x))$ for $i \neq j$) functions exactly, if the physical relation between them is linear or use an approximate joint-covariance, if the relationship between them is non-linear\cite{Constantinescu2013}.
 
 \subsection{Case of Linear Operators}\label{subsecLinearOperators}
 Physical laws of the system are denoted by sets of differential equations which explain the basic behaviour of the system, these differential equations are linear in nature. One simple example of a linear operator is an integration operation, $f^1(z) = \int_{\infty}^z f^2(x)dx$. 
@@ -48,28 +48,31 @@ If $\mathcal{L} (.)$ is a linear operator then it has the following property:
     \mathcal{L} (a_1g^1 + a_2g^2) = a_1\mathcal{L}(g^1) + a_2\mathcal{L}(g^2) 
 \end{equation}
 
-Here, $a_1$ and $a_2$ are scalars and $g^1$ and $g^2$ are functions. Assume a GP prior over the function $f^2$ such that:
+Here, $a_1$ and $a_2$ are scalars and $g^1$ and $g^2$ are functions. Assume a GP prior over the function $f^2$ such its mean ($m^2$) and covariance functions ($k^2$) can be represented as the set of equations below. Note that $m^2$ is the mean of the output number $2$ and not the square of its mean.
+
 \begin{align}
 E[f^2(x)] & = m^2(x) \\
 Cov[f^2(x), f^2(x')] & = k^2(x, x')
 \end{align}
 
-Then after applying the operator $\mathcal{L}(.)$, the mean of the function $f^1$ can be written as:
-\begin{equation}
+Then after applying the operator $\mathcal{L}(.)$, the mean of the function $f^1$ can be written as equation \ref{eqMeanOfM1}. From now on we will use a short-hand notation for operation $\mathcal{L}\left ( f^{2}(x), z \right )$ as $\mathcal{L}\left ( f^{2}, z \right )$.
+
+\begin{equation}\label{eqMeanOfM1}
 \begin{aligned}
-E[f^1(z)]   & = E[\mathcal{L}\left ( f^{2}(x), z \right )] \\
-            & = \mathcal{L}(E[f^{2}(x)], z) \\
-            & = \mathcal{L}(m^2(x), z)
+E[f^1(z)]   & = E[\mathcal{L}\left ( f^{2}, z \right )] \\
+            & = \mathcal{L}(E[f^{2}], z) \\
+            & = \mathcal{L}(m^2, z)
 \end{aligned}
 \end{equation}
 
-Similarly, the covariance of the function can be written as $Cov[f^1(z), f^1(z')]$ (equation \ref{eqCovF1F1}. 
+Similarly, the covariance of the function can be written as $Cov[f^1(z), f^1(z')]$ (equation \ref{eqCovF1F1}). 
 
 \begin{equation}\label{eqCovF1F1}
 \begin{aligned}
-Cov[f^1(z), f^1(z')]   & = E[[f^{1}(z) - \mathcal{L}(m^2(x), z)][f^{1}(z') - \mathcal{L}(m^2(x), z')] \\
-            & = E[[\mathcal{L}\left ( f^{2}(x), z \right ) - \mathcal{L}(m^2(x), z)][\mathcal{L}\left ( f^{2}(x), z' \right ) - \mathcal{L}(m^2(x), z')] \\ 
-            & = E[[\mathcal{L}\left ( f^{2}(x) - m^2(x) , z \right )][\mathcal{L}\left ( f^{2}(x) - m^2(x), z' \right )] \\
+Cov[f^1(z), f^1(z')]   & = E[[f^{1}(z) - \mathcal{L}(m^2, z)][f^{1}(z') - \mathcal{L}(m^2, z')] \\
+            & = E[[\mathcal{L}\left ( f^{2}, z \right ) - \mathcal{L}(m^2, z)][\mathcal{L}\left ( f^{2}, z' \right ) - \mathcal{L}(m^2, z')] \\ 
+            & = E[[\mathcal{L}\left ( f^{2} - m^2 , z \right )][\mathcal{L}\left ( f^{2} - m^2, z' \right )]] \\
+            & = \mathcal{L}\left(\mathcal{L}\left(E[[f^{2} - m^2][f^{2} - m^2]], z'\right) , z\right) \\
             & = \mathcal{L}\left(\mathcal{L}\left(k^2(x, x'), z'\right) , z\right)
 \end{aligned}
 \end{equation}
@@ -82,7 +85,7 @@ Since $\mathcal{L}$ is a linear operator, the resulting function is a positive s
     \end{pmatrix} 
 \end{equation}
 
-Here the matrix $\myMatrix{K^2}$ is the Gram matrix evaluated using the covariance function $k^2(x, x')$. The hyperparameters of the prior are \(\theta = \left \{ \theta_{amplitude}, \theta_{lengthScale} \right \}\). These correspond to the hyperparameters of the independent covariance function \(k^{2}\). We have effectively represented the covariance function \(Cov[f^1(z), f^1(z')]\) and \(Cov[f^1(z), f^2(z')]\) in terms of the of covariance function $Cov[f^2(z), f^2(z')]$ using the known relation between outputs. 
+Here the matrix $\myMatrix{K^2}$ is the Gram matrix evaluated using the covariance function $k^2(x, x')$. The hyperparameters of the prior are \(\theta = \left \{ \theta_{amplitude}, \theta_{lengthScale} \right \}\). These correspond to the hyperparameters of the independent covariance function \(k^{2}\). We have effectively represented the covariance function \(Cov[f^1(z), f^1(z')]\) and \(Cov[f^1(z), f^2(z')]\) in terms of the covariance function $Cov[f^2(z), f^2(z')]$ using the known relation between outputs. 
 
 The sample code \ref{codeJointCovariance} shows one of the ways to calculate the covariance functions for the equation \ref{eqLinearJointCovariance}. For complex linear operators, the covariance functions start getting complicated pretty quickly, using the symbolic toolbox is a nice hack around manually calculating their functional forms. 
 
@@ -139,7 +142,7 @@ Figure \ref{figGramMatricesJointKernel} represents the Gram matrix obtained by e
   \label{figGramMatricesJointKernel}
 \end{figure}
 
-Since we have effectively represented the auto and cross-covariance functions in the form of the covariance function of independent output $f^2$. The joint Gram matrix between \(f^{1}\) and \(f^{2}\), means that a random draw of independent function \(f^{2}\) will result in a correlated draw of the function \(f^{1}\). This effectively means that when we draw a random function \(f^{2}\) it will result in a correlated draw of \(f^{1}\), such that the two random functions will satisfy the enforced equation. 
+The joint Gram matrix between \(f^{1}\) and \(f^{2}\), means that a random draw of independent function \(f^{2}\) will result in a correlated draw of the function \(f^{1}\). This effectively means that when we draw a random function \(f^{2}\) it will result in a correlated draw of \(f^{1}\), such that the two random functions will satisfy the enforced equation. 
 
 Figure \ref{figJointRelationshipGPPriors} shows randomly drawn functions for two outputs related through an equation. The figure  \ref{subfig:drawsPriorDifferentialRelationship} shows random draws coming from a differential relationship between \(f_{differential}\) (red) and \(f_{independent}\) (blue) such that \(f_{differential} = \frac{d f_{independent}}{d x}\). We can see that the top figure is derivative of the bottom one since, \(f_{derivative}\) goes to zero where \(f_{independent}\) goes to maxima or minima. Similarly, the figure \ref{subfig:drawsPriorIntegralRelationship} shows random draws coming from an integral relationship between \(f_{integral}\) (red) and \(f_{independent}\) (blue) such that \(f_{integral} = \int_{0}^x f_{independent}\). We can see that the top figure is integral of the bottom one since, \(f_{independent}\) goes to zero where \(f_{integral}\) goes to maxima or minima. 
 
@@ -156,7 +159,7 @@ Figure \ref{figJointRelationshipGPPriors} shows randomly drawn functions for two
 Proper care should be taken before performing these operations, if an operation is not defined for the prior family of functions of $f^2$, then we cannot write its corresponding joint-GP. For example, if we define a GP prior for $f^2$ with exponential covariance function (section \ref{subsecCh4MaternKernel}), we cannot enforce a differential relationship on $f^2$. This is because the exponential covariance function defines a hypothesis space of non-differentiable functions, and hence a differential operator is not-defined for such functions.  
 
 \subsection{Case of non-linear operators}\label{subsecNonLinearOperators}
-Often Physical laws do not come in form of non-linear operators, but they are often difficult to solve analytically\footnote{There is a millennium prize for solving the Navier Stokes equation} for complex geometries. For example solving the structural dynamics equation is difficult for continuous complex geometries of an aircraft. One popular method to solve these differential equations is to discretize the complex geometry into simple meshes. A complex geometry of an aircraft is broken down into a simpler point, beam and plate structures, these simpler geometries are easier to solve analytically. We can then apply the physical laws on these simplistic geometries, and finally, aggregate the result of individual meshes. For example, CFD and CSM are discretized techniques to evaluate fluid and structural laws on complex geometries. These discretized operations are often non-linear and are represented in form of computer code. In this section, we wish to evaluate auto and cross-covariances across outputs related through non-linear relationships.
+Physical laws often do not come in form of non-linear operators, but they are  difficult to solve analytically\footnote{There is a millennium prize for solving the Navier Stokes equation} for complex geometries. For example solving the structural dynamics equation is difficult for continuous complex geometries of an aircraft. One popular method to solve these differential equations is to discretize the complex geometry into simple meshes. A complex geometry of an aircraft is broken down into a simpler point, beam and plate structures, these simpler geometries are easier to solve analytically. We can then apply the physical laws on these simplistic geometries, and finally, aggregate the result of individual meshes. For example, CFD and CSM are discretized techniques to evaluate fluid and structural laws on complex geometries. These discretized operations are often non-linear and are represented in form of computer code. In this section, we wish to evaluate auto and cross-covariances across outputs related through non-linear relationships.
 
 A non-linear operation on a GP does not result in a GP, hence for the case of non-linear \(\mathcal{L}\left ( . \right )\) the joint Gram matrix, as derived in equation \ref{eq:exactJointCovariance}, is not positive semi-definite \cite{Stein1999Springer}.  Therefore, we will use an approximate joint-covariance as developed by  \cite{Constantinescu2013} for imposing non-linear relations.
 
@@ -168,13 +171,17 @@ L\myMatrix{K^2}L^{T} & L\myMatrix{K^2}\\
 \end{bmatrix} + \mathcal{O}\left ( \delta y_{2}^{3} \right )
 \end{equation}
 
-\noindent Where \(L = \left.\begin{matrix}
+\begin{equation}
+    L = \begin{matrix}
 \frac{\partial \mathcal{L}}{\partial y} 
-\end{matrix}\right|_{_{f^{2} = \bar{f}^{2}}} \) is the Jacobian matrix of \(\mathcal{L}\left ( . \right )\) evaluated at the mean of independent output \(f^{2}\). \(\delta f^{2}\) is the amplitude of small variations of \(f^{2}\), introduced by the Taylor series expansion of \(\mathcal{L}(f^2)\) with respect to \(E[f^{2}]\). 
+\end{matrix}|_{_{f^{2} = m^{2}}}
+\end{equation}
+
+Where $L$ is the Jacobian matrix of \(\mathcal{L}\left ( . \right )\) evaluated at the mean ($m^2$) of independent output (\(f^{2}\)). \(\delta f^{2}\) is the amplitude of small variations of \(f^{2}\), introduced by the Taylor series expansion of \(\mathcal{L}(f^2)\) with respect to \(E[f^{2}]\). 
 
 The above covariance function takes a parametric form that depends on the mean value process of the independent variable ($E[f^2(x)]$). Equation \ref{eq:approxJointCoariance} is basically a Taylor series expansion for approximating related kernels. Since a Taylor series expansion is constructed from derivatives of a function, which are linear operations, the resulting approximated joint kernel is a Gaussian kernel with the non-Gaussian part ($\mathcal{O}\left ( \delta y_{2}^{3} \right )$) as the error. Higher-order closures can be derived with higher order derivatives of the operator \(\mathcal{L}(.)\). For simplicity we will restrict ourselves to first order approximation of the auto- and cross-covariance functions leading to an error of the order \(\mathcal{O}\left ( \delta y_{2}^{3} \right )\).  A more detailed derivation can be found at appendix \textbf{refer to link of appendix}. 
 
-Below is a sample code (code \ref{codeNonLinearJointCovariance}) for calculating the joint-covariance functions for automatically. The `jacobianOfOperator' is the jacobian of the non-linear operator $\mathcal{L}$ evaluated at the mean values of $y^2$.
+Below is a sample code (code \ref{codeNonLinearJointCovariance}) for calculating the joint-covariance functions automatically. The `jacobianOfOperator' is the jacobian of the non-linear operator $\mathcal{L}$ evaluated at the mean values of $y^2$.
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
 \lstinputlisting[caption={Create joint covariance functions for non-linear operators using Matlab Symbolic Toolbox}, 
@@ -186,18 +193,19 @@ Below is a sample code (code \ref{codeNonLinearJointCovariance}) for calculating
 \end{mdframed}
 
 \subsection{Calculating posterior}\label{sub:MOGPs}
-The posterior distribution can be calculated by conditioning the prior distribution on the observation dataset. Since a prior distribution over functions defined over the joint dataset is also a GP. We can easily derive the posterior mean, posterior covariance and marginal likelihood, the exact derivations are described in section \ref{subsecPosteriorDistribution}). We just need to insert the appropriate Gram matrix ($\myMatrix{K_{XX}}$) in the equations of posterior mean (equation \ref{eq:predictiveMOMeanCh7}), posterior variance (equation \ref{eq:predictiveMOCovarianceCh7}) and marginal likelihood (equation \ref{eq:exactMONLMLCh7}). 
+The posterior distribution can be calculated by conditioning the prior distribution on the observation dataset. Since a prior distribution over functions defined over the joint dataset is also a GP, we can easily derive the posterior mean, posterior covariance and marginal likelihood (the exact derivations are described in section \ref{subsecPosteriorDistribution}). We just need to insert the appropriate Gram matrix ($\myMatrix{K_{XX}}$) in the equations of posterior mean (equation \ref{eq:predictiveMOMeanCh7}), posterior variance (equation \ref{eq:predictiveMOCovarianceCh7}) and marginal likelihood (equation \ref{eq:exactMONLMLCh7}). 
 
 \begin{align}
   E[f(X_{*}))] & = K_{X_{*}X}\left ( K_{XX} + \Sigma \right )^{-1}\VEC{y_{joint}} \label{eq:predictiveMOMeanCh7} \\ 
-  Cov(f(X_{*})), f(X_{*}))) & = K_{X_{*}X_{*}} - K_{X_{*}X}\left ( K_{XX} + \Sigma \right )^{-1}K_{XX_{*}} \label{eq:predictiveMOCovarianceCh7} \\
+  Cov(f(X_{*})) & = K_{X_{*}X_{*}} - K_{X_{*}X}\left ( K_{XX} + \Sigma \right )^{-1}K_{XX_{*}} \label{eq:predictiveMOCovarianceCh7} \\
   \log(\Pr[\VEC{y_{joint}} \mid X, \theta]) & = \log[GP(\VEC{y_{joint}}| 0, K_{XX} + \Sigma )] \label{eq:exactMONLMLCh7}
 \end{align}
 
-The figure \ref{subfig:drawsDifferentialRelationship} shows mean and variance for a differential relationship between independent function \(f_{indepedent}\) (blue) and differential function \(f_{derivative}\) (red), such that \(f_{derivative} = \frac{\partial f_{indepedent}}{\partial x}\). We have conditioned the two functions such that \(f_{derivative}|_{x = 0} = 5\) and \(f_{indepedent}|_{x = 0} = 0\). This means that the function \(f_{indepedent}\) passes through \(0\) and has a derivative equal to \(5\) at \(x = 0\). It is easy to observe that all the functions of \(f_{indepedent}\) that pass through $x=0$ have the same value of their derivatives.
-We have not maximized the marginal likelihood for this case and the hyperparameters of \(k^2\) are \(\theta_{1} = 1; \theta_{2} = 0.2\). 
+\paragraph{Example}
+The figure \ref{subfig:drawsDifferentialRelationship} shows mean and variance for a differential relationship between independent function \(f_{independent}\) (blue) and differential function \(f_{derivative}\) (red), such that \(f_{derivative} = \frac{\partial f_{independent}}{\partial x}\). We have conditioned the two functions such that \(f_{derivative}|_{x = 0} = 5\) and \(f_{independent}|_{x = 0} = 0\). This means that the function \(f_{independent}\) passes through \(0\) and has a derivative equal to \(5\) at \(x = 0\). It is easy to observe that all the functions of \(f_{independent}\) that pass through $x=0$ have the same value of derivatives.
+We have not maximized the marginal likelihood for this case and the hyperparameters of \(k^2\) are \(\theta_{amplitude} = 1; \theta_{lengthScale} = 0.2\). 
 
-The figure \ref{subfig:drawsIntegralRelationship} shows mean and variance for a integral relationship between independent function \(f_{independent}\) (blue) and differential function \(f_{integral}\) (red) and such that \(f_{integral} = \int_0^x f_{independent} . dx\). We have conditioned the two functions such that \(f_{integral}|_{x = 1} = 0\) and \(f_{integral}|_{x = 0} = 0\). This means that the function \(f_{independent}\) has an integral \(0\) at the two points \([0, 1]\) . Although it is difficult to verify from the figure, but all the randomly drawn functions of \(f_{independent}\) indeed have their integral ($\int_{0}^{1} f_{independent} = 0 $) equal to zero. We have not maximized the marginal likelihood for this case and the hyperparameters of \(k^2\) are \(\theta_{amplitude} = 1; \theta_{lengthScale} = 0.2\). All the corresponding draws from the posterior GP also follow the conditioning. 
+Figure \ref{subfig:drawsIntegralRelationship} shows mean and variance for an integral relationship between independent function \(f_{independent}\) (blue) and differential function \(f_{integral}\) (red) and such that \(f_{integral} = \int_0^x f_{independent}z . dz\). We have conditioned the two functions such that \(f_{integral}|_{x = 1} = 0\) and \(f_{integral}|_{x = 0} = 0\). This means that the function \(f_{independent}\) has an integral \(0\) at the two points \([0, 1]\) . Although it is difficult to verify from the figure, but all the randomly drawn functions of \(f_{independent}\) indeed have their integral ($\int_{0}^{1} f_{independent} = 0 $) equal to zero. We have not maximized the marginal likelihood for this case and the hyperparameters of \(k^2\) are \(\theta_{amplitude} = 1; \theta_{lengthScale} = 0.2\). All the corresponding draws from the posterior GP also follow the conditioning. 
 
 \begin{figure}[!ht]
   \centering
@@ -218,10 +226,10 @@ The basic toolbox used for this section is GPML provided with \cite{Rasmussen200
 \subsection{Quadratic relation on Synthetic Data}\label{sub:experimentsSyntheticData}
 We take the case of a quadratic operator \(\mathcal{L}(.)\) equation \ref{eq:quadraticRelationship}. 
 \begin{equation}\label{eq:quadraticRelationship}
-f^{1} = (f^{2})^2
+f^{1} = \left [f^{2} \right]^2
 \end{equation}
 
-To generate the data we randomly draw a single function of \(f^{2}\) as described in equation \ref{eq:experimentalSET} for 50 equally spaced inputs between [-1, 1]. The output \(f^{1}\) is then calculated by applying the operation in equation \ref{eq:quadraticRelationship}. The latent functions \(f's\) are then corrupted according to equation \ref{eq:experimentalSET} which gives us the outputs \(y's\). We finally hide the observations for \(y^{1}\) in the domain \(x = [-0.2, 0.2]\). We now have our dataset for testing the performance of quadratic relationship. 
+To generate the data, we randomly draw a single function of \(f^{2}\) as described in equation \ref{eq:experimentalSET} for 50 equally spaced inputs between [-1, 1]. The output \(f^{1}\) is then calculated by applying the operation in equation \ref{eq:quadraticRelationship}. The latent functions \(f's\) are then corrupted according to equation \ref{eq:experimentalSET} which gives us the outputs \(y's\). We finally hide the observations for \(y^{1}\) in the domain \(x = [-0.2, 0.2]\). We now have our dataset for testing the performance of quadratic relationship. 
 
 \begin{equation}\label{eq:experimentalSET}
 \begin{aligned}
@@ -231,17 +239,17 @@ To generate the data we randomly draw a single function of \(f^{2}\) as describe
 \end{aligned}
 \end{equation}
      
-\(K_{SE}(1, 0.2)\) means squared exponential kernel with length scale 0.2 and variance as 1. \(\sigma_{n2}\) and \(\sigma_{n1}\) are the white noises added to the latent functions \(f^{1}\) and \(f^{2}\) respectively. Since the quadratic relationship \(\mathcal{L}(.)\) is non-linear in nature we use the equation \ref{eq:approxJointCoariance} to calculate the auto- and cross-covariance functions as explained in equation \ref{eq:jointKernelForQuadratic relationship}. 
+\(K_{SE}(1, 0.2)\) means squared exponential kernel with length scale 0.2 and variance as 1. \(\sigma_{n2}\) and \(\sigma_{n1}\) are the white noises added to the latent functions \(f^{1}\) and \(f^{2}\) respectively. Since the quadratic relationship \(\mathcal{L}(.)\) is non-linear in nature we use equation \ref{eq:approxJointCoariance} to calculate the auto- and cross-covariance functions as shown in equation \ref{eq:jointKernelForQuadratic relationship}. 
 
 \begin{equation}\label{eq:jointKernelForQuadratic relationship}
     \begin{aligned}
 Cov(f^2(x), f^2(x')) & = k^{2} \\    
-Cov(f^1(x), f^2(x')) & = 2\mu_{y^{2}}(x^{1}) k^{2} \\
-Cov(f^1(x), f^1(x')) & = 4\mu_{y^{2}}(x^{1})^2 k^{2}
+Cov(f^1(x), f^2(x')) & = 2m^{2}(x^{1}) k^{2} \\
+Cov(f^1(x), f^1(x')) & = 4 \left [m^{2}(x^{1}) \right ]^2 k^{2}
     \end{aligned}
 \end{equation}
 
-Here, \(\mu_{y^{2}}(x^{1})\) is the mean value of function \(y^{2}\) calculated at the input points \(x^{1}\). For the case of quadratic relationship the Jacobian \(L\) as described in equation \ref{eq:approxJointCoariance} comes out to be \(2*\mu_{y^{2}}(x)\). For non-linear operators \(\mathcal{L}(.)\) the joint-covariance prior depends on the mean value of \(f^{2}\) ($\mu_{y^{2}}$). \(Cov(f^1(x), f^1(x'))\) and \(Cov(f^1(x), f^2(x'))\) are the covariance functions calculated at the input points \(x\) and \(x'\) as described in equation \ref{eq:approxJointCoariance} and equation \ref{eq:mogpJointPrior}. We can observe that the joint-covariance has been expressed as a function of covariance \(k^2\) using equation \ref{eq:quadraticRelationship}.  
+Here, \(m^2(x^{1})\) is the mean value of function \(y^{2}\) calculated at the input points \(x^{1}\). For the case of quadratic relationship the Jacobian \(L\) as described in equation \ref{eq:approxJointCoariance} comes out to be \(2*\mu_{y^{2}}(x)\). For non-linear operators \(\mathcal{L}(.)\) the joint-covariance prior depends on the mean value of \(f^{2}\) ($\mu_{y^{2}}$). \(Cov(f^1(x), f^1(x'))\) and \(Cov(f^1(x), f^2(x'))\) are the covariance functions calculated at the input points \(x\) and \(x'\) as described in equation \ref{eq:approxJointCoariance} and equation \ref{eq:mogpJointPrior}. We can observe that the joint-covariance has been expressed as a function of covariance \(k^2\) using equation \ref{eq:quadraticRelationship}.  
 
 
 Figure \ref{subfigquadraticRelationshipIndependent} shows the independent fit of two GP regressions. For the case of \(y^{1}\), there is a huge difference between the real data and predicted mean at points where data is unavailable. Figure \ref{subfigquadraticRelationshipMultiFidelityKernel} shows the fit using multi-fidelity GP regression model (section \ref{secMultiFidelityMTGP}). We can observe that the multi-fidelity model cannot capture the quadratic nature of the relationship between outputs. Figure \ref{subfigquadraticRelationshipJointKernel} shows the joint-GP regression, which gives better prediction even in the absence of data for \(y^{1}\) because a transfer of information is happening from observations of \(y^{2}\) present at those locations. 
@@ -285,7 +293,14 @@ Joint Multi-output GPR & 0.26 & 0.12 \\
 \label{table:rmseY1Y2}
 \end{table}
 
-The current experiment demonstrates how to enforce a non-linear relationship between outputs. Multi-fidelity GP has a similar performance as that of an independent GP since the two outputs are not results of code for different fidelity. Enforcing the quadratic relationship between the outputs has the best accuracy of the three methods (figure \ref{subfigquadraticRelationshipJointKernel}). The quadratic relationship has a peculiar property, $y^1 > 0$ this property can also be used to enforce inequality constraints in models. Using the approximate of the Gram matrix can be in fact an interesting approach to enforcing the inequality constraints in a GP regression.
+The current experiment demonstrates how to enforce a non-linear relationship between outputs. Multi-fidelity GP has a similar performance as that of an independent GP since the two outputs are not results of code for different fidelities. Enforcing the quadratic relationship between the outputs has the best accuracy of the three methods (figure \ref{subfigquadraticRelationshipJointKernel}). 
+
+\paragraph{Adding inequality constraints}
+Research on adding inequality constraints in GP models is slowly picking up pace in the GP community. \cite{da2012gaussian} enforced inequality constraints by truncating probability distributions, while \cite{maatouk2017gaussian} enforce inequality constraints by using functional decomposition. The quadratic relationship gives rise to peculiar property. If  $f^{1} = \left [f^{2} \right]^2$ then it means that $f^{1} > 0$ $\forall x \in \mathcal{R}$, this property can also be used to indirectly enforce inequality constraints in GP models. 
+
+Suppose we have access to a $N$ observed data-points $\mathcal{D} = \{\myMatrix{X}, \VEC{y}\}$ subject to the constraints $y_i > 0$ $\forall i \in N$. We can assume a second output $sqrtY$, such that $y = \left [sqrtY \right]^2$ and build a quadratic relationship enabled GP model between the two ($y$ and $sqrtY$). GP models enforcing monotonocity or convexity can be similarly made by first, enforcing a derivative relationship and then a quadratic relationship. 
+
+One problem that can come up by enforcing inequality constraints using quadratic relationship, is that square root of $y$ ($sqrtY$) can be both positive and negative. This can complicate matters when calculating the mean of the square root. What are the implications of choosing one sign of square roots over the another needs more investigation. 
 
 \subsection{Flight Mechanics on Flight Test Data}\label{sub:experimentsFlightLoadsData}
 In this section, we conduct experiments applying our approach on the flight loads data. We look at normalized data of a simple longitudinal maneuver. The maneuver is quasi-static which means that airplane is in equilibrium at all times and there are no dynamic effects observed by the aircraft. The two outputs in our case are the coefficient of lift \(C_{z}\) on the Horizontal Tail Plane (HTP) and the spanwise lift \(k_{z}\). We know that the integral of spanwise pressure will be equal to the coefficient of lift (equation \ref{eq:relationCzKz}).
@@ -319,14 +334,17 @@ Figure \ref{subfigKLPreFlightAndCzPreFlight_200_MAT5} shows the effect of twice 
   \label{fig:cztzRelationship}
 \end{figure}
 
-In this section, we compare the predictive capabilities of using two different covariance functions for defining the prior of independent output $f^2$. For the current case, the SE kernel imposed a very strict bias for the pressure distribution $K_z$, this puts a few observation points outsize the 95\% confidence interval. In fact, the twice differentiable Mat\'ern kernel is a better covariance function for the problem. This is because due to the fuselage wing interaction, the pressure distribution is not infinitely differentiable near the HTP root. We also observe that the current formulation pushes observations that do not follow the physics of the system outside its confidence band, this is a very interesting property and can be used to automatically identify faulty sensors.
+In this section, we compare the predictive capabilities of using two different covariance functions for defining the prior of independent output $f^2$. For the current case, the SE kernel imposed a very strict bias for the pressure distribution $K_z$, this puts a few observation points outsize the 95\% confidence interval. In fact, the twice differentiable Mat\'ern kernel is a better covariance function for the problem. This is because due to the fuselage wing interaction, the pressure distribution is not infinitely differentiable near the HTP root. 
+
+\paragraph{Identifying faulty sensors}
+We also observe that the current formulation pushes observations that do not follow the physics of the system outside its confidence band, this is a very interesting property and can be used to automatically identify faulty sensors. Suppose we measure the loads on an aircraft using strain gauges, while we measure the acceleration of the aircraft using accelerometers. We can leverage the Newton's third law of motion ($\int loads = MassOfAircraft \times acceleration$) to build a robust loads model and identify faulty strain gauges automatically. 
 
 Calculating the negative log-marginal likelihood involves inverting the matrix \(K_{XX} + \Sigma\). The size of the \(K_{XX} + \Sigma\) matrix depends on a total number of input points \(N\), hence inverting the matrix becomes intractable for a large number of input points. In the next section we describe how to solve the problem of inverting huge \(K_{XX} + \Sigma\) matrices using approximate inference techniques.
 
 \section{Scaling up MTGP}\label{sec:sparseGPRegression}
 As already discussed in chapter \ref{chapScalingGPR} on scaling GP regression, the GP approach is intractable for large datasets. For a multi-output GP as defined in section \ref{sub:MOGPs} the covariance matrix is of size \(N_{tot}\),  where \(\mathcal{O}\left ( N_{tot}^{3} \right )\) time is needed for inference and \(\mathcal{O}\left ( N_{tot}^{2} \right )\) memory for storage. 
 
-This problem is further aggravated when we are creating a joint gram matrix between several outputs. In this section, we extend the formulation of variational GP approximation and distributed GP approximation for the case of MTGP's. The results of this study were published in ICPRAM 2016 and LNCS 2017 \cite{icpram16Ankit, oatao18000}. The remaining section details the two methods for approximating covariance matrix which can be later used to calculate the predictive mean, predictive covariance and the marginal likelihood (\ref{eq:predictiveMOMeanCh7}, \ref{eq:predictiveMOCovarianceCh7} and \ref{eq:exactMONLML}).
+This problem is further aggravated when we are creating a joint Gram matrix between several outputs. In this section, we extend the formulation of variational GP approximation (section \ref{subSecVariationalApprox}) and distributed GP approximation (section \ref{secDgp}) for the case of MTGP's. The results of this study were published in ICPRAM 2016 and LNCS 2017 \cite{icpram16Ankit, oatao18000}. The remaining section details the two methods for approximating covariance matrix which can be later used to calculate the predictive mean, predictive covariance and the marginal likelihood (\ref{eq:predictiveMOMeanCh7}, \ref{eq:predictiveMOCovarianceCh7} and \ref{eq:exactMONLML}).
 
 \begin{comment}
 Inverting the covariance matrix takes a considerable amount of time and memory during the process. Hence, almost all techniques to approximate inference try and approximate the inversion of covariance matrix \(K_{XX}\). If a covariance matrix is diagonal or block-diagonal in nature then methods such as the mixture of experts are used eg. distributed GP. Whereas if the covariance matrix is more spread out and has similar terms in its cross diagonals then low-rank approximations are used eg. variational approximation. 
@@ -341,15 +359,15 @@ We try to approximate the joint-posterior distribution \(p(X| Y)\) by introducin
  q(X) = \mathcal{N}(X|  \mu, A)
 \end{equation}
  
-Here \(\mu\) and \(A\) are parameters of the variational distribution. We follow the derivation provided in \cite{Titsias09variationallearning} and obtain the lower bound of true marginal likelihood.
+Here \(\mu\) and \(A\) are parameters of the variational distribution. We follow the derivation provided in \cite{Titsias09variationallearning} and obtain the lower bound ($Fv$) of true marginal likelihood.
 
 \begin{equation}\label{eq:lowerBoundMultiVarNLML}
-F_{V} = log(\mathcal{N}[Y| 0, \sigma ^{2}I + K_{nystrom}]) - \frac{1}{2\sigma ^{2}}Tr(\tilde{K})
+F_{V} = log(\mathcal{N}[Y| 0, \sigma ^{2}I + K_{Nystrom}]) - \frac{1}{2\sigma ^{2}}Tr(\tilde{K})
 \end{equation}
 
-where \(K_{nystrom} = K_{XX_{M}}K_{X_{M}X_{M}}^{-1}K_{X_{M}X}\) and \(\tilde{K} = K_{XX} - K_{nystrom}\). \(K_{XX}\) is the joint-covariance matrix derived using equation \ref{eq:exactJointCovariance} using the input vector \(X\). \(K_{X_{M}X_{M}}\) is the joint-covariance function on the inducing points \(X_{M}\), such that \(X_{M} = [x_{M1}, x_{M2}, ..., x_{M2}]\). While \(K_{XX_{M}}\) is the cross-covariance matrix between \(X_{joint}\) and \(X_{M}\). 
+where \(K_{Nystrom} = K_{XX_{M}}K_{X_{M}X_{M}}^{-1}K_{X_{M}X}\) and \(\tilde{K} = K_{XX} - K_{Nystrom}\). \(K_{XX}\) is the joint-covariance matrix derived using equation \ref{eq:exactJointCovariance} using the input vector \(X\). \(K_{X_{M}X_{M}}\) is the joint-covariance function on the inducing points \(X_{M}\), such that \(X_{M} = [x_{M1}, x_{M2}, ..., x_{M2}]\). While \(K_{XX_{M}}\) is the cross-covariance matrix between \(X_{joint}\) and \(X_{M}\). 
 
-Figure \ref{subfig:nystormJointmatrixRandom3} shows the Gram matrix after performing theNystr\"{o}m approximation for the Gram matrix described in the left figure. We see how choosing three same random inducing points for both the outputs ($y^1$ and $y^2$) impacts the Gram matrix. As analyzed in the chapter \ref{chapScalingGPR} we can improve the approximate Gram matrix if we increase the number of inducing points. 
+Figure \ref{subfig:nystormJointmatrixRandom3} shows the Gram matrix after performing the Nystr\"{o}m approximation for the Gram matrix described in the left figure. We see how choosing three same random inducing points for both the outputs ($y^1$ and $y^2$) impacts the Gram matrix. As analyzed in the chapter \ref{chapScalingGPR} we can improve the approximate Gram matrix if we increase the number of inducing points. 
 
 \begin{figure}[!ht]
   \centering
@@ -363,7 +381,7 @@ Figure \ref{subfig:nystormJointmatrixRandom3} shows the Gram matrix after perfor
   \caption{Approximate Gram matrix for a Joint MTGP kernel using Nystr\"{o}m approximation}
 \end{figure}
 
-The bound can be maximized with respect to all parameters of the covariance function; the model hyperparameters and the variational parameters. The optimization parameters are the inducing inputs \(x_{M}\), the hyperparameters \(\theta\) of the independent covariance matrix \(K_{22}\) and the error while measuring the outputs \(\sigma\). There is a trade-off between quality of the estimate and amount of time taken for the estimation process. On the one hand the number of inducing points determine the value of optimized negative log-marginal likelihood and hence the quality of the estimate. While, on the other hand there is a computational load of \(\mathcal{O}\left ( N(MD_{outputs})^{2} \right )\) for inference. We increase the number of inducing points until the difference between two successive likelihoods is below a predefined quantity.   
+The bound ($Fv$) can be maximized with respect to all parameters of the covariance function; the model hyperparameters and the variational parameters. The optimization parameters are the inducing inputs \(x_{M}\), the hyperparameters \(\theta\) of the independent covariance matrix \(K_{22}\) and the error while measuring the outputs \(\sigma\). There is a trade-off between quality of the estimate and amount of time taken for the estimation process. On the one hand the number of inducing points determine the value of optimized negative log-marginal likelihood and hence the quality of the estimate. While, on the other hand there is a computational load of \(\mathcal{O}\left ( N(MD_{outputs})^{2} \right )\) for inference. We increase the number of inducing points until the difference between two successive likelihoods is below a predefined quantity.   
 
 \subsection{Distributed Inference on Multi-output GP}\label{sec:dMOGP}
 An alternative to sparse approximations is to learn local experts on a subset of data. We have described distributed GP in detail in section \ref{secDgp}. We again distribute our dataset $X_{joint}$ into smaller experts and use the independence assumption between experts to approximate the Gram matrix.  Figure \ref{figDGPMTGP} shows the difference between an exact Gram matrix and a Gram matrix approximated using distributed GP.
@@ -383,7 +401,7 @@ Figure \ref{subfig:distributedJointmatrixUniform} shows the Gram matrix after pe
   \label{figDGPMTGP}
 \end{figure}
 
-The equation \ref{eq:dGPNLML} describes the formulation for marginal likelihood. Due to the independence assumption, the marginal likelihood can be written as a sum of individual likelihoods and then can be optimized to find the best-fit hyperparameters. After learning the hyperparameters we can combine the predictions of local experts to give mean and variance predictions (more details in section \ref{subSecCombiningExperts}). 
+Equation \ref{eq:dGPNLML} describes the formulation for marginal likelihood. Due to the independence assumption, the marginal likelihood can be written as a sum of individual likelihoods and then can be optimized to find the best-fit hyperparameters. After learning the hyperparameters we can combine the predictions of local experts to give mean and variance predictions (more details in section \ref{subSecCombiningExperts}). 
 
 \begin{align}\label{eq:dGPNLML}
     \log p(y| X, \theta) \approx \sum_{k=1}^{M} \log p_{k}(y^{(i)}| X^{(i)}, \theta)
@@ -396,7 +414,7 @@ The robust Bayesian Committee Machine (rBCM) model combines the various experts 
 \end{equation}
 
 \begin{equation}
-    (Cov_((Y_{*}))^{^-2} = \sum_{k} \beta_{k}\sigma_{k}^{-2} + (1- \sum_{k} \beta_{k})\sigma^{-2}_{**}
+    (Cov(Y_{*}))^{^-2} = \sum_{k} \beta_{k}\sigma_{k}^{-2} + (1- \sum_{k} \beta_{k})\sigma^{-2}_{**}
 \end{equation}
 
 In the above equations \(m_{k}(X_{*})\) and \(\sigma_{k}\) are the mean and covariance predictions from expert \(k\) at point \(X_{*}\). \(\sigma_{**}\) is the auto-covariance of the prior at prediction points \(X_{*}\). \(\beta_{k}\) determines the influence of experts on the final predictions \cite{DBLP:journals/corr/CaoF14} and is given as \(\beta_{k} = \frac{1}{2}(\log\sigma_{**}^{-2} - \log\sigma_{k}^{-2})\).  
@@ -411,7 +429,7 @@ We consider a derivative relationship between two output functions as described 
    f^1 = \frac{\partial f^2}{\partial x} 
 \end{equation}
 
-Data is generated from equations \ref{eq:ScalingexperimentalSET}, a random function is drawn from GP to get \(f^{2}\) whose derivative is then calculated to generate \(f^{1}\). \(y^{1}\) and \(y^{2}\) are then calculated by adding noise according the  equations \ref{eq:ScalingexperimentalSET}. 10,000 points are generated for both the outputs \(y^{1}\) and \(y^{2}\). Values of \(y^{2}\) are masked in the region \(x \in [0, 0.3]\), the remaining points now constitute our training dataset. 
+Data is generated from equations \ref{eq:ScalingexperimentalSET}, a random function is drawn from GP to get \(f^{2}\) whose derivative is then calculated to generate \(f^{1}\). \(y^{1}\) and \(y^{2}\) are then calculated by adding noise according the  equations \ref{eq:ScalingexperimentalSET}. 10,000 equidistant points are generated between the locations $x \in [-1, 1]$, for both the outputs \(y^{1}\) and \(y^{2}\). Values of \(y^{2}\) are masked in the region \(x \in [0, 0.3]\), the remaining points now constitute our training dataset. 
 
 \begin{equation}\label{eq:ScalingexperimentalSET}
     \begin{aligned}
@@ -425,9 +443,9 @@ Data is generated from equations \ref{eq:ScalingexperimentalSET}, a random funct
 
 \begin{equation}\label{eq:differentialCovariances}
     \begin{aligned}
-Cov(f^2(x), f^2(x')) & = \theta_{amplitude}^{2}exp(\frac{-1}{2}\frac{d^{2}}{\theta_{lengthScale}^2}) \\    
-Cov(f^1(x), f^2(x')) & = \theta_{amplitude}^{2}\frac{d}{\theta_{lengthScale}^2}exp(\frac{-1}{2}\frac{d^{2}}{\theta_{lengthScale}^2}) \\
-Cov(f^1(x), f^1(x')) & = \theta_{amplitude}^{2}\frac{d^{2}-\theta_{lengthScale}^{2}}{\theta_{lengthScale}^{4}}exp(\frac{-1}{2}\frac{d^{2}}{\theta_{lengthScale}^{2}})
+Cov(f^2(x), f^2(x')) & = \theta_{amplitude}^{2}exp \left [\frac{-1}{2}\frac{d^{2}}{\theta_{lengthScale}^2} \right] \\    
+Cov(f^1(x), f^2(x')) & = \theta_{amplitude}^{2}\frac{d}{\theta_{lengthScale}^2}exp\left [\frac{-1}{2}\frac{d^{2}}{\theta_{lengthScale}^2}\right] \\
+Cov(f^1(x), f^1(x')) & = \theta_{amplitude}^{2}\frac{d^{2}-\theta_{lengthScale}^{2}}{\theta_{lengthScale}^{4}}exp\left [\frac{-1}{2}\frac{d^{2}}{\theta_{lengthScale}^{2}}\right]
     \end{aligned}
 \end{equation}
 
@@ -467,10 +485,9 @@ Figure \ref{subfig:independentFitRelatedGP} shows the independent fit of two GP 
 \end{figure*}
 
 \paragraph{\textbf{Comparison between distributed GP and variational GP}}
-For the second experiment we compare the Root Mean Squared Error (RMSE) and run-times of distributed GP and Variational Inference algorithms while performing approximate inference. We progressively generate from $10^3$ to $10^5$ data-points according to the equations \ref{eq:ScalingexperimentalSET} and \ref{eq:derivativeEquation}. We separated 75\% of the data as the training set and 25\% of the data as the test set, the training and the test sets were chosen randomly. The variational inference relationship kernel as described in section \ref{sec:varMOGP} with ($N_{tot}/10$) equidistant inducing points was used. We learn the optimal values of hyper-parameters for all the sets of training data. The distributed GP algorithm as described in section \ref{sec:dMOGP} was used with randomly chosen ($N_{tot}/100$) points per expert. We learn the optimal values of hyper-parameters for all the sets of training data. The accuracy is plotted as RMSE values with respect to the test set. The runtime is defined as time taken to calculate negative log marginal likelihood equations \ref{eq:lowerBoundMultiVarNLML} and  \ref{eq:dGPNLML}. The RMSE values are calculated for only the dependent output \(y^{1}\) and then plotted in the figure \ref{subfig:comparisonOfRunTimes}. 
+For the second experiment we compare the Root Mean Squared Error (RMSE) and run-times of distributed GP and Variational Inference algorithms while performing approximate inference. We progressively generate from $10^3$ to $10^5$ data-points according to the equations \ref{eq:ScalingexperimentalSET} and \ref{eq:derivativeEquation}. We separated 75\% of the data as the training set and 25\% of the data as the test set, the training and the test sets were chosen randomly. The variational inference relationship kernel as described in section \ref{sec:varMOGP} with 100 equidistant inducing points was used. We learn the optimal values of hyper-parameters for all the sets of training data. The distributed GP algorithm as described in section \ref{sec:dMOGP} was used with randomly chosen 100 points per expert. We learn the optimal values of hyper-parameters for all the sets of training data. The accuracy is plotted as RMSE values with respect to the test set. The run time is defined as time taken to calculate negative log marginal likelihood equations \ref{eq:lowerBoundMultiVarNLML} and  \ref{eq:dGPNLML}. The RMSE values are calculated for only the dependent output \(y^{1}\) and then plotted in the figure \ref{subfig:comparisonOfRunTimes}. 
 
-In figure \ref{subfig:comparisonOfRunTimes} the time to calculate negative log-marginal likelihood with increasing number of training points is calculated. As expected the full GP takes more time when compared to variational inference or distributed GP algorithms. The Variational inference algorithm has better run-time till $\mathcal{N} \sim 10^4$ data-points after that distributed GP takes lesser time. 
-In figure \ref{subfig:comparisonOfRMSE}, the RMSE error with test set is compared between the variational inference and distributed GP algorithm. Here too the variational inference algorithm performs better for a lesser number of data points but distributed GP starts performing better when we reach more than $\mathcal{N} \sim 10^4$ data points. 
+In figure \ref{subfig:comparisonOfRunTimes} the time to calculate negative log-marginal likelihood with increasing number of training points is calculated. As expected the full GP takes more time when compared to variational inference or distributed GP algorithms. The Variational inference algorithm has better run-time till $\mathcal{N} \sim 10^4$ data-points, after that distributed GP takes lesser time. In figure \ref{subfig:comparisonOfRMSE}, the RMSE error with test set is compared between the variational inference and distributed GP algorithm. Here too the variational inference algorithm performs better for a lesser number of data points, but distributed GP starts performing better when we reach more than $\mathcal{N} \sim 10^4$ data points. 
 
 \begin{figure*}[!ht]
   \centering
@@ -486,7 +503,10 @@ In figure \ref{subfig:comparisonOfRMSE}, the RMSE error with test set is compare
   \caption{Comparison of run time and RMSE between distributed GP and Variational Inference}\label{fig:comparisonOfDGPvsVARGP}
 \end{figure*}
 
-One thing to note is that we have fixed the number and position of inducing points while performing this experiment. While a more optimized set of inducing points will have better results, for datasets of the order $\mathcal{N} \sim 10^5$ distributed GP algorithm starts outperforming variational inference. Moreover, upon observing figure \ref{subfig:independentFitRelatedGP} we can say that the covariance matrix in a joint GP setting is not diagonal in nature and hence an approximation technique which can compensate between low-rank approximation and diagonal approximation should be investigated \cite{march2015askit}.
+As we keep on increasing the number of data points, for a fixed set of inducing points variational inference starts performing worse. This is because as we have already observed we need $M \sim N/10$ for good accuracy with inducing inputs approximation. If we keep the value of $M \sim N/10$ for $n \sim 10^5$ then the size of matrix $\myMatrix{K_{MM}}$ will become very big to invert efficiently. Thus even with inducing inputs approximation we have an upper limit to the possible number of meaningful GP models. One thing to note is that we have fixed the number and position of inducing points while optimizing hyperparameters for this experiment. 
+
+
+While a more optimized set of inducing points will have better results, for datasets of the order $\mathcal{N} \sim 10^5$ distributed GP algorithm starts outperforming variational inference. For the case of distributed GP we have again fixed the number of points in an expert, but this does not have a significant impact on the trend on RMSE with increasing data points. 
 
 \subsection{Experiments on Flight Test Data}\label{subsec:expFlightLoadsData}
 We perform experiments on flight loads data produced during flight test phase at Airbus. Loads are measured across the wingspan using strain gauges. Shear load \(T_{z}\) and bending moment \(M_{x}\) as described in figure \ref{fig:wingLoadDiagram} are used as two outputs for this exercise. \(\eta\) or point of action of forces and angle of attack \(\alpha\) are the two inputs. The aircraft is in quasi-equilibrium in all conditions and there are no dynamic effects observed throughout this dataset. All data is normalized according to Airbus policy.
@@ -505,7 +525,7 @@ The relation between \(T_{z}\) and \(M_{x}\) can be written as:
 M_{x}(\eta, \alpha) = \int_{\eta}^{\eta_{edge}} T_{Z}(x, \alpha)(x-\eta)dx
 \end{equation}.
 
-The equation \ref{eq:relationTzMx} is applicable for the \(\eta\) axis. Here, \(\eta_{edge}\) denotes the edge of the wingspan. The forces are measured at 5 points on the wingspan and at 8800 points on the \(\alpha\) dimension. We compare plots of relationship-imposed multioutput GP and independent GP. Then we compare the measures of negative-log marginal likelihood and RMSE for varying number of inducing points.
+The equation \ref{eq:relationTzMx} is applicable for the \(\eta\) axis. Here, \(\eta_{edge}\) denotes the edge of the wingspan. The forces are measured at 5 points on the wingspan and at 8800 points on the \(\alpha\) dimension. We compare plots of relationship-imposed multi output GP and independent GP. Then we compare the measures of negative-log marginal likelihood and RMSE for varying number of inducing points.
 
 Figure \ref{subfig:experimental_plot} shows the independent (blue shade) and joint fit (red shade) of two GP. The top figure shows \(T_{Z}\) with the variance of dependent GP plotted in red and variance of independent GP plotted in blue. The bottom figure shows plots for \(M_{X}\). Since the number of input points is less than $10^5$, we use variational inference. 100 inducing points in the input space are used to learn and plot the figure. The variance of red is smaller than that of blue showing the improvement in confidence when imposing relationships in the GP architecture. The relationship between \(T_{Z}\) and \(M_{X}\) gives rise to better confidence during the loads prediction. This added information is very useful when identifying faulty sensor data since equation \ref{eq:relationTzMx} will push data points which do not satisfy the relationship out of the tight confidence interval.
 
@@ -526,16 +546,17 @@ Figure \ref{subfig:experimental_plot} shows the independent (blue shade) and joi
 \end{figure}
 
 Figure \ref{subfig:experimental_nlml_error} shows improvement in the negative log-marginal likelihood and RMSE plots upon increasing number of inducing points. 10 sets of experiments were run on 75\% of the data as training set and 25\% of the data as the test set, the training and the test sets were chosen randomly. We learn the optimal values of hyper-parameters and inducing points for all the 10 sets of experiments of training data. Finally, RMSE values are evaluated with respect to the test set and negative log-marginal likelihood are evaluated for each learned model. The RMSE and log-likelihood improve upon increasing the number of inducing points. 
-   
-\section{Summary and discussion}
-The current chapter demonstrates how to incorporate physical laws into multi-output GP regression framework and then eventually how to scale the framework to a large number of data points. 
 
-Section \ref{subsecLinearOperators} demonstrates how to enforce physical laws, which are in the form of linear operators. Whereas section \ref{subsecNonLinearOperators} demonstrates how to encode physical laws, which are in the form of non-linear operators. The improved accuracy of the model is then demonstrated both on a toy dataset and a dataset of real flight-test (section \ref{sec:results}). 
+\paragraph{Cost saving in MDO}
+By enabling relationships in building models we can save significant costs while performing MDO. Earlier works have reduced the cost of optimization by incorporating Gradient Enhanced Kriging into the optimization process \cite{liem2015surrogate}, a similar cost saving can be obtained by using the proposed methods. Suppose we are designing a part of an aircraft by performing optimization over a fluid-structure interaction loop. The fluid part is being solved by a costly CFD code, while the structural part is being solved by a cheap CSM code. The CFD code results in $pressures$ on the aerodynamic mesh, while the CSM part results in $deformations$ of the structural mesh. If we can leverage the relationship between pressure and deformation ($\int pressures = Stiffness \times deformation$) then we can effectively reduce the number of required runs. These type of cost savings can be made in several MDO problems. 
+
+
+\section{Summary and discussion}
+The current chapter demonstrates how to incorporate physical laws into multi-output GP regression framework and then eventually how to scale the framework to a large number of data points. Section \ref{subsecLinearOperators} demonstrates how to enforce physical laws, which are in the form of linear operators. Whereas section \ref{subsecNonLinearOperators} demonstrates how to encode physical laws, which are in the form of non-linear operators. The improved accuracy of the model is then demonstrated both on a toy dataset and a dataset of real flight-test (section \ref{sec:results}). 
 
 Section \ref{sec:sparseGPRegression} demonstrates how to scale the MTGP to large number of outputs, both using a variational approximation (section \ref{sec:varMOGP}) and a distributed GP approximation (section \ref{sec:dMOGP}). We then demonstrate the scalability on a toy dataset and a dataset from flight test and compare the accuracy of distributed GP and variational inference on the toy-dataset. 
 
-Several future paths which can be explored by leveraging this kind of relationship enabled MTGP's. Several publications have reduced the cost of optimization by incorporating Gradient Enhanced Kriging into the optimization process \cite{liem2015surrogate}, a similar cost saving can be obtained by using the proposed methods in multi-disciplinary problems. If we can enforce the relationship between different disciplines we can subsequently reduce the number of required runs. By enforcing physical laws of the system we can more automatically identify the faulty sensors in our experiments. Whereas the non-linear relationship format can also be used to enforce inequality relationships. 
-
+Several future paths can be explored by leveraging this kind of relationship enabled MTGP's. Using a quadratic relationship enabled MTGP we can indirectly add inequality constraints. Leveraging the information of prior relationships can greatly reducs the cost of performing MDO. Finally, by enforcing physical laws of the system we can automatically identify faulty sensors. All these are inetresting paths and should be explored further. 
 
 %%% Local Variables: 
 %%% mode: latex

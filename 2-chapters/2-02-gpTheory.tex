@@ -1,5 +1,22 @@
 \chapter{Gaussian Process Regression}
 \label{chapGp}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\section*{Résumé}
+Dans ce chapitre nous fournissons une introduction brève sur la façon d'exécuter la Régression avec GPS. GPs sont le candidat idéal à la régression en raison de leur propriété de marginalisation qui les rend par informatique soluble. Ceci fait des fonctions de dessin, le calcul la distribution postérieure et la sélection d'automatisation d'hyper-paramètres par informatique faisables. Ceci fait GPs un candidat idéal à définir une distribution Antérieure dans un cadre de Régression Bayésien. 
+
+La Section \ref{secPrior} détails les composants clés du GPs. Un GP peut être complètement paramétré par son moyen et la fonction de covariance. La tendance d'un GP est définie par sa fonction moyenne, tandis que la structure de ses fonctions constitutives est définie par la fonction de covariance. La moyenne d'un GP peut être supposée nulle, car un terme supplémentaire dans la fonction de covariance peut représenter la fonction moyenne. Par conséquent, le problème de l'apprentissage dans un GP est exactement le problème de trouver des propriétés appropriées de la fonction de covariance (section  \ref{subSecCH2Covariance}). Une fois qu'une forme(un formulaire) de fonction de covariance est choisie, nous pouvons calculer la matrice de Gramme aux points désirés et l'utiliser pour dessiner(tirer) des fonctions aléatoires (section \ref{subSecSamplingFunctionsGPPrior}).
+
+La Section \ref{secPosterior} décrit comment calculer la distribution postérieure. Le postérieur est le distribution conditionnel $(\Pr[f(\VEC{x_{*}}) \mid \VEC{y}, \myMatrix{X}, \VEC{\theta}])$  pour un distribution prior assumé $(\Pr[f] = GP(0, k(\VEC{x_1}, \VEC{x_2}, \VEC{\theta}))$  et les ensemble des points de données observé $(\mathcal{D} = {\myMatrix{X}, \VEC{y}})$. En raison de la supposition gaussienne, les probabilités conditionnelles sont tout de par informatique solubles et peuvent être calculées utilisant quelques opérations matricielles. Le calcul du postérieur est facile en absence (section \ref{subSecPosteriorNoiseFree}) et la présence (section \ref{subSecPosteriorNoisy}) de bruit dans des observations.
+
+La section \ref{secHyperParameter} montre l'importance de choisir les hyper-paramètres corrects. Une pratique courante dans la communauté est de maximiser la probabilité marginale pour choisir automatiquement les hyper-paramètres. Probabilité marginale est la probabilité d'une distribution prior $\Pr[f] = GP(0, k(\VEC{x_1}, \VEC{x_2}, \theta)$  générant les observations $ \mathcal{D} $. La maximisation de la probabilité marginale donne l'optimal hyper-paramètres pour (figure \ref{figGPRMarginalOptimized}).
+
+\end{mdframed}
+
+
+%\pagebreak
+
+\section{Introduction}
 Suppose we perform a simulation or experiment on an input point $\VEC{x_{j}} \in \mathbb{R}^{D_{inputs}}$and measure an output $y_{j} \in \mathbb{R}$. In this chapter we assume that the input is $D_{inputs}$-dimensional and the output is one-dimensional. We can thus have a data set of $N$ observations, $\{\mathcal{D} = (\VEC{x_{j}}, y_{j}) | j \in [1; N] \}$. The full input and output vectors can be denoted as $\myMatrix{X} = (\VEC{x_{1}}, \ldots , \VEC{x_{j}}, \ldots, \VEC{x_{N}})^T$ and $\VEC{y} = \{\VEC{y_{1}}, \ldots \VEC{y_j}, \ldots, \VEC{y_{N}}\}^T$ such that $\myMatrix{X} \in \mathbb{R}^{N \times D_{inputs}}$ and $\VEC{y} \in \mathbb{R}^{N }$. Given this data, we are interested in making predictions for new input points\footnote{Also called as test point, prediction point or target point.} $\VEC{x_{*}}$ that are not present in our series of experiments. This means that we need to use our training data and learn the true physical process  $f(\VEC{x})$ that generates our data set.
 
 As discussed in the previous chapter, the first step of a learning algorithm is defining a family of functions. Gaussian Processes (GPs) can be used to probabilistically define this family of functions. More formally, a GP is a distribution over functions such that any finite set of function values $[f(\VEC{x_{1}}), \ldots, f(\VEC{x_{j}}), \ldots, f(\VEC{x_{N}})]$ have a joint Gaussian distribution \cite{rasmussen2006gaussian}. 

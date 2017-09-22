@@ -3,6 +3,29 @@
 \label{chapIntroduction}
 %\minitoc
 
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\section*{Résumé}
+En raison du haut coût d'exécuter des expériences sur des systèmes physiques, les concevant purement par l'expérimentation devient un exercice coûteux. Ainsi les modèles deviennent des moyens évidents à la conception de systèmes physiques. Traditionnellement, ces modèles ont été construits par des instituts de recherches, par effectuant itérativement des expériences dans un environnement contrôlé. Une méthode plus rentable de construire des modèles est en utilisant des algorithmes d'apprentissage automatique, qui déduisent des modèles de données et peuvent être utilisés pour exécuter l'interpolation et l'extrapolation. Dans cette thèse, nous proposons de construire des meilleurs modèles d'Apprentissage automatique en intégrant la connaissance antérieure de design (conception) d'Avion avec des données expérimentales.
+
+Les modèles d'apprentissage automatique souffrent du biais(préjugé) contre le compromis de variance (figure \ref{figBiasVsVariance}),), formalisé par `Wolpert' dans son célèbre ``théorème de repas gratuit" \cite{wolpert1997no}. Les fonctions constitutives dans un espace d'hypothèse représentent le biais(préjugé) ou les hypothèses de l'algorithme apprenant (eg. des fonctions linéaires pour la régression linéaire). En absence de suppositions suffisantes, la famille de fonctions dans l'espace de recherche devient très grande qui mène une variance élevée dans le modèle (figure \ref{subFigpredictionPoly15}).). Au contraire, mal le biais(préjugé) signifie que la vraie fonction de transformation ($f$) n'existe pas dans l'espace d'hypothèse. Dans ce cas, l'algorithme apprenant trouve la fonction la plus proche à $f$ dans son espace d'hypothèse et mène à sous-ajustement (figure \ref{subFigpredictionPoly6}).)
+
+Une méthode de surmonter ce compromis est en utilisant énormément de données. Étant donné l'accès à de plus en plus de données, nous pouvons progressivement réduire le biais(préjugé) dans l'apprentissage de modèles. C'est aussi le concept principal de l'apprentissage profond (Deep learning), où plusieurs couches de réseaux neuronaux définissent un vaste espace d'hypothèse \cite{Goodfellow-et-al-2016, lecun2015deep}.
+
+Nous proposons de construire de meilleurs modèles d'apprentissage en intégrant les connaissances préalablement testées sur les systèmes d'avions avec des données expérimentales. Un modèle généré par la fusion des deux méthodologies sera à la fois cohérent avec la physique du système et sera plus rapide à évaluer. Nous intégrons trois types de connaissances antérieures en répondant aux questions suivantes:
+
+\begin{enumerate}
+\item \textbf{Forme}: Comment ajouter des informations \textit{apriori} d'un forme dans un algorithme d'apprentissage ? (part \ref{partIncorporatePattern}).
+\item \textbf{Modèle de simulation}: Comment fusionner \textit{apriori} information de simulations avec des expériences? (chapter \ref{chapMultiTaskExtrapolation}). 
+\item \textbf{Relations}: Comment ajouter des informations \textit{apriori} des relations entre les mesures? (chapter \ref{chapAddingEquationsInGP}).
+\end{enumerate}
+
+\end{mdframed}
+
+% \minitoc
+
+% \pagebreak
+
+\section{Introduction}
 \marginnote{\textsl{Machine learning}}[1cm]
 In the past decade due to the boom in Information Technology (IT) companies, more investment has gone into developing both computational infrastructure and methods. One of the ubiquitous methods developed due to this investment is that of Machine Learning. Learning algorithms look for patterns in data to learn from them and make decisions. They are used in web search, optimization, spam filtering, ad placement, stock trading, healthcare, manufacturing, space exploration, particle physics, security, and lot more. The speed and adaptability of learning methods are changing everything around us one algorithm at a time \cite{domingos2015master}. The World Economic Forum, Davos 2016 \cite{schwab2016fourth} has dubbed this as the fourth industrial revolution; first was steam powered, second was electrically powered, third was IT powered, fourth will be powered by artificial intelligence algorithms.
 
@@ -32,7 +55,7 @@ Instead of approximating physical complexity, surrogate models\footnote{Surrogat
 \marginnote{\textsl{Deduction vs Induction}}[1cm]
 The main difference between the engineering design and surrogate modeling can be explained by the difference between deduction and induction \cite{domingos2012few} (figure \ref{fig:engineeringDesignVsSurrogateModelling}). Engineering design is deduction: where a very general formula is applied to a particular case (figure \ref{figDeduction}). The basics of Newtonian physics, when applied to a particular aircraft geometry, give inertial loads. The basics of aerodynamics, when applied to a particular set of aircraft geometry and aircraft states, give out aerodynamic pressures. Engineering design takes global rules and applies them to local configurations. Whereas, surrogate modeling is induction: it looks at local features and data, tries to find similarity measures between them and gives a global formula for the process (figure \ref{figInduction}). For example, an algorithm to detect faces in images will look at several images with and without faces, learn a facial pattern and make predictions on new images \cite{marszalek2007semantic}. We here see a possible complementary relationship between engineering design and machine learning; where engineering design needs models to generate data, machine learning needs data to generate models.
 
-\begin{figure}[!ht]\label{fig:engineeringDesignVsSurrogateModelling}
+\begin{figure}[!ht]
   \centering
   \subfigure[Engineering design - Deduction: The figure shows an application of a general rule to a particular case.]
   {
@@ -47,6 +70,7 @@ The main difference between the engineering design and surrogate modeling can be
     \label{figInduction}
   }\quad
   \caption{Induction vs Deduction}
+  \label{fig:engineeringDesignVsSurrogateModelling}
 \end{figure}
 
 \marginnote{\textsl{Developing faster models}}[1cm]
@@ -261,7 +285,7 @@ Chapter \ref{chapMultiTaskExtrapolation} we describe how to build GP regression 
 Finally, chapter \ref{chapAddingEquationsInGP} demonstrates how to build an MTGP model if we know a relationship in form of an operation between two outputs. We first tackle the case of linear operators (section \ref{subsecLinearOperators}) and then expand the case to non-linear operators (section \ref{subsecNonLinearOperators}). We then give methods to scale MTGP models to large number of data-points, mainly by applying already seen techniques in chapter \ref{chapScalingGPR}. 
 
 \section{Contributions}\label{secCh1Contributions}
-Before highlighting the contributions of this thesis it is important to understand the research work in context of a CIFRE thesis. A CIFRE thesis is different from common PhD thesis because the student is an employee of the host company and is linked to the research university. This means that the research should preferably be application oriented, trying to solve some industry specific problem.
+Before highlighting the contributions of this thesis it is important to understand the research work in context of a CIFRE thesis. A CIFRE thesis is different from a common PhD thesis because the student is an employee of the host company and is linked to the research university. This means that the research should preferably be application oriented, trying to solve some industry specific problem.
 
 The main theme of this thesis is applying the developments in supervised Machine learning community to problems in  Engineering design. We choose GP regression as our supervised Machine Learning algorithm and we solve problems in Aircraft design. The developments proposed in this thesis can be further divided into two subgroups. First, where we have made contributions to the GP regression community. Second, where we have applied a formalism from GP regression literature to problems in aircraft design. Table \ref{tabListOfContributions} highlights the main contributions of this thesis.
 
@@ -297,13 +321,9 @@ When we are applying GP regression framework to Aircraft design problems, we are
 \item \textbf{Relationships}: How to add \textit{apriori} information of relationships between measurements? For example given $Loads = \int Pressures$, how to make a robust loads model when we measure both pressures and loads (chapter \ref{chapAddingEquationsInGP}).
 \end{enumerate}
 
-The Matlab codes available in this manuscript are only for improving the understanding. The basic toolbox used for this section is GPML provided with \cite{Rasmussen2005}, any new functions have been grafted into this basic toolbox. The code of this manuscript is available at \url{https://github.com/ankitchiplunkar/thesis_isae}. 
+The Matlab codes available in this manuscript are only for understanding. The basic toolbox used for this thesis is GPML provided with \cite{Rasmussen2005}, all new functionalities have been grafted into this basic toolbox. The code of this manuscript is available at \url{https://github.com/ankitchiplunkar/thesis_isae}. 
 
 
-
-
-% \end{mdframed}
-\textbf{codes}
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "isae-report-template"

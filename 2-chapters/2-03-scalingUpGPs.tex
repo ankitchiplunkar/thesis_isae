@@ -1,6 +1,20 @@
 \chapter{Scaling up Gaussian Process Regression}
 \label{chapScalingGPR}
 
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\section*{Résumé}
+Le calcul de postérieurs dans les GPs devient par difficile pour les grands ensembles de données. Le calcul de la matrice de précision est une opération de complexité $ \mathcal{O}(N ^ {3}) $, mettant une limite de $ N \sim 10^4 $ points de données pour la construction de modèles. Ce chapitre décrit l'état de l'art pour l'étendue des GPs pour les tâches de régression. Il existe deux methods of étendre GPs, les premières méthodes 'Sparse GPs' utilisent un ensemble des points inductifs pour réduire le coût de la calculation la matrice de précision. La seconde a appelé `Distributed GP ' il divisent l'ensemble de données en sous-ensembles plus petits, en distribuant le modèle en plusieurs lots.
+
+Les méthodes `Sparse GPs 'utilisent le Nystr\"{o}m approximation, récririvant la matrice de Gramme comme l'équation \ref{subSecSamplingFunctionsGPPrior}, diminuant ainsi la complexité de calcul à $ \mathcal{O} (NM^{2}) $ (M $ \ll $ N) , $ M $ étant le nombre de points inductifs. Grâce à des expériences sur les données synthétiques, on peut montrer nous-mêmes. inductifs sont distribués aletoirement et $ M \sim N/50 $ À propos des emplacements des points inductifs sont optimisés. Cette approximation pousse la limite de régression GP à $ N \sim 10^6 $ points de données.
+
+«Distributed GPs» distribuer les tâches de régression GP dans plusieurs lots, diminuant ainsi la complexité informatique à $ \mathcal{O} (NP^{3}) $ (P << N), $ P $ étant le nombre (numéro) des points dans un expert. Grâce à des expériences sur les données synthétiques, nous demosons que $ P \sim N/100 $ n'affecte pas beaucoup la précision de régression. En fait, nous repenser encore $ P $ si nous permettons la répétition de points entre les experts. Cela permet d'étendre le GP à n'importe quel nombre de points de données.
+\end{mdframed}
+
+
+%\pagebreak
+
+\section{Introduction}
 The GP regression approach, as mentioned in earlier chapter, is intractable for large data sets. For a data set of size $N$ the covariance matrix $\myMatrix{K_{XX}}$ is of size $N \times N$ and $\mathcal{O}\left ( N^{3} \right )$ time is needed for calculating the precision matrix and $\mathcal{O}\left ( N^{2} \right )$ memory for storage. Since inverting the covariance matrix takes considerable amount of time and memory, almost all techniques to scale up GP regression try to approximate the inversion of Gram matrix $\myMatrix{K_{XX}}$. 
 
 Let us take the example of a SE kernel, for a large value of length-scale, the Gram matrix ( $\myMatrix{K_{XX}}$) is spread out and has a rank lower than  $N$ (figure \ref{subFigSEPrior_2}). Due to this characteristic, the Gram matrix can be approximated using low-rank approximations, reducing the cost of inverting the Gram matrix. In the GP literature, sparse approximations (section \ref{secSparseApprox}) use a set of inducing points to compress the information of the several observations through the low-rank approximation. 
