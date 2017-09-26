@@ -35,6 +35,7 @@
 %\includeonly{2-chapters/2-III-overview}%, 
 %\includeonly{2-chapters/2-06-multiTaskLearning}%, 
 %\includeonly{2-chapters/2-07-addingEquations}
+%\includeonly{2-chapters/2-08-conclusions}
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%
@@ -46,12 +47,28 @@
 \includepdf[pages={1}]{1-opening/firstPage_ankitThesis.pdf}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Non-significant pages %%%
+%%% Acknowledgements %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \frontmatter
-
 \include{1-opening/acknowledgements}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Quotation %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{1-opening/quotation}
+
+%%%%%%%%%%%%%%%%
+%%% Abstract %%%
+%%%%%%%%%%%%%%%%
+
+% Include the abstract
+\cleardoublepage
+\input{1-opening/abstract}
+
+%%%%%%%%%%%%%%%%
+%%% Page numbering and other stuff %%%
+%%%%%%%%%%%%%%%%
 
 \clearpage
 \tableofcontents
@@ -90,13 +107,15 @@
 \include{2-chapters/2-06-multiTaskLearning}
 \include{2-chapters/2-07-addingEquations}
 
+\part{Conclusions}\label{partConclusions}
+\include{2-chapters/2-08-conclusions}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Appendices are included here %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 \appendix
-%\include{3-appendices/3-1-PIV}
+\include{3-appendices/3-01-mathematicalIdentities}
 
 \bibliographystyle{authoryear-fr}
 \bibliography{references}
@@ -109,6 +128,6 @@
 
 % Include the abstract
 \cleardoublepage
-\input{4-closing/abstract}
+\input{4-closing/endingAbstract}
 
 \end{document}

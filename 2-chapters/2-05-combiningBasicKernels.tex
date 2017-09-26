@@ -3,9 +3,13 @@
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
 \section*{Résumé}
-Beaucoup de nouveaux noyau peuvent être construits en fusionnant quelques noyaux de base. Si nous avons un \textit{apriori} informations sur le forme de fonction à être appris, l'intégration de cette information dans l'algorithme GP améliore considérablement la précision et le coût de la prédiction. La contribution initiale de ce chapitre est d'appliquer les fonctions de covariance nouvellement créées pour créer des modèles de conception technique.
+Souvent, le type d'information initiale que nous voulons intégrer n'est pas disponible sous la forme de fonctions de covariance basiques. Heureusement, plusieurs nouveaux noyaux peuvent être créés en fusionnant les noyaux de base que nous avons vus au chapitre précédent. Ce chapitre est inspiré par les travaux de  \cite{bishop2006pattern, mackay2003information, durrande2001etude, durrande2013anova}.
 
-La Section \ref{secSingleDimension} décrit comment combiner des noyaux pour créer des noyaux unidimensionnels, tandis que la section \ref{subsubsecCh4ApplicationCP} décrit comment construire des noyaux pour des dimensions plus hautes. Il y a deux contributions principales de ce chapitre, d'abord nous développons une nouvelle méthodologie pour détecter le début d'un régime non-linéaire dans un problème de d'ingénierie. Ceci est grâce au noyau de point de changement qui nous laisse définir le changement d'un régime à un autre \cite{chiplunkar:hal-01555401}. Deuxièmement, nous codons les informations de choc pour interpoler des pressions au régime transsonique. Cette stratégie donne des gains significatifs de l'exactitude quand comparé à la POD standard basée pour l'interpolation aérodynamique \cite{oatao18004}.
+
+La section \ref{secSingleDimension} décrit comment combiner les noyaux pour créer des noyaux unidimensionnels. Nous fournissons une explication intuitive de ce qui se produit lorsque nous ajoutons ou multiplions des noyaux, ces types de noyaux peuvent être utilisés pour détecter et séparer les modèles de données. La section \ref{subsubsecCh4ApplicationCP} décrit comment créer des noyaux pour des dimensions plus élevées. Ce type de noyaux peut être utilisé pour effectuer une analyse de sensibilité ou intégrer une structure à faible dimension dans les données.
+
+Dans ce chapitre, nous utilisons une combinaison de noyaux de base pour identifier l'apparition de comportements non linéaires dans les systèmes physiques. Par exemple, nous identifions l'initiation de la séparation de l'écoulement pour le profil
+(d'aile) NACA 0012 et l'initiation de la plasticité pour l'alliage AL6061 en utilisant un critère statistique pour la détection automatique de la non-linéarité (section \ref{subsubsecCh4ApplicationCP}) \cite{chiplunkar:hal-01555401}. Nous construisons enfin un modèle de GP pour prédire la position du choc aérodynamique en régime transsonique (section \ref{subecInterpolationOfAerodynamicPressures}) \cite{oatao18004}.
 \end{mdframed}
 
 
@@ -132,7 +136,7 @@ This basic assumption is used in making simple models in several domains; for ex
 \begin{mdframed}[hidealllines=true,backgroundcolor=blue!20]
 The value of these basic physical parameters such as slope (eg. Young's Modulus, coefficient of lift) and location of change in regime (eg. start of plasticity and separation of flow) are progressively fed into further simulations. Generally, the slope and location of change points are evaluated painstakingly using engineering judgment, this is a slow and costly process. We propose to estimate the slope and location of change-point automatically using a GP with CP kernel. Using the CP kernel which transitions from linear domain (linear kernel) to non-linear domain (SE kernel), prior information of the transition is encoded in the kernel structure. 
 
-%\textbf{Correct the units in aluminium}
+\textbf{Correct the units in aluminium}
 
 We perform our experiments on openly available Stress and Strain data of Aluminum Alloy 6061 \cite{kaufman1999properties} and Lift and Angle data of NACA 0012 airfoil\footnote{Airfoil data from: http://airfoiltools.com/airfoil/details?airfoil=n0012-il}. To estimate the CP hyper-parameters, we again perform a 10-fold cross validation. The dataset will be randomly partitioned into 10 subsets containing an equal number of points. Of the 10 subsets, a single subset is retained as the test dataset, and the remaining 9 (10 - 1) subsets are used as training data. The cross-validation process is then repeated 10 folds, with each of the k subsets used exactly once as the validation data. The marginal-likelihood is optimized for each of the training dataset and location of change-point and slope of the linear regime is noted. We then compare their average with the values available in the literature. 
 \end{mdframed}
@@ -302,7 +306,7 @@ The transonic regime often contains a shock on the surface of the wing. This sho
 Here, $x_i^{chord}$ represents the chord wise dimension of the $i^{th}$ input, while $k_{NN}$ and $k_{Mat \nu =5/2}$ represent the Neural Network and Mat\'ern ($\nu=5/2$) kernels respectively.
 \end{mdframed}
 
-We now test the performance of distributed GP and POD+I on two sets of numerical experiments. Firstly, we test the accuracy on a detailed FTF design \cite{Bosco2016} in subsonic regime (section \ref{subSec:elsAResults}) based on simulation from the elsA code \cite{cambier2008status}. Finally, we compare the accuracy on CRM wing in the transonic regime using elsA solver and kOmega-SST turbulence model \cite{vassberg2014summary}. elsA\textsuperscript{\textregistered} \cite{cambier2008status} is a CFD simulation platform that allows representation of both internal and external aerodynamics from the low subsonic to the high supersonic flow regime.  
+We now test the performance of distributed GP and POD+I on two sets of numerical experiments. Firstly, we test the accuracy on a detailed FTF design \cite{bosco2016nonlinear} in subsonic regime (section \ref{subSec:elsAResults}) based on simulation from the elsA code \cite{cambier2008status}. Finally, we compare the accuracy on CRM wing in the transonic regime using elsA solver and kOmega-SST turbulence model \cite{vassberg2014summary}. elsA\textsuperscript{\textregistered} \cite{cambier2008status} is a CFD simulation platform that allows representation of both internal and external aerodynamics from the low subsonic to the high supersonic flow regime.  
 
 \subsubsection{Interpolation in subsonic regime}\label{subSec:elsAResults}
 A FTF is situated below the wing and is used to deploy flaps for landing and take-off configurations. A FTF experiences heavy dynamic excitation due to the exhaust coming from engine. The dynamic nature makes the design of FTF a challenging task, where each simulation can last for 2 days. If we can effectively interpolate pressure snapshots then a 2 day dynamic simulation can be reduced to a few hours. 
@@ -351,7 +355,7 @@ Due to the shape of an airfoil, airflow is accelerated on the upper surface of t
   {\includegraphics[width=0.45\textwidth]{images/part2/crm_Wing_design}\label{subfig:crmWing}}\quad
     \subfigure[{Pressure snapshot on the CRM for $\alpha = 2$ and $Mach = 0.85$, using elsa solver and $\kappa - \omega$ SST turbulence model. We can observe double shock pattern appearing on the outer sections of the wing}]
     {\includegraphics[width=0.45\textwidth]{images/part2/surfM85A2}\label{subfig:crmSnapshot}}
-  \caption{CRM}
+  \caption{CRM shape for aerodynamic simulations}
 \end{figure*}
 
 Again we use the elsA\textsuperscript{\textregistered} solver to perform simulations on the design. We use the $\kappa - \omega$ SST turbulence model to perform predictions since it has good performance in the fuselage wing interaction regions \cite{menter2003ten, vassberg2014summary}. The CFD was run for a combination of 21 values of $\alpha \in [1: 0.1: 3]$ and 5 values of $Mach \in [0.84: 0.005: 0.86]$, hence $N_{experiment} = 21\times5 = 105$. Figure, \ref{subfig:crmSnapshot} shows one of the pressure snapshots for $\alpha = 2$ and $Mach = 0.85$. We then cut the wing at four distinct locations $y/b = [0.105, 0.37, 0.5, 0.84]$ (figure \ref{subfig:crmWing}) to clearly observe different types of aerodynamic behavior. Here, $y$ denotes the y-distance from aircraft axis and $b$ denotes the span of one wing. 
@@ -391,7 +395,7 @@ We next study the accuracy of distributed GP for different airfoils on the wing.
     {\includegraphics[width=0.45\textwidth]{images/part2/CRM-clean-testSnapshots_M850A20_cut4}\label{subfig:interpCut4}}
   \caption{Performance of distributed GP across cuts}
 \end{figure*}
-\textbf{If possible also plot the variance curves to access the uncertainity around second curve}
+\textbf{If possible also plot the variance curves to access the uncertainty around second curve}
 
 Figure \ref{subfig:compasironOfCutsGPCRM} shows the RMSE performance across cuts. The performance of interpolation deteriorates as we go further away from the fuselage. This is primarily because as we go further away from the fuselage double shocks start appearing on the airfoil as observable from figure \ref{subfig:crmSnapshot}. Figure \ref{subfig:interpCut4} shows interpolation performed by the POD method and distributed GP methods at $\alpha = 2$ and $Mach = 0.85$. While, POD smooths out the double shock pattern, distributed GP also lacks the accuracy observed in figure \ref{subfig:interpComparisonCRM}. 
 

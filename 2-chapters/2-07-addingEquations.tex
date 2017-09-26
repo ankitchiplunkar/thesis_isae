@@ -1,5 +1,19 @@
 \chapter{Adding relationships in GP Regression}
 \label{chapAddingEquationsInGP}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\section*{Résumé}
+Dans ce chapitre, nous considérons le problème de la modélisation de la régression de processus gaussien à plusieurs sorties (GP) corrélées par les lois physiques du système. Ces lois physiques ont été développées après des siècles d'observations et d'expériences itératives. Elles peuvent être représentées sous la forme d'un ensemble d'équations ou d'un code informatique (CFD, codes CSM).
+
+Un exemple populaire d'application des relations antérieures connues entre les sorties est appelée le «Gradient Enhanced Kriging» dans la littérature sur la Krigeage  \cite{chung2002using, morris1993bayesian, forrester2009recent} ou appelée "GP regression with derivative observations" dans la literature sur le GP \cite{NIPSDerivativeGP}. La relation dérivative est appliquée en modifiant la fonction de covariance conjointe (équation \ref{eq:mogpJointPrior}). Dans ce chapitre, nous étendons le modèle du «Gradient Enhanced Kriging» aux intégrales, aux fonctions quadratiques ou à n’importe quelle fonctionnelle entre les sorties \cite{ Constantinescu2013}.
+
+Le codage des lois physiques rend le modèle savant compatible avec la physique du système, ce qui constitue un avantage majeur par rapport aux modèles purement générés par les données independent \cite{jazwinski2007stochastic}. La contribution de ce chapitre est double; nous démontrons d'abord l'efficacité de l'ajout de relations dans GP, à la fois sur un base des données  synthétiques et sur un ensemble de données normalisées d'essais en vol. Les résultats ont été présentés lors de l'AIAA aviation conférence 2016 \cite{oatao18001}. Deuxièmement, nous démontrons comment appliquer GP régression avec plusieurs sorties pour à une grande quantité de données, en utilisant à la fois une inférence variationnelle et une `distributed GP’. Les résultats de cette étude ont été publiés dans ICPRAM 2016 et LNCS 2017 \cite{icpram16Ankit, oatao18000}.
+\end{mdframed}
+
+
+%\pagebreak
+
+\section{Introduction}
 In this chapter, we consider the problem of modelling multiple output Gaussian Process (GP) regression correlated through physical laws of the system. Some example of physical laws can be `Newtons Laws of Motion', `Navier Stokes equation' or the `Heat dissipation equation'. These physical laws have been developed after centuries of observations and iterative experiments. They can be represented in the form of a set of equations or through a computer code (CFD, CSM codes). This chapter discusses how to encode such relationships between outputs in an MTGP regression framework. 
 
 Encoding physical laws makes the learned model consistent with the physics of the system, which is a major advantage when compared against pure data generated models \cite{jazwinski2007stochastic}. The contribution of this chapter is two-fold, we first demonstrate the effectiveness of adding relationships in GP, on both a toy-dataset and a normalized flight-test dataset. The results were presented in AIAA aviation conference 2016 \cite{oatao18001}. Second, we demonstrate how to scale MTGP to a large amount of data, using both variational inference and distributed GP. The results of this study were published in ICPRAM 2016 and LNCS 2017 \cite{icpram16Ankit, oatao18000}.
@@ -123,7 +137,6 @@ The sample code \ref{codeJointCovariance} shows one of the ways to calculate the
   \label{tabListOfJointCovarianceFUnctions}
   \caption{Joint covariance for different relationships}
   \end{table}
-\textbf{Insert table with differential and integral kernels}
 \end{comment}
 
 Figure \ref{figGramMatricesJointKernel} represents the Gram matrix obtained by enforcing a relationship between two outputs $y^1$ and $y^2$. We use a SE kernel ($\theta_{amplitude} = 1$ and $\theta_{lengthScale} = 0.2$) as a covariance function for defining the prior distribution of the independent output $y^2$. The auto-covariance and cross-covariance functions are calculated using the code \ref{codeJointCovariance}. The Gram matrix is evaluated at 100 equidistant points $X^j = [0:0.01:1]$ for both the outputs. Figure \ref{subfig:derivativeGramMatrix} is the Gram matrix when the outputs are related through a derivative relationship (\(y^1 = \frac{\partial y^2}{\partial x}\)), while figure \ref{subfig:integralGramMatrix} is the Gram matrix when the outputs are related through an integral relationship (\(y^1 = \int_{0}^{x} y^2\)). The $\myMatrix{K_{ii}}$ represent the Gram matrices between same outputs, while the $\myMatrix{K_{ij}}$ (for $i \neq j$) represents the Gram matrix between different outputs.

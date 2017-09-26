@@ -1,0 +1,52 @@
+%\begin{vcenterpage}
+\noindent\rule[2pt]{\textwidth}{0.5pt}
+%\begin{center}
+%{\large\textbf{Title in english\\}}
+%\end{center}
+{\large\textbf{Abstract ---}}
+Due to the high cost of performing experiments on physical systems, models become an obvious means to designing them. Traditionally, these models were built by research institutes, through iteratively performing experiments in a controlled environment. A more cost effective method of building models is by using machine learning algorithms, which infer patterns from data and can be used to perform interpolation and extrapolation. In this thesis, we propose to build better GP regression models by integrating the prior knowledge of Aircraft design with experimental data. 
+
+We demonstrate how to incorporate the prior information by mainly changing the covariance functions of the GP. Prior information in terms of smoothness, linearity, differentiability, etc. can be easily encoded using simple covariance functions. Using the spectral mixture kernels we demonstrate how to build models for structural dynamic experiments and automatically identify dynamic parameters such as modal frequency. To the best of our knowledge, such a method has not been used in the earlier literature to identify modal parameters. We then use change-point kernel to identify onset of non-linearity, and use a neural network kernel to interpolate shock in transonic regime. For each application we compare the proposed model with the state of the art model and demonstrate the cost or performance gains achieved. 
+
+Similarly, relationships between multiple outputs can be learned or enforced by manipulating the covariance functions. We first demonstrate how the prior information of simulation model can be incorporated to perform extrapolation of experimental data. We then incorporate the physical laws of flight-mechanics into GP regression to identify flight loads. For both the use-cases, we first validate the methodology on a synthetic dataset and then demonstrate the gains on flight-test dataset.
+
+A limitation of GPs is that they scale very poorly with data, there are two main methods of scaling GPs. The first reduces the dataset into a reduced set of inducing inputs, while the second distributes the dataset into smaller batches. We demonstrate the capability of scaling, by building a GP model for interpolating pressures on millions of nodes in a CFD mesh. To the best of our knowledge this scale of GP model has not been created before for the interpolating pressures. A similar surrogate model was used in a recent Airbus flight test campaign to compare pressures predicted from a high-fidelity CFD computation to pressures measured on the wing, in real time. We then demonstrate how to scale up MTGPs to large number of outputs, both using a sparse approximation and a distributed GP approximation. The proposed approach was then validated on a synthetic dataset and on a flight test dataset.
+
+{\large\textbf{Keywords:}}
+    Gaussian Process, Flight-Mechanics, Aircraft design, Structural Dynamics, Shock Interpolation.
+\\
+\noindent\rule[2pt]{\textwidth}{0.5pt}
+
+\pagebreak
+
+\noindent\rule[2pt]{\textwidth}{0.5pt}
+
+{\large\textbf{Résumé ---}}
+En raison du coût élevé des expériences sur les systèmes physiques, les modèles deviennent un moyen évident de les concevoir. Traditionnellement, ces modèles ont été construits par des instituts de recherche, en effectuant des expériences dans un environnement contrôlé, dans une façon itérative. Une méthode plus rentable de construction de modèles consiste à utiliser des algorithmes d'apprentissage statistique, qui déduisent des modèles à partir de données et peuvent être utilisés pour interpoler et extrapoler. Dans cette thèse, nous proposons de construire de meilleurs modèles de régression du GP en intégrant la connaissance préalable de la conception d'aéronef avec des données expérimentales.
+
+Nous démontrons comment intégrer l'information préalable en modifiant principalement les fonctions de covariance du GP. En utilisant les noyaux de mélange spectral, nous démontrons comment construire des modèles pour des expériences dynamiques structurelles et identifier automatiquement des paramètres dynamiques tels que la fréquence modale. Nous utilisons ensuite le noyau de `change-point' pour identifier l'apparition de la non-linéarité et utiliser un noyau de réseau neuronal pour interpoler le choc dans le régime transsonique. Pour chaque application, nous comparons le modèle proposé avec le modèle d'état de l'art et démontrons les gains de coût ou de performance obtenus.
+
+
+De même, les relations entre plusieurs sorties peuvent être apprises ou imposées en manipulant les fonctions de covariance. Nous démontrons d'abord comment l'information préalable du modèle de simulation peut être incorporée pour effectuer une extrapolation des données expérimentales. Nous incorporons ensuite les lois physiques de la mécanique de vol dans la régression du GP pour identifier les charges de vol. Pour les deux cas d'utilisation, nous validons d'abord la méthodologie sur un ensemble de données synthétiques, puis démontrons les gains sur des données d'essai en vol.
+
+Une limitation des GPs est que effectuer une régression pour un grand nombre de données devient coûteux très vite, il existe deux méthodes pour étendre des GPs. La première 'Sparse GPs' utilisent un ensemble des points inductifs pour réduire le coût de calcul de la matrice de précision. La seconde est appelée `Distributed GP ' elle divise l'ensemble de données en sous-ensembles plus petits, en distribuant le modèle en plusieurs lots.. Nous démontrons l’amélioration, en construisant un modèle GP pour interpoler les pressions sur des millions de nœuds dans un maillage CFD. À notre meilleure connaissance, une modèle du GP de cette taille n'a pas été créée pour l'interpolation des pressions. Un modèle de substitution similaire a été utilisé pour une récente campagne de d'essai en vol d'Airbus. Nous démontrons ensuite comment étendre les MTGP à un grand nombre de sorties, à la fois en utilisant une approximation `Sparse GP’ et une approximation de `distributed GP ‘. L'approche proposée a ensuite été validée sur un ensemble de données synthétiques et sur un ensemble de données d'essai en vol.
+
+{\large\textbf{Mots clés :}}
+    Processus gaussien, Mécanique de vol, Conception d'aéronefs, Dynamique structurale, Interpolation de choc.
+\\
+\noindent\rule[2pt]{\textwidth}{0.5pt}
+
+
+
+
+
+%\begin{center}
+%  Institut Cl\'ement Ader, 3 Rue Caroline Aigle\\
+%  Toulouse, France
+%\end{center}
+%\end{vcenterpage}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "../phdthesis"
+%%% End: 

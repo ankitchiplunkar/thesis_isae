@@ -1,5 +1,22 @@
 \chapter{Multi-task learning for extrapolation}
 \label{chapMultiTaskExtrapolation}
+
+\begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
+\section*{Résumé}
+Dans la partie actuelle (part \ref{partIncorporateMultipleOutputs}), nous nous sommes intéressés par l'apprentissage de relations entre plusieurs sorties. Effectuer une régression sur les sorties multiples peut être divisé en deux catégories, d'abord lorsque nous souhaitons découvrir des relations sur plusieurs sorties, et deuxièmement lorsque nous voulons appliquer une relation connue entre les sorties (en tant que biais) dans notre algorithme d'apprentissage.
+
+Dans ce chapitre, nous verrons comment effectuer la régression GP en présence de sorties multiples. Une méthode simple d'apprentissage d'un modèle de régression pour les sorties multiples est de supposer le nombre de sorties comme une dimension supplémentaire (cette dimension supplémentaire est une variable catégorielle). Cette hypothèse est bénéfique pour deux raisons; premièrement nous avons effectivement augmenté le nombre de points de données (figure \ref{figoutputsAsAnExtraDimension}), deuxièmement, fonctions de covariances pour plusieurs dimensions (section \ref{secMultiDimensionalKernels}) peuvent être également appliquées au cas des sorties multiples (section \ref{subsecAnExtraDimension}).
+
+Si aucune information n'est disponible sur la relation entre les sorties, nous pouvons apprendre la relation entre les sorties en utilisant une covariance `MT simple’ (section \ref{simpleMultiTask}), un «Linear Model Of Coregionalization» (section \ref{subsecLMC}), ou un `convoluted GP’ \cite{alvarez2011kernels}. Si nous savons \textit{apriori} que les sorties proviennent de modèles de fidélité multiples, nous pouvons utiliser la fonction de covariance conjointe proposée par \cite{kennedy2000predicting} (section \ref{secMultiFidelityMTGP}).
+
+Dans la section \ref{subsecMTGPExtrapolation}, nous avons montré comment les modèles GP multi-fidélité peuvent être utilisés pour effectuer une mise à jour ou une extrapolation des données expérimentales du modèle. Nous incluons un terme d'erreur et un terme de traduction dans un modèle multi-fidélité normal pour tenir compte des différences entre le modèle de simulation et les données expérimentales. À l'avenir, nous souhaitons quantifier la performance des différentes méthodes d'extrapolation et décider de la méthode à choisir dans un scénario particulier.
+\end{mdframed}
+
+
+%\pagebreak
+
+\section{Introduction}
+
 In the current part (part \ref{partIncorporateMultipleOutputs}) we are interested in learning relationships between multiple outputs. Performing regression on multiple-outputs can be split into two categories, first when we wish to discover relationships across multiple outputs, and second when we wish to enforce a known relationship between outputs (as a bias) into our learning algorithm.
 
 When no relationship is known between outputs, we are interested in discovering these relationships. Several real-world problems often exhibit strong correlations between output variables, for example, correlations across spatial coordinates ($x, y, z$) in an experiment. This setting is also called `Multi-Task Learning' in the machine learning literature. Learning relationships across outputs can improve the efficiency and prediction accuracy of the models when compared to training the outputs individually. This is because of learning outputs, which are related, effectively increases the number of data-points, thereby providing more data for learning algorithm  \cite{caruana1998multitask}. In the GP literature these models are called `Multi-Task GP' (MTGP) \cite{alvarez2011kernels, bonilla_multi-task_2008, Boyle05dependentgaussian}, while in the kriging literature they are called as Cokriging \cite{helterbrand1994universal, chiles1999geostatistics, ver1998constructing}.
