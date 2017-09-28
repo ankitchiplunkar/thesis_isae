@@ -1,4 +1,100 @@
 \chapter{Gaussian Identities}\label{appMathematicalIdentities}
 
+In this appendix we provide basic background on each topic to make this
+thesis self-contained. Let $\VEC{x} = \{x_1, \ldots, x_i, \ldots, x_N\}$ be a set of $N$ scalar Gaussian random variables $x_i \in \mathcal{R}$. Such that: 
+
+\begin{align}
+x_i \sim \mathcal{N}(\mu_i, \sigma_i^2)
+\end{align}
+
+Here, $\mu_i$ represents the scalar mean, while $\sigma_i^2$ represents the variance. Their probability density can thus written as:
+
+\begin{align}
+    \Pr[x_i] & = \mathcal{N}(\mu_i, \sigma_i^2) \\
+            & = \frac{1}{\sqrt{2\pi\sigma_{i}^{2}}}\exp^{-\frac{(x_i - \mu_i)^{2}}{2\sigma_{n}^{2}}}
+\end{align}
+
+
+Let us partition the set $\VEC{x}$ into two sets, $\VEC{a}$ and $\VEC{b}$ of size $N_a$ and $N_b$ respectively. Such that $\VEC{a} \cup \VEC{b} = \VEC{x}$, while each set may contain one or more variables. We denote $\VEC{x_a}$ as the ordered collection of random variables in set $\VEC{a}$, thus $\VEC{x_a} \in \mathcal{R}^{N_a}$ is a collection of random variables. Thereby, the probability distribution of random vector $\VEC{x_a}$ can be denotes as equation \ref{eqVectorNormalDistribution} and similarly for $\VEC{x_b}$.
+
+
+\begin{align}\label{eqVectorNormalDistribution}
+    \Pr[\VEC{x_a}] & = \mathcal{N}(\VEC{\mu_a}, \myMatrix{\Sigma_a}) \\
+            & = \frac{1}{\sqrt{(2\pi)^{N_a} \myMatrix{\Sigma_a}}} exp \left [-\frac{1}{2}(\VEC{x_a} - \VEC{\mu_a})^{T}\myMatrix{\Sigma_a}(\VEC{x_a} - \VEC{\mu_a}) \right ]
+\end{align}
+
+Here, $\VEC{\mu_a}$ is the ordered collection of means in the random variable set $\VEC{a}$, while $\myMatrix{\Sigma_a}$ represents the covariance matrix. We can write the joint, marginal and conditional distributions are also Gaussian distributions, for a detailed treatment refer to \cite{bishop2006pattern}.
+
+\section{Joint distribution}
+If the probability densities of sets $\VEC{a}$ and $\VEC{b}$ can be written as, $\Pr[\VEC{x_a}] = \mathcal{N}(\VEC{\mu_a}, \myMatrix{\Sigma_a})$ and $\Pr[\VEC{x_b}] = \mathcal{N}(\VEC{\mu_b}, \myMatrix{\Sigma_b})$. Then the joint distribution between two random vectors $\VEC{x_a}$ and $\VEC{x_b}$ is given by $\Pr[\VEC{x_a}, \VEC{x_b}]$ in equation \ref{eqFullXVector} ($\VEC{a} \cup \VEC{b} = \VEC{x}$).
+
+\begin{align}\label{eqFullXVector}
+    \Pr  [ \VEC{x}  ]  = \Pr  [ \VEC{x_a}, \VEC{x_b}]& = \Pr \begin{bmatrix}
+\VEC{x_a}\\ 
+\VEC{x_b}
+\end{bmatrix} \\ 
+& = \mathcal{N} \left ( \begin{bmatrix}
+\VEC{\mu_a}\\ 
+\VEC{\mu_b}
+\end{bmatrix}, \begin{bmatrix}
+\myMatrix{\Sigma_a} & \myMatrix{\Sigma_{ab}}\\ 
+\myMatrix{\Sigma_{ba}} & \myMatrix{\Sigma_b}
+\end{bmatrix} \right )
+\end{align}
+
+\section{Sum of Gaussians}
+If the size of the random vectors $\VEC{x_a}$ and $\VEC{x_b}$ is same, then is a new vector $\VEC{x_c} = \VEC{x_a} + \VEC{x_b}$ is sum of two Gaussians, it is also a multi-variate Gaussian with probability density given as follows:
+
+\begin{equation}
+    \Pr[\VEC{x_a}] = \mathcal{N}(\VEC{\mu_a} + \VEC{\mu_b}, \myMatrix{\Sigma_a} + \myMatrix{\Sigma_b})
+\end{equation}
+
+\section{Affine property of Gaussians}
+If $\VEC{x_d}$ is a linear transformation of $\VEC{x_a}$ such that $\VEC{x_c} = \VEC{l} + \myMatrix{M}\VEC{x_a}$. Here, $\VEC{l}$ and $\myMatrix{M}$ are a vector and a matrix of constants respectively. Then $\VEC{x_d}$ it is also a multi-variate Gaussian with probability density given as follows:
+
+\begin{equation}
+    \Pr[\VEC{x_d}] = \mathcal{N}(\VEC{l} + \myMatrix{M}\VEC{\mu_a}, \myMatrix{M}\myMatrix{\Sigma_a}\myMatrix{M}^T)
+\end{equation}
+
+\section{Marginal Distribution}
+The marginal distribution between two probability distributions is given as:
+
+\begin{equation}
+   \Pr  [ \VEC{x_a}  ] = \int \Pr  [ \VEC{x_a}, \VEC{x_b}  ] d\VEC{x_b}  
+\end{equation}
+
+We are effectively integrating out the random variable $\VEC{x_b}$. This is the same principle while calculating the `marginal likelihood' to choose hyper-parameters, we integrate out the hyper-parameters ($\VEC{\theta}$). 
+
+For a Gaussian random vector (multi-variate Gaussian) as described in equation \ref{eqFullXVector}, the marginal distribution is a Gaussian. This is also called the marginalization property of Gaussians. 
+
+\begin{align}
+   \Pr  [ \VEC{x_a}  ] & = \int \Pr  [ \VEC{x_a}, \VEC{x_b}  ] d\VEC{x_b} \\
+                     & = \mathcal{N}(\VEC{\mu_a}, \myMatrix{\Sigma_a})
+\end{align}
+
+\section{Conditional Distribution}\label{secAppConditionalDistribution}
+The probability of $\VEC{x_a}$ given a value of $\VEC{x_b} = \bar{\VEC{x_b}}$, is called as conditional probability and is written as $\Pr[\VEC{x_a} \mid \VEC{x_b} = \VEC{\bar{x_b}}]$. 
+
+\begin{equation}
+    \Pr[\VEC{x_a} \mid \VEC{x_b} = \bar{\VEC{x_b}}] = \frac{\Pr[\VEC{x_a}, \VEC{x_b}]}{\Pr[\VEC{x_b} = \VEC{\bar{x_b}}]}
+\end{equation}
+
+For a Gaussian random vector (multi-variate Gaussian) as described in equation \ref{eqFullXVector}, the conditional distribution is a Gaussian. 
+
+\begin{align}
+    \Pr[\VEC{x_a} \mid \VEC{x_b} = \VEC{\bar{x_b}}] & = \mathcal{N}(\VEC{\mu_{a \mid b}}, \myMatrix{\Sigma_{a \mid b}}) \\
+    \VEC{\mu_{a \mid b}} & = \VEC{\mu_a} + \myMatrix{\Sigma_{ab}}\myMatrix{\Sigma_b}^{-1}(\VEC{\bar{x_b}} - \VEC{\mu_b})
+\end{align}
+
+This is the same principle while calculating the posterior distribution of a GP, there we are conditioning a GP given an observation dataset. 
+
+
+
+
+
+
+
+
+
 
 

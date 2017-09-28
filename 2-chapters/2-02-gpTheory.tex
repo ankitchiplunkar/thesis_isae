@@ -3,13 +3,13 @@
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
 \section*{Résumé}
-Dans ce chapitre nous fournissons une introduction brève sur la façon d'exécuter la Régression avec GPs. Les GPs sont les candidats idéaux à la régression en raison de leur propriété de marginalisation qui les rend soluble informatiquement. Ce qui rends, les réalisations des fonctions d'aléatoires, le calcul de distribution postérieure et la sélection automatique d'hyper-paramètres faisable informatiquement. Ceci fait des GPs des candidats idéaux pour définir une distribution Prior dans un cadre de Régression Bayésien. 
+Dans ce chapitre nous fournissons une introduction sur comment exécuter la Régression avec GPs. Les GPs sont les candidats idéaux à la régression grâce à de leur propriété de marginalisation qui les rend soluble informatiquement. Ce qui rends, les réalisations des fonctions d'aléatoires, le calcul de distribution postérieure et la sélection automatique d'hyper-paramètres faisable informatiquement aussi. Ceci fait des GPs des candidats idéaux pour définir une distribution Prior dans un cadre de Régression Bayésien. 
 
 La Section \ref{secPrior} détaille les composants clés du GPs. Un GP peut être complètement paramétré par sa moyenne et la fonction de covariance. La tendance d'un GP est définie par sa fonction moyenne, tandis que la structure de ses fonctions constitutives est définie par la fonction de covariance. La moyenne d'un GP peut être supposée nulle, car un terme supplémentaire dans la fonction de covariance peut représenter la fonction moyenne. Par conséquent, le problème de l'apprentissage dans un GP consiste à trouver les propriétés appropriées de la fonction de covariance (section  \ref{subSecCH2Covariance}). Une fois qu'une forme de fonction de covariance est choisie, nous pouvons calculer la matrice de Gram aux points désirés et l'utiliser pour dessiner (tirer) des fonctions aléatoires (section \ref{subSecSamplingFunctionsGPPrior}).
 
-La Section \ref{secPosterior} décrit comment calculer la distribution postérieure. Celle-ci est le distribution conditionnel $(\Pr[f(\VEC{x_{*}}) \mid \VEC{y}, \myMatrix{X}, \VEC{\theta}])$  pour une distribution Prior assumé $(\Pr[f] = GP(0, k(\VEC{x_1}, \VEC{x_2}, \VEC{\theta}))$  et les ensembles des points de données observés $(\mathcal{D} = {\myMatrix{X}, \VEC{y}})$. En raison de la supposition Gaussienne, les probabilités conditionnelles sont solvable informatiquement et peuvent être calculées en utilisant quelques opérations matricielles. Le calcul de la distribution postérieur est facile a la fois en absence (section \ref{subSecPosteriorNoiseFree}) ou en l'observe (section \ref{subSecPosteriorNoisy}) de bruit dans les observations.
+La Section \ref{secPosterior} décrit comment calculer la distribution postérieure. Celle-ci est la distribution conditionnel $(\Pr[f(\VEC{x_{*}}) \mid \VEC{y}, \myMatrix{X}, \VEC{\theta}])$  pour une distribution Prior assumé $(\Pr[f] = GP(0, k(\VEC{x_1}, \VEC{x_2}, \VEC{\theta}))$  et les ensembles des points de données observés $(\mathcal{D} = {\myMatrix{X}, \VEC{y}})$. En raison de la supposition Gaussienne, les probabilités conditionnelles sont résolubles informatiquement et peuvent être calculées en utilisant quelques opérations matricielles. Le calcul de la distribution postérieur est facile à la fois en absence (section \ref{subSecPosteriorNoiseFree}) ou en l'observe (section \ref{subSecPosteriorNoisy}) de bruit dans les observations.
 
-La section \ref{secHyperParameter} montre l'importance de choisir les hyper-paramètres correctement. Une pratique courante dans la communauté est de maximiser la probabilité marginale pour choisir automatiquement les hyper-paramètres. La probabilité marginale est la probabilité d'une distribution prior $\Pr[f] = GP(0, k(\VEC{x_1}, \VEC{x_2}, \theta)$  générant les observations $ \mathcal{D} $. La maximisation de la probabilité marginale donne les hyper-paramètres optimaux (figure \ref{figGPRMarginalOptimized}).
+La section \ref{secHyperParameter} montre l'importance de choisir les hyper-paramètres correctement. Une pratique courante dans la communauté est de maximiser la probabilité marginale pour choisir automatiquement les hyper-paramètres. La probabilité marginale est la probabilité d'une distribution Prior $\Pr[f] = GP(0, k(\VEC{x_1}, \VEC{x_2}, \theta)$  générant les observations $ \mathcal{D} $. La maximisation de la probabilité marginale donne les hyper-paramètres optimaux (figure \ref{figGPRMarginalOptimized}).
 \end{mdframed}
 
 
@@ -239,7 +239,7 @@ We first consider the case of noise-free observations, that is $y(x_{i}) = f_{i}
 $\myMatrix{K(X, X_{*})}$ is $N \times N_{*}$ covariance matrix between the training points $\myMatrix{X}$ and test points $\myMatrix{X_{*}}$ (equation \ref{eqnCovMatrixSquaredExponential}). The other covariance matrices $\myMatrix{K(X, X)}$, $\myMatrix{K(X_{*}, X)}$ and $\myMatrix{K(X_{*}, X_{*})}$ can be computed similarly. 
 
 \marginnote{\textsl{Conditioned distribution}}[1cm]
-The posterior will be the conditional probability of $\VEC{f(X_{*})}$ given the prior and data set. For a multi-variate Gaussian prior the conditional posterior distribution is also a multi-variate Gaussian and can be calculated tractably. For a more detailed derivation refer to appendix \textbf{refer to the appendix here}. Graphically, we can imagine that the Bayes theorem is removing all the functions from our prior family of functions that do not pass through the data set (figure \ref{figGPNoiseLessPosteriors}). The predicted distribution after adding the information of data set into the prior can be written as:
+The posterior will be the conditional probability of $\VEC{f(X_{*})}$ given the prior and data set. For a multi-variate Gaussian prior the conditional posterior distribution is also a multi-variate Gaussian and can be calculated tractably. For a more detailed derivation refer to appendix \ref{secAppConditionalDistribution}. Graphically, we can imagine that the Bayes theorem is removing all the functions from our prior family of functions that do not pass through the data set (figure \ref{figGPNoiseLessPosteriors}). The predicted distribution after adding the information of data set into the prior can be written as:
 
   \begin{equation}\label{eqNoiseFreePosteriorGP}
   \begin{aligned}
@@ -471,7 +471,7 @@ In this manuscript we neither put a prior over our hyper-parameters nor use LOO-
 \begin{equation}\label{equationMarginalLikelihood}
 \begin{aligned}
 \Pr[\VEC{y} \mid \myMatrix{X}, \VEC{\theta}] & = \mathcal{N}(0 , \myMatrix{K(X, X')} + \sigma^{2}_{n}\myMatrix{I})  \\
-& = \frac{1}{\sqrt{(2\pi)^{N/2} \myMatrix{K_{XX}}}} exp^{-\frac{1}{2}\VEC{y}^{T}\myMatrix{K_{XX}}\VEC{y}}
+& = \frac{1}{\sqrt{(2\pi)^{N} \myMatrix{K_{XX}}}} exp^{-\frac{1}{2}\VEC{y}^{T}\myMatrix{K_{XX}}\VEC{y}}
 \end{aligned}
 \end{equation}
 

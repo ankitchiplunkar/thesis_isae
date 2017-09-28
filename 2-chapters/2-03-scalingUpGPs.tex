@@ -4,11 +4,11 @@
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
 \section*{Résumé}
-Le calcul des les distributions postérieurs dans les GPs devient difficile pour les grands ensembles de données. Le calcul de la matrice de précision est une opération de complexité $ \mathcal{O}(N ^ {3}) $, mettant une limite de $ N \sim 10^4 $ points de données pour la construction de modèles. Ce chapitre décrit l'état de l'art pour l'étendue des GPs pour les tâches de régression. Il existe deux methodes pour étendre des GPs, la première méthode 'Sparse GPs' utilisent un ensemble des points inductifs pour réduire le coût de calcul de la matrice de précision. La seconde est appelée `Distributed GP ' elle divise l'ensemble de données en sous-ensembles plus petits, en distribuant le modèle en plusieurs lots.
+Le calcul de distributions postérieures dans les GPs devient difficile pour les ensembles de données de la grosse taille. Le calcul de la matrice de précision est une opération de complexité $ \mathcal{O}(N ^ {3}) $, mettant une limite de $ N \sim 10^4 $ points de données pour la construction de modèles. Ce chapitre décrit l'état de l'art pour l'étendue des GPs pour les tâches de régression. Il existe deux methodes pour étendre des GPs, la première méthode 'Sparse GPs' utilisent un ensemble des points inductifs pour réduire le coût de calcul de la matrice de précision. La seconde est appelée `Distributed GP ' elle divise l'ensemble de données en sous-ensembles plus petits, en distribuant le modèle en plusieurs lots.
 
-Les méthodes `Sparse GPs 'utilisent le Nystr\"{o}m approximation, récririvant la matrice de Gramme comme l'équation \ref{subSecSamplingFunctionsGPPrior}, diminuant ainsi la complexité de calcul à $ \mathcal{O} (NM^{2}) $ (M $ \ll $ N) , $ M $ étant le nombre de points inductifs. Grâce à des expériences sur les données synthétiques, on peut montrer que on peut fixer $ M \sim N/10 $ quand les points inductifs sont distribués aletoirement et $ M \sim N/50 $ quand les emplacements des points inductifs sont optimisés. Cette approximation pousse la limite de régression GP à $ N \sim 10^6 $ points de données.
+Les méthodes `Sparse GPs 'utilisent le approximation de Nystr\"{o}m, récrivant la matrice de Gram comme l'équation \ref{subSecSamplingFunctionsGPPrior}, diminuant ainsi la complexité de calcul à $ \mathcal{O} (NM^{2}) $ (M $ \ll $ N) , $ M $ étant le nombre de points inductifs. Grâce à des expériences sur les données synthétiques, on peut montrer que on peut fixer $ M \sim N/10 $ quand les points inductifs sont distribués alétoirement et $ M \sim N/50 $ quand les emplacements des points inductifs sont optimisés. Cette approximation pousse la limite de régression GP à $ N \sim 10^6 $ points de données.
 
-«Distributed GPs» distribue les tâches de régression GP dans plusieurs lots, diminuant ainsi la complexité informatique à $ \mathcal{O} (NP^{3}) $ (P $\ll$ N), $ P $ étant le nombre (numéro) des points dans un lot. Grâce à des expériences sur les données synthétiques, nous demontrons que $ P \sim N/100 $ n'affecte pas beaucoup la précision de la régression. En fait, nous pouvons reduire davantage $ P $ si nous permettons la répétition de points entre les lots. Cela permet d'étendre le GP à n'importe quel nombre de points de données.
+«Distributed GPs» distribue les tâches de régression GP dans plusieurs lots, diminuant ainsi la complexité informatique à $ \mathcal{O} (NP^{3}) $ (P $\ll$ N), $ P $ étant le nombre (numéro) des points dans un lot. Grâce à des expériences sur les données synthétiques, nous démontrons que $ P \sim N/100 $ n'affecte pas beaucoup la précision de la régression. En fait, nous pouvons réduire davantage $ P $ si nous permettons la répétition de points entre les lots. Cela permet d'étendre le GP à n'importe quel nombre de points de données.
 \end{mdframed}
 
 
@@ -29,7 +29,7 @@ Sparse methods use a small subset of input points as support or inducing points 
 
 \subsection{Nystr\"{o}m Approximation}\label{subSecNystrom} 
 
-Using Nystr\"{o}m approximation the Gram matrix can be approximated as equation \ref{eqnSparseNystormGram} \cite{quinonero2005unifying, seeger2003fast}, for more detail refer to appendix \textbf{refer to link in the appendix}. 
+Using Nystr\"{o}m approximation the Gram matrix can be approximated as equation \ref{eqnSparseNystormGram} \cite{quinonero2005unifying, seeger2003fast}, for more detail refer to \cite{williams2001using}. 
 
 \begin{equation}\label{eqnSparseNystormGram}
 \myMatrix{K_{Nystorm}(X, X)} = \myMatrix{K(X, X^{m})} \myMatrix{K(X^{m}, X^{m})}^{-1} \myMatrix{K(X^{m}, X)}
@@ -76,7 +76,7 @@ Later, \cite{Snelson06sparsegaussian} proposed the Fully Independent Training Co
 
 Note that calculating $diag(\myMatrix{K(X, X)})$ is an $\mathcal{O}\left ( N \right )$ operation and thus does not significantly impact the time taken. 
 
-The posterior distribution for the approximate prior can be derived similarly as given in appendix \textbf{add appendix ref} and is a Gaussian. The predictive mean, and predictive variance are written as equation \ref{eqNoisyNystormPredictiveMean} and equation \ref{eqNoisyNystormPredictiveCovariance}. Here, $\\myMatrix{K_{Approximate}(X, X')}$ can be the approximated Gram matrix either from the Nystr\"{o}m approximation (equation \ref{eqnSparseNystormGram}) or the FITC approximation (equation \ref{eqnSparseFITCGram}). 
+The posterior distribution for the approximate prior can be derived similarly \cite{williams2001using} and is a Gaussian. The predictive mean, and predictive variance are written as equation \ref{eqNoisyNystormPredictiveMean} and equation \ref{eqNoisyNystormPredictiveCovariance}. Here, $\\myMatrix{K_{Approximate}(X, X')}$ can be the approximated Gram matrix either from the Nystr\"{o}m approximation (equation \ref{eqnSparseNystormGram}) or the FITC approximation (equation \ref{eqnSparseFITCGram}). 
 \begin{equation}\label{eqNoisyNystormPredictiveMean}
   \mathbf{E}[f_{approximate}(\VEC{x_{*}})] = \VEC{k_{Xx_{*}}}^{T}( \myMatrix{K_{Approximate}(X, X')} + \sigma^{2}_{n}\myMatrix{I})^{-1} \VEC{y}
   \end{equation}
@@ -213,8 +213,7 @@ This thesis will use robust Bayesian Committee Machine (rBCM) model to combine t
 \end{equation}
 
 
-$K_{x_{*}x_{*}}$ is the auto-covariance of the prior at prediction point $\VEC{x_{*}}$. $\beta_{k}$ determines the influence of experts on the final predictions \cite{DBLP:journals/corr/CaoF14
-} and is given as $\beta_{i} = \frac{1}{2}(\log k_{x_{*}x_{*}}^{2} - \log(\sigma^{(i)}(y(\VEC{x_{*}})))^{2})$. Experts which are very confident in their predictions at $\VEC{x_{*}}$ will tend to have low $\sigma^{(i)}$ thereby leading to a higher influence factor $\beta_{i}$.
+$K_{x_{*}x_{*}}$ is the auto-covariance of the prior at prediction point $\VEC{x_{*}}$. $\beta_{k}$ determines the influence of experts on the final predictions \cite{caoF14} and is given as $\beta_{i} = \frac{1}{2}(\log k_{x_{*}x_{*}}^{2} - \log(\sigma^{(i)}(y(\VEC{x_{*}})))^{2})$. Experts which are very confident in their predictions at $\VEC{x_{*}}$ will tend to have low $\sigma^{(i)}$ thereby leading to a higher influence factor $\beta_{i}$.
 
 Due to the independence assumption, the marginal likelihood can be written as a sum of individual likelihoods and then can be optimized to find the best-fit hyperparameters. By approximating the $\myMatrix{K(X, X)}$ in terms of $\mathcal{D}^{(i)}$ and $N_{experts}$ we have again changed the GP prior. This means that the number of experts $N_{experts}$ and clustering of points also impact the prediction capabilities of GP. The below equation \ref{eqDGPNLML} describes the formulation for marginal likelihood. 
 

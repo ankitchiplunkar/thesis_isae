@@ -1,0 +1,143 @@
+\chapter{Gaussian Process Regression enforcing Non-linear operators}\label{appNonLinear}
+This appendix chapter reproduces the proof of approximation performed when enforcing non-linear operators in an MTGP framework as provided by \cite{Constantinescu2013}.
+
+For simplicity let us take the case of an explicit relationship between two outputs \(y^{1}\) and \(y^{2}\). Suppose we measure the two outputs with some error ($\epsilon_{n1}$ and $\epsilon_{n2}$), while the true physical process is defined by latent variables (\(f^{1}\) and \(f^{2}\)). Then the relation between the output function, measurement error, and true physical process can be written as follows. 
+
+\begin{align} 
+y^{1} & = f^{1} + \epsilon_{n1} \\
+y^{2} & = f^{2} + \epsilon_{n2}
+\end{align} 
+
+Here, \(\epsilon_{n1}\) and \(\epsilon_{n2}\) are measurement errors sampled from a white noise Gaussian \(\mathcal{N}(0, \sigma_{n1}^2)\) and \(\mathcal{N}(0, \sigma_{n2}^2)\) respectively. While, the relation between the latent function can be expressed as follows:
+
+\begin{equation}\label{eqOperation}
+    f^{1}(z) = \mathcal{L}\left ( f^{2}(x), z \right )
+\end{equation}
+
+Here \(\mathcal{L} \left ( . \right ) \in \mathcal{C}^{2}\) is an operator defining the relation between \(f^{1}\) and \(f^{2}\). We can write a zero mean GP prior for the full set of inputs and outputs $\{\myMatrix{X_{joint}}, \VEC{y_{joint}}\}$, as equation \ref{eq:mogpJointPrior}. 
+
+\begin{equation}
+\begin{aligned}
+       \Pr[\VEC{y_{joint}}] & = \Pr\begin{bmatrix}   \VEC{y_{joint}}(x, 1) \\ \VEC{y_{joint}}(x, 2)   \end{bmatrix} \\
+& = GP\begin{bmatrix}
+   \begin{pmatrix}
+   0\\ 
+   0
+   \end{pmatrix} ,& 
+   \begin{pmatrix}
+    Cov(\VEC{y_{joint}}(x, 1), \VEC{y_{joint}}(x, 1))  & Cov(\VEC{y_{joint}}(x, 1), \VEC{y_{joint}}(x, 2))\\ 
+    Cov(\VEC{y_{joint}}(x, 2), \VEC{y_{joint}}(x, 1))     & Cov(\VEC{y_{joint}}(x, 2), \VEC{y_{joint}}(x, 2))
+   \end{pmatrix}
+   \end{bmatrix} \\
+& = GP\begin{bmatrix}
+   \begin{pmatrix}
+   0\\ 
+   0
+   \end{pmatrix} ,& 
+   \begin{pmatrix}
+    Cov(\VEC{f^1}(x), \VEC{f^1}(x)) + \sigma_{n1}^2 & Cov(\VEC{f^1}(x), \VEC{f^2}(x))\\ 
+    Cov(\VEC{f^2}(x), \VEC{f^1}(x))     & Cov(\VEC{f^2}(x), \VEC{f^2}(x)) + \sigma_{n2}^2
+   \end{pmatrix}
+   \end{bmatrix}
+\end{aligned}
+   \end{equation}
+
+Here, $Cov(\VEC{y_{joint}}(x, j), \VEC{y_{joint}}(x, j))$ is called the  auto-covariance between observations of the $j^{th}$ output, while $Cov(\VEC{y_{joint}}(x, 2), \VEC{y_{joint}}(x, 1))$ is called cross-covariance between the $2^{nd}$ and the $1^{st}$ outputs. Similarly, $Cov(\VEC{f^j}(x), \VEC{f^j}(x))$ is the auto-covariance function between $j^{th}$ latent function, while $Cov(\VEC{f^1}(x), \VEC{f^2}(x))$ is the cross-covariance function between the $2^{nd}$ and the $1^{st}$ latent outputs. We are thus, interested in evaluating the Gram matrix $\MAT{K_{XX}}$ between the full dataset. 
+
+\begin{align}
+      \myMatrix{K_{XX}} & =  \begin{pmatrix}
+    Cov(f^1(x^{1}), f^1(x^{1})) + \sigma_{n1}^2  & Cov(f^1(x^{1}), f^2(x^{2}))\\ 
+    Cov(f^2(x^{2}), f^1(x^{1}))     & Cov(f^2(x^{2}), f^2(x^{2})) + \sigma_{n2}^2
+   \end{pmatrix} \\
+   & = \begin{pmatrix}
+    \myMatrix{K_{11}} + \mathbb{I}\sigma_{n1}^2 & \myMatrix{K_{12}}\\ 
+    \myMatrix{K_{21}}    & \myMatrix{K_{22}} + \mathbb{I}\sigma_{n2}^2
+   \end{pmatrix}
+\end{align}
+
+
+\paragraph{Proof} The \textit{Taylor} series expansion of $\mathcal{L}\left ( f^{2}\right )$ around $E[f^2]$ gives:
+
+\begin{equation}
+\begin{aligned}
+\mathcal{L}\left ( f^{2}\right ) & = \mathcal{L}\left ( E[f^2]\right ) + L\delta_2 + \frac{1}{2} \delta_2^T H \delta_2 + \mathcal{O}(\delta_2^3) \\
+L & = \begin{matrix}
+\frac{\partial \mathcal{L}}{\partial x} 
+\end{matrix}|_{_{f^{2} = E[f^2]}} \\
+H & = \frac{\partial^2 \mathcal{L}(f^2)}{\partial^2 x} 
+|_{_{f^{2} = E[f^2]}}
+\end{aligned}
+\end{equation}
+
+
+Where $L$ is the Jacobian matrix of \(\mathcal{L}\left ( . \right )\) evaluated at the mean ($E[f^2]$) of latent output (\(f^{2}\)), while $H$ is the derivative of $L$ evaluated at the mean of $f^2$. \(\delta_2\) is the amplitude of small variations of \(f^{2}\), introduced by the Taylor series expansion of \(\mathcal{L}(f^2)\) with respect to \(E[f^{2}]\).
+
+On taking expectation of equation \ref{eqOperation}:
+\begin{equation}
+\begin{aligned}
+    E[f^1]  & = E[\mathcal{L}(f^2)] \\
+            & = \mathcal{L}(E[f^2]) + \frac{1}{2} E[\delta_2^T H \delta_2] + E[\mathcal{O}(\delta_2^3)] \label{eqExpansion}\\
+\end{aligned}
+\end{equation}
+
+Subtracting the above equation \ref{eqExpansion} from equation \ref{eqOperation} gives:
+
+\begin{equation}
+    f^1 - E[f^1] = \mathcal{L}(f^2) - \mathcal{L}(E[f^2]) - \frac{1}{2} E[\delta_2^T H \delta_2] - E[\mathcal{O}(\delta_2^3)]
+\end{equation}
+
+Expanding $\mathcal{L}(f^2)$ in the above equation:
+
+\begin{align}\label{eqBaseEquation}
+    f^1 - E[f^1] & = \mathcal{L}\left ( E[f^2]\right ) + L\delta_2 + \frac{1}{2} \delta_2^T H \delta_2 + \mathcal{O}(\delta_2^3) - \mathcal{L}(E[f^2]) - \frac{1}{2} E[\delta_2^T H \delta_2] - E[\mathcal{O}(\delta_2^3)] \\
+    \delta_1 & = L\delta_2 + \left [\frac{1}{2} \delta_2^T H \delta_2 - \frac{1}{2} E[\delta_2^T H \delta_2]\right ] + \left [ \mathcal{O}(\delta_2^3)   - E[\mathcal{O}(\delta_2^3)]\right ]
+\end{align}
+
+Here, \(\delta_1\) is the amplitude of small variations of \(f^{1}\). Multiplying the above equation by $\delta_2^T$ and taking the expectation gives:
+
+\begin{equation}
+\begin{aligned}
+    E[\delta_1 \delta_2^T] & = L E[\delta_2 \delta_2^T] + E\left [\left [\frac{1}{2} \delta_2^T H \delta_2 - \frac{1}{2} E[\delta_2^T H \delta_2]\right ] \delta_2^T\right ] + E \left [ \left [ \mathcal{O}(\delta_2^3)   - E[\mathcal{O}(\delta_2^3)]\right ] \delta_2^T\right ] \\
+    Cov(f^1, f^2) & = L Cov(f^2, f^2) + E\left [\left [\frac{1}{2} \delta_2^T H \delta_2 - \frac{1}{2} E[\delta_2^T H \delta_2]\right ] \delta_2^T\right ] + E \left [ \left [ \mathcal{O}(\delta_2^3)   - E[\mathcal{O}(\delta_2^3)]\right ] \delta_2^T\right ] \\
+\end{aligned}
+\end{equation}
+
+If we eliminate the terms that are or order greater than $\mathcal{O}(\delta_2^3)$ then we get the following equation for $Cov(f^1, f^1)$:
+
+\begin{equation}
+    Cov(f^1, f^2) = L Cov(f^2, f^2)
+\end{equation}
+
+Similarly by multiplying the equation \ref{eqBaseEquation} by $\delta_1^T$, taking the expectation and eliminating higher order terms will give:
+
+\begin{equation}
+\begin{aligned}
+    E[\delta_1 \delta_1^T] & = L E[\delta_2 \delta_1^T] \\
+    Cov(f^1, f^1)   & = L Cov(f^2, f^1) \\
+                    & = L Cov(f^1, f^2)^T \\
+                    & = L [L Cov(f^2, f^2)]^T \\
+                    & = L Cov(f^2, f^2) L^T \\
+\end{aligned}
+\end{equation}
+
+The last equation comes because $Cov(f^2, f^2)$ is symmetric, hence $Cov(f^2, f^2)^T = Cov(f^2, f^2)$. We can thus write the Gram matrix $\myMatrix{K_{XX}}$ as:
+
+\begin{equation}
+    \myMatrix{K_{XX}} = \begin{pmatrix}
+    L \myMatrix{K_{22}} L^T + \mathbb{I}\sigma_{n1}^2 & L\myMatrix{K_{22}}\\ 
+    \myMatrix{K_{22}} L^T     & \myMatrix{K_{22}} + \mathbb{I}\sigma_{n2}^2
+   \end{pmatrix}
+\end{equation}
+
+The proof for enforcing non-linear relationships in a multi-task GP regression framework is thus complete. 
+
+
+
+
+
+
+
+
+
+
+

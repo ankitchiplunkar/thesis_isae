@@ -1,0 +1,113 @@
+\chapter{Proper Orthogonal Decomposition for pressure snapshots}\label{appPODI}
+This appendix demonstrates how to perform Proper Orthogonal Interpolation (POD) based interpolation using pressure snapshots. There exist two types of POD a classical POD \cite{gurvich1969atmospheric} and snapshot POD \cite{romanowski1996reduced}. We will use the snapshot POD in this thesis, since it is a highly popular in aerodynamic interpolation use cases. 
+
+\section{Pressure Snapshot}
+Let us first start by defining a pressure snapshot. There exists a \(3\) dimensional spatial vector \(\omega_{i} \in  \mathbb{R}^{3}\) such that \(\omega_{i} = \{(\omega_{i}^{1}, \omega_{i}^{2}, \omega_{i}^{3})\}\). Here, \(i \in [1,N_{nodes}] \) are the spatial coordinates of the \(i^{th}\) pressure node in a CFD mesh containing \(N_{nodes}\) pressure nodes. Similarly there exists a \(D\) dimensional parameter vector \(d_{j} \in  \mathbb{R}^{D}\), for \(d_{j} = \{(d_{j}^{1}, d_{j}^{2}, \ldots ,d_{j}^{D})\}\). Here,   \(j \in [1,N_{parameter}] \) correspond to the \(j^{th}\) parameter set. The parameters can be any non-spatial parameter which are desired to be interpolated, some common examples include Mach, Angle of Attack for steady aerodynamics and time or frequency for unsteady aerodynamics. Since, this thesis relates to interpolating steady aerodynamics \(d_{j}\) will correspond to the \(j^{th}\) CFD run in a total of \(N_{parameter}\) CFD simulations. 
+
+The pressure measured on the \(i^{th}\) pressure node for the \(j^{th}\) parameter set will be denoted as \(p_{j}(\omega_{i})\) defined by the equation \ref{eq:apppijSnapshot}. We next define the matrix \(\Omega = \{\omega_{1}; \omega_{2}; \ldots ; \omega_{N_{nodes}}\}\) for \(\Omega \in \mathbb{R}^{N_{nodes} \times 3}\) containing the full spatial information of the CFD mesh. Finally, the pressure snapshot for the CFD run \(j\) will be denoted as \(P_{j}(\Omega) = \{p_{j}(\omega_{1}); p_{j}(\omega_{2}); \ldots ; p_{j}(\omega_{N_{nodes}})\}\) for \(P_{j}(\Omega) \in \mathbb{R}^{N_{nodes}}\) defined by the equation \ref{eq:apppressurefield}.
+
+\begin{equation} \label{eq:apppijSnapshot}
+p_{j}(\omega_{i}) = CFD(\omega_{i}, d_{j})
+\end{equation} 
+\begin{equation}\label{eq:apppressurefield}
+P_{j}(\Omega) = CFD(\Omega, d_{j})
+\end{equation} 
+
+\section{POD for aerodynamic snapshots}
+The optimal POD basis vectors \(\phi(\Omega)\) are chosen so that they maximize the cost described in equation \ref{eq:apppodCostEquation}. \( (\cdot, \cdot) \) is an inner product and \(\left \langle \cdot, \cdot \right \rangle\) is the parameter-averaging operation \cite{berkooz1993proper, epureanuj1999reduced}. Solving this optimization problem leads to an eigen value problem, where \(\phi(\Omega)\) are the eigen-vectors.
+
+\begin{equation}\label{eq:apppodCostEquation}
+max_{\phi}\frac{\left \langle (P_{j}(\Omega), \phi(\Omega))^2 \right \rangle}{(\phi(\Omega), \phi(\Omega))}
+\end{equation}
+
+The idea of snapshot POD is to write the eigen-vector \(\phi(\Omega)\) in terms of the pressure snapshots (equation \ref{eq:applinearPressureField}) and not in terms of all inputs. 
+
+\begin{equation}\label{eq:applinearPressureField}
+\phi^{l}(\Omega) = \sum_{j=1}^{N_{parameter}}\beta_{j}^{l}P_{j}(\Omega)
+\end{equation}  
+
+Here, \(\phi^{l}(\Omega)\) is the \(l^{th}\) eigen-vector and the coefficients \(\beta_{j}^{l}\) can be shown to satisfy the eigen problem in equation \ref{eq:appeigenProblemPOD} and \ref{eq:appcorrelationPOD}. 
+
+\begin{equation}\label{eq:appeigenProblemPOD}
+R\beta = \Lambda\beta
+\end{equation}  
+
+here, 
+
+\begin{equation}\label{eq:appcorrelationPOD}
+ \beta =  \begin{pmatrix}
+\beta^{1}
+\\\beta^{2}\
+\\\ldots\ 
+\\\beta^{N_{parameter}}
+\end{pmatrix} 
+\quad 
+and 
+\quad 
+R_{lm} = \frac{1}{N_{parameter}}( P_{l}(\Omega) , P_{m}(\Omega))
+\end{equation} 
+
+The matrix \(R\) is called the correlation matrix for \(R \in \mathbb{R}^{N_{parameter} \times N_{parameter}}\). The eigen-vector \(\beta^{l} \in \mathbb{R}^{1 \times N_{parameter}}\) represents the participation factors for equation \ref{eq:appeigenProblemPOD}. We have hence calculated the eigen-vectors for our matrix of pressure snapshots.
+
+The original pressure snapshots can be now be written as a linear combination of the eigen-vectors equation \ref{eq:appfinalPODEquation}.  
+
+\begin{equation}\label{eq:appfinalPODEquation}
+P_{j}(\Omega) = \sum_{l=1}^{p}a^{l}(d_{j}) \phi^{l}(\Omega)
+\end{equation}
+
+Here, \(a^{l}(d_{j})\) denotes the participation factor or amplitude for the mode \(l\) at a point \(d_{j}\) in the parameter space. Once we evaluate the eigen-vectors calculating the amplitudes become a task of solving equation \ref{eq:appcalculatingAlpha}. 
+
+\begin{equation}\label{eq:appcalculatingAlpha}
+a^{l}(d_{j}) = (\phi_{l}(\Omega) , P_{j}(\Omega))
+\end{equation}
+
+Note, further speed up in reconstruction of pressure snapshots can be gained by taking \(p < N_{parameter}\). Only, taking into account the modes which correspond to the highest participation can significantly improve the reconstruction times \cite{tan2003proper, allemang2011application}. 
+
+\section{Interpolation}\label{subsec:interpolation}
+The above section describes how to calculate eigen-vectors from a set of pressure snapshots. Furthermore we can use equation \ref{eq:appfinalPODEquation} and \ref{eq:appcalculatingAlpha} to reconstruct the initial snapshots. This section describes how to interpolate or predict the snapshots at an unknown point \(d_{new}\)in the parameter space. 
+
+If the participation factors \(a^{l}(d_{j})\) are smooth functions of parameters \(d \in \mathbb{R}^D\), interpolation can be used to determine the participation factors at desired point \(d_{new}\). In this thesis we use cubic spline \cite{bartels1987introduction} to interpolate the participation factors. Once the new participation factors are obtained a new snapshot can be constructed using the equation \ref{eq:appinterpPODEquation}. A pseudo-code is given in algorithm \ref{algo:podInterpalgorithm} of the full process. 
+
+\begin{equation}\label{eq:appinterpPODEquation}
+P_{new}(\Omega) = \sum_{l=1}^{p}a^{l}(d_{new}) \phi^{l}(\Omega)
+\end{equation}
+
+\RestyleAlgo{boxruled}
+\begin{algorithm}[!ht]
+\label{algo:podInterpalgorithm}
+\DontPrintSemicolon
+
+ \KwData{\(P_{j}(\Omega)\) (pressure snapshots), \; 
+ \quad \quad \(d_{j}\) for \(j \in [1:N_{parameter}]\) (set of parameters), \;
+ \quad \quad \(d_{new}\) (desired point) }
+ \KwResult{\(P_{new}(\Omega)\) (Interpolated pressure snapshot at point $d_{new}$)  }
+   
+   \SetKwFunction{pod}{pod}
+   \SetKwFunction{interpolate}{interpolate}
+  \SetKwProg{myalg}{}{}{}
+   \myalg{\pod{}}{
+\tcp{Calculating eigen-vectors using equations \ref{eq:appcorrelationPOD}, \ref{eq:appeigenProblemPOD} and \ref{eq:applinearPressureField}}\
+\(R_{lm} = \frac{1}{N_{parameter}}(P_{l} , P_{m}^{*})\) \;
+\(R\beta = \Lambda\beta\)\;
+\(\phi^{l}(\Omega) = \sum_{j=1}^{N_{parameter}}\beta_{j}^{l}P_{j}(\Omega)\)\;
+    
+    \;
+    \
+\tcp{Calculating participation factors of eigen-vector \(l\) at point \(d_{j}\)}\  
+\(a_{l}(d_{j}) = (\phi_{l}(\Omega) , P_{j}(\Omega))\) \;
+  \KwRet \(\phi^{l}, \quad a^{l}(d_{j}) \quad for \quad l \in [1:N_{parameter}]\)}\
+  
+  \SetKwProg{myinterp}{}{}{}
+   \myinterp{\interpolate{ }}{
+   \tcp{Interpolating the participation factor of the \(l^{th}\)  eigen-vector}\
+    \ForEach{$l \in [1:N_{parameter}]$}{
+        \(a^{l}(d_{new}) = \textbf{spline} (\alpha_{l}(d_{j}), d_{new})\)
+        }    
+  \tcp{Reconstructing snapshot using the interpolated participation factors and original eigen-vectors}\
+  \(P_{new}(\Omega) = \sum_{l=1}^{p}a^{l}(d_{new}) \phi^{l}()\Omega\)\;
+  \KwRet \(P_{new}(\Omega)\)}
+ 
+ \caption{Algorithm for POD + Interpolation.}
+\end{algorithm}
+
+Due to the reduced order modelling we are interpolating only the \(N_{parameter}\) of the order of \(10^{2}\) parameters instead of \(N_{nodes}\) of the order of \(10^{4}\) pressure nodes. Note, for the reminder of this thesis we will use all the available modes for interpolating the snapshots i.e. \(p = N_{parameter}\). 
