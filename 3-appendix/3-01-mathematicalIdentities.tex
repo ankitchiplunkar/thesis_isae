@@ -23,10 +23,10 @@ Let us partition the set $\VEC{x}$ into two sets, $\VEC{a}$ and $\VEC{b}$ of siz
             & = \frac{1}{\sqrt{(2\pi)^{N_a} \myMatrix{\Sigma_a}}} exp \left [-\frac{1}{2}(\VEC{x_a} - \VEC{\mu_a})^{T}\myMatrix{\Sigma_a}(\VEC{x_a} - \VEC{\mu_a}) \right ]
 \end{align}
 
-Here, $\VEC{\mu_a}$ is the ordered collection of means in the random variable set $\VEC{a}$, while $\myMatrix{\Sigma_a}$ represents the covariance matrix. We can write the joint, marginal and conditional distributions are also Gaussian distributions, for a detailed treatment refer to \cite{bishop2006pattern}.
+Here, $\VEC{\mu_a}$ is the ordered collection of means in the random variable set $\VEC{a}$, while $\myMatrix{\Sigma_a}$ represents the covariance matrix. We now describe the joint, marginal and conditional distributions which are also Gaussian distributions, for a detailed treatment refer to \cite{bishop2006pattern}.
 
 \section{Joint distribution}
-If the probability densities of sets $\VEC{a}$ and $\VEC{b}$ can be written as, $\Pr[\VEC{x_a}] = \mathcal{N}(\VEC{\mu_a}, \myMatrix{\Sigma_a})$ and $\Pr[\VEC{x_b}] = \mathcal{N}(\VEC{\mu_b}, \myMatrix{\Sigma_b})$. Then the joint distribution between two random vectors $\VEC{x_a}$ and $\VEC{x_b}$ is given by $\Pr[\VEC{x_a}, \VEC{x_b}]$ in equation \ref{eqFullXVector} ($\VEC{a} \cup \VEC{b} = \VEC{x}$).
+If the probability densities of sets $\VEC{a}$ and $\VEC{b}$ can be written as, $\Pr[\VEC{x_a}] = \mathcal{N}(\VEC{\mu_a}, \myMatrix{\Sigma_a})$ and $\Pr[\VEC{x_b}] = \mathcal{N}(\VEC{\mu_b}, \myMatrix{\Sigma_b})$ respectively. Then the joint distribution between two random vectors $\VEC{x_a}$ and $\VEC{x_b}$ is given by $\Pr[\VEC{x_a}, \VEC{x_b}]$ in equation \ref{eqFullXVector} ($\VEC{a} \cup \VEC{b} = \VEC{x}$).
 
 \begin{align}\label{eqFullXVector}
     \Pr  [ \VEC{x}  ]  = \Pr  [ \VEC{x_a}, \VEC{x_b}]& = \Pr \begin{bmatrix}
@@ -43,27 +43,28 @@ If the probability densities of sets $\VEC{a}$ and $\VEC{b}$ can be written as, 
 \end{align}
 
 \section{Sum of Gaussians}
-If the size of the random vectors $\VEC{x_a}$ and $\VEC{x_b}$ is same, then is a new vector $\VEC{x_c} = \VEC{x_a} + \VEC{x_b}$ is sum of two Gaussians, it is also a multi-variate Gaussian with probability density given as follows:
+If the size of the random vectors $\VEC{x_a}$ and $\VEC{x_b}$ is same, then if a new vector $\VEC{x_c} = \VEC{x_a} + \VEC{x_b}$ is sum of two Gaussians, it is also a multi-variate Gaussian with probability density given as follows:
 
 \begin{equation}
     \Pr[\VEC{x_a}] = \mathcal{N}(\VEC{\mu_a} + \VEC{\mu_b}, \myMatrix{\Sigma_a} + \myMatrix{\Sigma_b})
 \end{equation}
 
 \section{Affine property of Gaussians}
-If $\VEC{x_d}$ is a linear transformation of $\VEC{x_a}$ such that $\VEC{x_c} = \VEC{l} + \myMatrix{M}\VEC{x_a}$. Here, $\VEC{l}$ and $\myMatrix{M}$ are a vector and a matrix of constants respectively. Then $\VEC{x_d}$ it is also a multi-variate Gaussian with probability density given as follows:
+If $\VEC{x_d}$ is a linear transformation of $\VEC{x_a}$ such that $\VEC{x_c} = \VEC{l} + \myMatrix{M}\VEC{x_a}$. Here, $\VEC{l}$ and $\myMatrix{M}$ are a vector and a matrix of constants. Then $\VEC{x_d}$ it is also a multi-variate Gaussian with probability density given as follows:
 
 \begin{equation}
     \Pr[\VEC{x_d}] = \mathcal{N}(\VEC{l} + \myMatrix{M}\VEC{\mu_a}, \myMatrix{M}\myMatrix{\Sigma_a}\myMatrix{M}^T)
 \end{equation}
 
-\section{Marginal Distribution}
+In fact the affine property is valid for any linear transformation of a Gaussian distribution. This is the same property that we use to enforce relationships defined by linear operations between multiple outputs. 
+\section{Marginal Distribution}\label{appMarginalDistribution}
 The marginal distribution between two probability distributions is given as:
 
 \begin{equation}
    \Pr  [ \VEC{x_a}  ] = \int \Pr  [ \VEC{x_a}, \VEC{x_b}  ] d\VEC{x_b}  
 \end{equation}
 
-We are effectively integrating out the random variable $\VEC{x_b}$. This is the same principle while calculating the `marginal likelihood' to choose hyper-parameters, we integrate out the hyper-parameters ($\VEC{\theta}$). 
+We are effectively integrating out the random variable $\VEC{x_b}$. This is the same principle while calculating the `marginal likelihood' to choose hyper-parameters, we integrate out the latent functions. 
 
 For a Gaussian random vector (multi-variate Gaussian) as described in equation \ref{eqFullXVector}, the marginal distribution is a Gaussian. This is also called the marginalization property of Gaussians. 
 

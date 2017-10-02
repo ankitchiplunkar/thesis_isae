@@ -1,5 +1,5 @@
 \chapter{Gaussian Process Regression enforcing Non-linear operators}\label{appNonLinear}
-This appendix chapter reproduces the proof of approximation performed when enforcing non-linear operators in an MTGP framework as provided by \cite{Constantinescu2013}.
+This chapter reproduces the proof of approximation performed when enforcing non-linear operators in an MTGP framework as provided by \cite{Constantinescu2013}.
 
 For simplicity let us take the case of an explicit relationship between two outputs \(y^{1}\) and \(y^{2}\). Suppose we measure the two outputs with some error ($\epsilon_{n1}$ and $\epsilon_{n2}$), while the true physical process is defined by latent variables (\(f^{1}\) and \(f^{2}\)). Then the relation between the output function, measurement error, and true physical process can be written as follows. 
 
@@ -46,8 +46,8 @@ Here, $Cov(\VEC{y_{joint}}(x, j), \VEC{y_{joint}}(x, j))$ is called the  auto-co
 
 \begin{align}
       \myMatrix{K_{XX}} & =  \begin{pmatrix}
-    Cov(f^1(x^{1}), f^1(x^{1})) + \sigma_{n1}^2  & Cov(f^1(x^{1}), f^2(x^{2}))\\ 
-    Cov(f^2(x^{2}), f^1(x^{1}))     & Cov(f^2(x^{2}), f^2(x^{2})) + \sigma_{n2}^2
+    Cov(f^1(x), f^1(x)) + \sigma_{n1}^2  & Cov(f^1(x), f^2(x))\\ 
+    Cov(f^2(x), f^1(x))     & Cov(f^2(x), f^2(x)) + \sigma_{n2}^2
    \end{pmatrix} \\
    & = \begin{pmatrix}
     \myMatrix{K_{11}} + \mathbb{I}\sigma_{n1}^2 & \myMatrix{K_{12}}\\ 

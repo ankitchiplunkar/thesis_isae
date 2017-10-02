@@ -2,15 +2,15 @@
 This appendix demonstrates how to perform Proper Orthogonal Interpolation (POD) based interpolation using pressure snapshots. There exist two types of POD a classical POD \cite{gurvich1969atmospheric} and snapshot POD \cite{romanowski1996reduced}. We will use the snapshot POD in this thesis, since it is a highly popular in aerodynamic interpolation use cases. 
 
 \section{Pressure Snapshot}
-Let us first start by defining a pressure snapshot. There exists a \(3\) dimensional spatial vector \(\omega_{i} \in  \mathbb{R}^{3}\) such that \(\omega_{i} = \{(\omega_{i}^{1}, \omega_{i}^{2}, \omega_{i}^{3})\}\). Here, \(i \in [1,N_{nodes}] \) are the spatial coordinates of the \(i^{th}\) pressure node in a CFD mesh containing \(N_{nodes}\) pressure nodes. Similarly there exists a \(D\) dimensional parameter vector \(d_{j} \in  \mathbb{R}^{D}\), for \(d_{j} = \{(d_{j}^{1}, d_{j}^{2}, \ldots ,d_{j}^{D})\}\). Here,   \(j \in [1,N_{parameter}] \) correspond to the \(j^{th}\) parameter set. The parameters can be any non-spatial parameter which are desired to be interpolated, some common examples include Mach, Angle of Attack for steady aerodynamics and time or frequency for unsteady aerodynamics. Since, this thesis relates to interpolating steady aerodynamics \(d_{j}\) will correspond to the \(j^{th}\) CFD run in a total of \(N_{parameter}\) CFD simulations. 
+Let us first start by defining a pressure snapshot. There exists a \(3\) dimensional spatial vector \(\omega_{i} \in  \mathbb{R}^{3}\) such that \(\omega_{i} = \{(\omega_{i}^{1}, \omega_{i}^{2}, \omega_{i}^{3})\}\). Here, \(i \in [1,N_{nodes}] \) are the spatial coordinates of the \(i^{th}\) pressure node in a mesh containing \(N_{nodes}\) pressure nodes. Similarly there exists a \(D\) dimensional parameter vector \(d_{j} \in  \mathbb{R}^{D}\), for \(d_{j} = \{(d_{j}^{1}, d_{j}^{2}, \ldots ,d_{j}^{D})\}\). Here,   \(j \in [1,N_{parameter}] \) correspond to the \(j^{th}\) parameter set. The parameters can be any non-spatial parameter which are desired to be interpolated, some common examples include Mach, Angle of Attack for steady aerodynamics and time or frequency for unsteady aerodynamics. Since, this thesis relates to interpolating steady aerodynamics \(d_{j}\) will correspond to the \(j^{th}\) run in a total of \(N_{parameter}\) simulations or experiments. 
 
 The pressure measured on the \(i^{th}\) pressure node for the \(j^{th}\) parameter set will be denoted as \(p_{j}(\omega_{i})\) defined by the equation \ref{eq:apppijSnapshot}. We next define the matrix \(\Omega = \{\omega_{1}; \omega_{2}; \ldots ; \omega_{N_{nodes}}\}\) for \(\Omega \in \mathbb{R}^{N_{nodes} \times 3}\) containing the full spatial information of the CFD mesh. Finally, the pressure snapshot for the CFD run \(j\) will be denoted as \(P_{j}(\Omega) = \{p_{j}(\omega_{1}); p_{j}(\omega_{2}); \ldots ; p_{j}(\omega_{N_{nodes}})\}\) for \(P_{j}(\Omega) \in \mathbb{R}^{N_{nodes}}\) defined by the equation \ref{eq:apppressurefield}.
 
 \begin{equation} \label{eq:apppijSnapshot}
-p_{j}(\omega_{i}) = CFD(\omega_{i}, d_{j})
+p_{j}(\omega_{i}) = f_{pressure}(\omega_{i}, d_{j})
 \end{equation} 
 \begin{equation}\label{eq:apppressurefield}
-P_{j}(\Omega) = CFD(\Omega, d_{j})
+P_{j}(\Omega) = f_{pressure}(\Omega, d_{j})
 \end{equation} 
 
 \section{POD for aerodynamic snapshots}

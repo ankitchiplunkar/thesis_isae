@@ -132,11 +132,12 @@
 
 %% This code creates the groups
 % -----------------------------------------
-%\usepackage{etoolbox}
-%\renewcommand\nomgroup[1]{%
-%  \item[\bfseries
-%  \ifstrequal{#1}{abb}{Abbreviations}{%
-%  \ifstrequal{#1}{sym}{Math Symbols}{%
-%  ]}
+
+\renewcommand\nomgroup[1]{%
+  \item[\bfseries
+  \ifstrequal{#1}{0-nota}{Notations}{
+  \ifstrequal{#1}{1-sym}{Symbols}{
+  \ifstrequal{#1}{2-abb}{Abbreviations}{}}}%
+]}
 % -----------------------------------------
  

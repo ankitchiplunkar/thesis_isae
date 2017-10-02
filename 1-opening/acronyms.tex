@@ -1,42 +1,138 @@
 %\chapter*{Nomenclature}
-%\addstarredchapter{List of Symbols}
-\markright{List of Symbols}
+%\addstarredchapter{List of 1-symbols}
+\markright{List of 1-symbols}
 \printnomenclature%[1in]
 % Remember to use italic fonts for foreign words
 %\begin{acronym}[CP-OFDMX] % Specify the longest acronym in order to set the first column width
+% Math identities
+\nomenclature[0-nota]{$a$}{Scalar $a$, written in lowercase}
+\nomenclature[0-nota]{$\VEC{a}$}{Vector $\VEC{a}$, written in bold lowercase}
+\nomenclature[0-nota]{$\VEC{a}^T$}{Transpose of vector $\VEC{a}$}
+\nomenclature[0-nota]{$\myMatrix{A}$}{Matrix $\myMatrix{A}$, written in bold uppercase}
+\nomenclature[0-nota]{$\mathcal{R}$}{Set of all real numbers}
+\nomenclature[0-nota]{$\Pr[a]$}{Probability distribution of $a$}
+\nomenclature[0-nota]{$\Pr[a, b]$}{Joint probability distribution of $a$ and $b$}
+\nomenclature[0-nota]{$\Pr[a \mid b]$}{Conditional probability distribution of $a$ given $b$}
+\nomenclature[0-nota]{$\mathcal{N}[\mu, \sigma^2]$}{Scalar Gaussian distribution}
+\nomenclature[0-nota]{$\mathcal{N}[\VEC{\mu}, \myMatrix{\Sigma}]$}{Multivariate Gaussian Distribution}
+\nomenclature[0-nota]{$GP[m(x), k(x, x')]$}{Gaussian Process}
 
-\nomenclature{$ARD$}{Automatic Relevance Determination}
-\nomenclature{$ANOVA$}{Analysis Of Variance}
-\nomenclature{$BCM$}{Bayesian Committee Machine}
-\nomenclature{$BIC$}{Bayesian Information Criterion}
-\nomenclature{$CFD$}{Computational Fluid Dynamics}
-\nomenclature{$CP$}{Change-Point}
-\nomenclature{$CRM$}{Common Research Model}
-\nomenclature{$CV$}{Cross Validation}
-\nomenclature{$EMA$}{Experimental Modal Analysis}
-\nomenclature{$FEM$}{Finite Element Method}
-\nomenclature{$FITC$}{Fully Independent Training Conditional}
-\nomenclature{$FTF$}{Flap Track Fairing}
-\nomenclature{$GP$}{Gaussian Process}
-\nomenclature{$gPOE$}{generalized Product Of Experts}
-\nomenclature{$HCT$}{Heritage Court Tower}
-\nomenclature{$IT$}{Information Technology}
-\nomenclature{$LOO$}{Leave One Out}
-\nomenclature{$MDO$}{Multi Disciplinary Optimization}
-\nomenclature{$MDOF$}{Multi Degree Of Freedom}
-\nomenclature{$NExT$}{Natural Excitation Technique}
-\nomenclature{$OMA$}{Operational Modal Analysis}
-\nomenclature{$PCA$}{Principal Component Analysis}
-\nomenclature{$POE$}{Product Of Experts}
-\nomenclature{$POE$}{Proper Orthogonal Decomposition}
-\nomenclature{$PSD$}{Positive Semi Definite}
-\nomenclature{$RANS$}{Reynolds Averaged  Navier-Stokes}
-\nomenclature{$rBCM$}{robust Bayesian Committee Machine}
-\nomenclature{$RFP$}{Rational Fractional Polynomial}
-\nomenclature{$RMSE$}{Root Mean Square Error}
-\nomenclature{$ROM$}{Reduced Order Models}
-\nomenclature{$SE$}{Standard Exponential}
-\nomenclature{$SVD$}{Singular Value Decomposition}
+% Math Symbols
+\nomenclature[1-sym]{$x_i$}{$i^{th}$ observational input point}
+\nomenclature[1-sym]{$\myMatrix{X}$}{Full training input dataset}
+\nomenclature[1-sym]{$\myMatrix{X^M}$}{Set of inducing points}
+\nomenclature[1-sym]{$\myMatrix{X^j}$}{Full set of inputs for the $j^{th}$ output for MTGP}
+\nomenclature[1-sym]{$\myMatrix{X_{joint}}$}{Joint input dataset for MTGP}
+\nomenclature[1-sym]{$x_*$}{Single test input point}
+\nomenclature[1-sym]{$\myMatrix{x_*}$}{Full test input dataset}
+\nomenclature[1-sym]{$y_i$}{$i^{th}$ observational output point}
+\nomenclature[1-sym]{$\VEC{y}$}{Full training output dataset}
+\nomenclature[1-sym]{$\VEC{y}^j$}{Full set of outputs for the $j^{th}$ output for MTGP}
+\nomenclature[1-sym]{$\VEC{y_{joint}}$}{Joint output dataset for MTGP}
+
+% symbols for parameters
+\nomenclature[1-sym]{$w$}{Parameters of functions}
+\nomenclature[1-sym]{$\VEC{\theta}$}{Vector of hyper-parameters}
+\nomenclature[1-sym]{$\theta_{lengthScale}$}{Length scale hyper-parameter}
+\nomenclature[1-sym]{$\theta_{amplitude}$}{Amplitude hyper-parameter}
+\nomenclature[1-sym]{$\theta_{intensity}$}{Intensity hyper-parameter for $k_{CP}$}
+\nomenclature[1-sym]{$\theta_{changeLocation}$}{Change location hyper-parameter}
+
+% list of symbols
+\nomenclature[1-sym]{$\epsilon$}{Independent white noise}
+\nomenclature[1-sym]{$\delta$}{Dirac-delta function}
+\nomenclature[1-sym]{$\sigma_n^2$}{Variance of the white noise}
+\nomenclature[1-sym]{$d$}{Distance between two input points}
+\nomenclature[1-sym]{$\tau$}{Time lag between two points}
+\nomenclature[1-sym]{$\nu$}{Degrees of freedom of student distribution}
+\nomenclature[1-sym]{$\lambda_i$}{$i^{th}$ modal frequency}
+\nomenclature[1-sym]{$A_i$}{$i^{th}$ mode shape}
+\nomenclature[1-sym]{$\omega_i$}{$i^{th}$ spatial coordinate of the aerodynamic node}
+\nomenclature[1-sym]{$\Omega$}{Full spatial coordinates of the aerodynamic mesh}
+\nomenclature[1-sym]{$p_i$}{Pressure at the $i^{th}$ aerodynamic node}
+\nomenclature[1-sym]{$\myMatrix{P}$}{Full Pressure data for the aerodynamic mesh}
+\nomenclature[1-sym]{$b$}{Wing span}
+\nomenclature[1-sym]{$T_z$}{Shear Load on the wing}
+\nomenclature[1-sym]{$M_x$}{Bending moment on the wing}
+\nomenclature[1-sym]{$\eta_{edge}$}{Wing span at the edge of the wing}
+\nomenclature[1-sym]{$\eta_{root}$}{Wing span at the root of the wing}
+
+% Number of things
+\nomenclature[1-sym]{$N$}{Number of points in training dataset}
+\nomenclature[1-sym]{$N_*$}{Number of points in test dataset}
+\nomenclature[1-sym]{$N_{experts}$}{Number of experts in distributed GP}
+\nomenclature[1-sym]{$N_{hyp}$}{Number of hyper-parameters}
+\nomenclature[1-sym]{$M$}{Number of inducing points}
+\nomenclature[1-sym]{$P$}{Number of points in an expert}
+\nomenclature[1-sym]{$D_{inputs}$}{Number of dimensions in input data}
+\nomenclature[1-sym]{$D_{outputs}$}{Number of dimensions in the output data}
+\nomenclature[1-sym]{$Q$}{Number of Gaussians in a SM kernel}
+\nomenclature[1-sym]{$N_{nodes}$}{Number of nodes in aerodynamic mesh}
+\nomenclature[1-sym]{$N_{experiments}$}{Number of experiments}
+\nomenclature[1-sym]{$N_{j}$}{Number of points in the $j^{th}$ output for MTGP}
+\nomenclature[1-sym]{$N_{joint}$}{Total number of points for MTGP}
+
+\nomenclature[1-sym]{$f$}{Function mapping transformation from $x$ to $y$}
+\nomenclature[1-sym]{$f_{pressure}$}{Pressure function mapping transformation from $\omega_i$ to $p_i$}
+\nomenclature[1-sym]{$\phi(x)$}{Basis functions}
+\nomenclature[1-sym]{$\mathcal{D}_i$}{$i^{th}$ Data-set}
+
+\nomenclature[1-sym]{$\myMatrix{I_N}$}{Identity matrix of size $N$}
+\nomenclature[1-sym]{$\myMatrix{\Sigma_{Prior}}$}{Covariance matrix of prior over parameters}
+\nomenclature[1-sym]{$\myMatrix{K(X_1, X_2)}$}{Gram matrix between $\myMatrix{X_1}$ and $\myMatrix{X_2}$}
+\nomenclature[1-sym]{$\myMatrix{K_{Nystrom}}$}{Gram matrix using Nystr\"{o}m approximation}
+\nomenclature[1-sym]{$\myMatrix{K_{FITC}}$}{Gram matrix using FITC approximation}
+\nomenclature[1-sym]{$\myMatrix{K_{lower}}$}{Lower Cholesky decomposition of Gram matrix}
+\nomenclature[1-sym]{$\myMatrix{K_{outputs}}$}{Covariance matrix between output dimensions}
+
+\nomenclature[1-sym]{$diag(\myMatrix{K})$}{Diagonal of the matrix}
+\nomenclature[1-sym]{$\myMatrix{M}$}{Mass matrix}
+\nomenclature[1-sym]{$\myMatrix{C}$}{Damping matrix}
+\nomenclature[1-sym]{$\myMatrix{K_{stiffness}}$}{Stiffness matrix}
+\nomenclature[1-sym]{$\myMatrix{H}$}{Low-rank matrix}
+
+\nomenclature[1-sym]{$\mu$}{Mean value of a Gaussian Distribution}
+\nomenclature[1-sym]{$m(x)$}{Mean function a GP}
+\nomenclature[1-sym]{$k(x, x')$}{Covariance function a GP}
+\nomenclature[1-sym]{$k^{\delta}$}{Covariance function of the difference between multi-fidelity GPs}
+\nomenclature[1-sym]{$m^{(i)}(x)$}{Predicted mean of the $i^{th}$ expert}
+\nomenclature[1-sym]{$\sigma^{(i)}(x)$}{Predicted covariance of the $i^{th}$ expert}
+\nomenclature[1-sym]{$\mathbf{E}[x]$}{Expectation of the random variable x}
+\nomenclature[1-sym]{$Cov[x, x']$}{Covariance between two random variables}
+
+% Acronyms
+\nomenclature[2-abb]{$ARD$}{Automatic Relevance Determination}
+\nomenclature[2-abb]{$ANOVA$}{Analysis Of Variance}
+\nomenclature[2-abb]{$BCM$}{Bayesian Committee Machine}
+\nomenclature[2-abb]{$BIC$}{Bayesian Information Criterion}
+\nomenclature[2-abb]{$CFD$}{Computational Fluid Dynamics}
+\nomenclature[2-abb]{$CP$}{Change-Point}
+\nomenclature[2-abb]{$CRM$}{Common Research Model}
+\nomenclature[2-abb]{$CV$}{Cross Validation}
+\nomenclature[2-abb]{$EMA$}{Experimental Modal Analysis}
+\nomenclature[2-abb]{$FEM$}{Finite Element Method}
+\nomenclature[2-abb]{$FITC$}{Fully Independent Training Conditional}
+\nomenclature[2-abb]{$FTF$}{Flap Track Fairing}
+\nomenclature[2-abb]{$GP$}{Gaussian Process}
+\nomenclature[2-abb]{$gPOE$}{generalized Product Of Experts}
+\nomenclature[2-abb]{$HCT$}{Heritage Court Tower}
+\nomenclature[2-abb]{$IT$}{Information Technology}
+\nomenclature[2-abb]{$LOO$}{Leave One Out}
+\nomenclature[2-abb]{$MDO$}{Multi Disciplinary Optimization}
+\nomenclature[2-abb]{$MDOF$}{Multi Degree Of Freedom}
+\nomenclature[2-abb]{$NExT$}{Natural Excitation Technique}
+\nomenclature[2-abb]{$OMA$}{Operational Modal Analysis}
+\nomenclature[2-abb]{$PCA$}{Principal Component Analysis}
+\nomenclature[2-abb]{$POE$}{Product Of Experts}
+\nomenclature[2-abb]{$POD$}{Proper Orthogonal Decomposition}
+\nomenclature[2-abb]{$PSD$}{Positive Semi Definite}
+\nomenclature[2-abb]{$RANS$}{Reynolds Averaged  Navier-Stokes}
+\nomenclature[2-abb]{$rBCM$}{robust Bayesian Committee Machine}
+\nomenclature[2-abb]{$RFP$}{Rational Fractional Polynomial}
+\nomenclature[2-abb]{$RMSE$}{Root Mean Square Error}
+\nomenclature[2-abb]{$ROM$}{Reduced Order Models}
+\nomenclature[2-abb]{$SE$}{Standard Exponential}
+\nomenclature[2-abb]{$SVD$}{Singular Value Decomposition}
 
 
 
