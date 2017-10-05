@@ -5,20 +5,20 @@
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
 \section*{Résumé}
-En raison du coût important des expériences réalisent sur les systèmes physiques, concevoir les derniers purement par l'expérimentation devient un exercice coûteux. Par conséquence les modèles deviennent des moyens importants dans le processus de conception des systèmes physiques. Traditionnellement, ces modèles ont été construits par des instituts de recherches, en effectuant des expériences dans un environnement contrôlé, itérativement. Une méthode plus rentable pour construire ces modèles est  d'utiliser des algorithmes d'apprentissage automatiques, qui déduisent ces modèles de données (exprimer ou simuler) et peuvent être utilisés pour interpoler et l'extrapoler. Dans cette thèse, nous développons de meilleurs modèles d'apprentissage automatique en combinant la connaissance acquise sur le design (conception) d'avion avec les données expérimentales.
+En raison du coût important des expériences réalisées sur les systèmes physiques, concevoir ces derniers purement par l'expérimentation devient un exercice coûteux. Par conséquent les modèles numériques deviennent des moyens importants dans le processus de conception des systèmes physiques. Traditionnellement, ces modèles ont été construits en effectuant des expériences dans un environnement contrôlé, itérativement. Une méthode plus rentable pour construire ces modèles est  d'utiliser des algorithmes d'apprentissage automatique, qui déduisent ces modèles de données (expérimentales ou simulées) et peuvent être utilisés pour interpoler et extrapoler. Dans cette thèse, nous développons des modèles d'apprentissage automatique en combinant la connaissance acquise sur le design (conception) d'avion avec les données expérimentales.
 
-Les modèles d'apprentissage automatique constituent un compromis entre le biais et la variance (figure \ref{figBiasVsVariance}),), formalisé par `Wolpert' dans son célèbre ``théorème de repas gratuit" \cite{wolpert1997no}. Les fonctions constitutives dans un espace d'hypothèse représentent le biais(préjugé) ou les hypothèses de l'algorithme apprenant (eg. des fonctions linéaires pour la régression linéaire). En absence de biais suffisants, la famille de fonctions dans l'espace de recherche devient très grande qui mène à une variance élevée dans le modèle (figure \ref{subFigpredictionPoly15}). Au contraire, un biais trop importante signifie que la vraie fonction de transformation ($f$) n'existe pas dans l'espace d'hypothèse. Dans ce cas, l'algorithme d'apprentissage trouve la fonction la plus proche de $f$ dans l'espace d'hypothèse ce qui mène à un sous-ajustement (figure \ref{subFigpredictionPoly6})
+Les modèles d'apprentissage automatique constituent un compromis entre le biais et la variance, formalisé par Wolpert dans son célèbre théorème ``No free lunch" \cite{wolpert1997no}. Les fonctions constitutives dans un espace d'hypothèse représentent le biais (préjugé) ou les hypothèses de l'algorithme apprenant (eg. des fonctions linéaires pour la régression linéaire). En l'absence de biais suffisants, la famille de fonctions dans l'espace de recherche devient très grande, et mène à une variance élevée dans le modèle. Au contraire, un biais trop important signifie que la vraie fonction de transformation n'existe pas dans l'espace d'hypothèse. Dans ce cas, l'algorithme d'apprentissage trouve la fonction la plus proche de $f$ dans l'espace d'hypothèse, ce qui mène à un sous-ajustement.
 
-Une méthode pour surmonter ce compromis est l'utilisation d'un grand nombre de données. Étant donné la facilite d'accès à un nombre de plus en plus de données, nous pouvons progressivement réduire le biais(préjugé) dans l'apprentissage de modèles. C'est aussi le concept principal de `Deep learning', où plusieurs couches de réseaux neurones définissent un vaste espace d'hypothèse \cite{Goodfellow-et-al-2016, lecun2015deep}.
+Une méthode pour surmonter ce compromis est l'utilisation d'un grand nombre de données. Étant donné la facilité d'accès à un nombre de plus en plus grand de données, nous pouvons progressivement réduire le biais dans l'apprentissage de modèles. C'est aussi le concept principal de `Apprentissage profond', où plusieurs couches de réseaux de neurones définissent un vaste espace d'hypothèse  \cite{Goodfellow-et-al-2016, lecun2015deep}.
 
-Nous proposons de construire de meilleurs modèles d'apprentissage en intégrant les connaissances préalablement testées sur les systèmes des avions avec les données expérimentales. Un modèle généré par la fusion des deux méthodologies sera à la fois cohérent avec la physique du système et sera plus rapide à évaluer. Nous intégrons trois types de connaissances antérieures en répondant aux questions suivantes:
+Nous proposons de construire de meilleurs modèles d'apprentissage de Processus Gaussiens (GPs) en intégrant les connaissances préalablement testées sur les systèmes des avions avec les données expérimentales. Un modèle généré par la fusion des deux méthodologies sera à la fois cohérent avec la physique du système et sera plus rapide à évaluer. Nous intégrons trois types de connaissances antérieures en répondant aux questions suivantes :
 
 \begin{enumerate}
-\item \textbf{Forme}: Comment ajouter des informations \textit{a priori} d'un forme dans un algorithme d'apprentissage ? (part \ref{partIncorporatePattern}).
-\item \textbf{Modèle de simulation}: Comment fusionner information de \textit{a priori} des simulations avec des expériences? (chapter \ref{chapMultiTaskExtrapolation}). 
-\item \textbf{Relations}: Comment ajouter des informations \textit{a priori} des relations entre les mesures? (chapter \ref{chapAddingEquationsInGP}).
+\item \textbf{Motifs}: Comment ajouter des informations \textit{a priori} d'un motifs dans un algorithme d'apprentissage ? (part \ref{partIncorporatePattern}).
+\item \textbf{Données de simulation}: Comment fusionner l'information \textit{a priori} des simulations avec des expériences ? (chapter \ref{chapMultiTaskExtrapolation}). 
+\item \textbf{Relations}: Comment ajouter des informations \textit{a priori} des relations entre les mesures ? (chapter \ref{chapAddingEquationsInGP}).
+\item \textbf{Le passage à l'échelle}: Comment appliquer la régression GP à de grands volumes de données ? (chapter \ref{chapScalingGPR} et section \ref{sec:sparseGPRegression}).
 \end{enumerate}
-
 
 \end{mdframed}
 
@@ -75,9 +75,8 @@ The main difference between the engineering design and surrogate modeling can be
   \label{fig:engineeringDesignVsSurrogateModelling}
 \end{figure}
 
-\marginnote{\textsl{Developing faster models}}[1cm]
 Model building in aircraft engineering is traditionally outsourced to research institutes. Researchers perform iterative experiments in a controlled environment and discover patterns between the physics of the system. For example, it took 200 years to iteratively develop the gas law \footnote{$Pressure \times Volume \propto numberOfMoles \times Temperature$}, Boyle's law in 1600's found the relation between Pressure and Volume, Charle's Law in 1787 discovered the relationship between Volume and Temperature, while Gay-Lussac's Law in 1809 discovered the relationship between Pressure and Temperature \cite{clapeyron1834memoire}. This is a rigorous and time-consuming method of developing models. Machine learning is a much more cost effective  method of building models. Using data and few basic assumptions, automatic models can be built between desired inputs and outputs. For example, while the first model of a neural network was proposed in 1950's \cite{mcculloch1943logical, rosenblatt1958perceptron}, neural networks are today used daily for tasks such as tagging cat photos on Facebook and converting speech to text\footnote{I wrote a fourth of this thesis using a text to speech software}. In this thesis, we wish to automatically build models for aircraft design tasks primarily to be used during the detailed design phase and certification phase. 
-
+\marginnote{\textsl{Developing faster models}}[-3cm]
 
 \section{Machine Learning}\label{secMachineLearning}
 \marginnote{\textsl{Components of learning}}[1cm]
@@ -263,19 +262,19 @@ Informally, a GP is a method to probabilistically define a family of functions. 
 This thesis is divided into three main parts, each part is then divided into individual chapters and their constituent sections. This part sets up the prerequisites required to understand the concepts introduced in the next two parts. The first chapter demonstrates the need for performing regression in aircraft design tasks and describes a very basic Bayesian Linear Regression scheme. 
 
 \marginnote{\textsl{Chapter \ref{chapGp}}}[1cm]
-Chapter \ref{chapGp} shows the key processes involved in a GP regression framework. GPs as distributions over functions have a rich history in geo-statistics and machine learning. The second chapter heavily draws ideas from \cite{krige1951statistical, matheron1963principles} of the geo-statistics community and \cite{Stein1999Springer, kennedy2000predicting, Rasmussen2005, mackay2003information} of the machine-learning community, showing a work-flow of how to perform regression using GPs. The chapter describes the key constituents of a GP and how to draw random functions from them, describes how to perform prediction in presence and absence of measurement noise, and finally introduces marginal likelihood as a form of evaluation method to automatically choose hyper-parameters. 
+Chapter \ref{chapGp} shows the key processes involved in a GP regression framework. GPs as distributions over functions have a rich history in geo-statistics and machine learning. The second chapter heavily draws ideas from \cite{krige1951statistical, matheron1963principles} of the geo-statistics community and \cite{Stein1999Springer, kennedy2000predicting, Rasmussen2005, mackay2003information} of the machine-learning community, showing a work-flow of how to perform regression using GPs. The chapter describes the key constituents of a GP and how to draw random functions from them, describes how to perform prediction in presence and absence of measurement noise, and finally introduces marginal likelihood maximization as a form of evaluation method to automatically choose hyper-parameters. 
 
 \marginnote{\textsl{Chapter \ref{chapScalingGPR}}}[1cm]
-Chapter \ref{chapScalingGPR} deals with the problem of scaling GP regression to massively many points. Traditional GPs are computationally infeasible on a standard laptop if the number of data points increases to more than $\mathcal{O}(10^4)$. There exist two main methods to scale a GP regression, one using a reduced set of inducing points while another based on mixture of experts methodology. This chapter draws heavily from the works of \cite{quinonero2005unifying, seeger2003fast, Snelson06sparsegaussian, Titsias09variationallearning} for the approximation method of inducing points and \cite{caoF14, tresp2000bayesian, chen2009bagging, deisenroth2015distributed} for the approximation method of mixture of experts, please refer to the individual publications for more detail. We demonstrate the limitations and capabilities of both the methods on a toy data-set, giving directions to choosing optimal parameters and extracting the best possible result.  
+Chapter \ref{chapScalingGPR} deals with the problem of scaling GP regression to massively many points. Traditional GPs are computationally infeasible on a standard laptop if the number of data points increases to more than $\mathcal{O}(10^4)$. There exist two main methods to scale up a GP regression, one using a reduced set of inducing points while another based on mixture of experts methodology. This chapter draws heavily from the works of \cite{quinonero2005unifying, seeger2003fast, Snelson06sparsegaussian, Titsias09variationallearning} for the approximation method of inducing points and \cite{caoF14, tresp2000bayesian, chen2009bagging, deisenroth2015distributed} for the approximation method of mixture of experts, please refer to the individual publications for more detail. We demonstrate the limitations and capabilities of both the methods on a toy data-set, giving directions to choosing optimal parameters and extracting the best possible result.  
 
 \marginnote{\textsl{Part \ref{partIncorporatePattern}}}[1cm]
-A GP prior can be fully parametrized by its mean and covariance function, from part \ref{partIncorporatePattern} onwards we only concentrate on manipulating the covariance function to embed the desired \textit{a priori} information into a GP prior. Part \ref{partIncorporatePattern} demonstrates how to incorporate an \textit{a priori} pattern into a regression framework. It consists of two chapters, chapter \ref{chapBasicCovarianceKernels} describes basic covariance functions, while chapter \ref{chapCombiningBasicCovariances} explains how to make new covariance functions by combining the basic covariance functions. This part has been inspired from the works of \cite{bishop2006pattern, mackay2003information, duvenaud-thesis-2014, wilson2014thesis, lloyd2014automatic, durrande2001etude, durrande2013anova}. 
+A GP prior can be fully parameterized by its mean and covariance functions. From part \ref{partIncorporatePattern} on-wards we only concentrate on manipulating the covariance function to embed the desired \textit{a priori} information into a GP prior. Part \ref{partIncorporatePattern} demonstrates how to incorporate an \textit{a priori} pattern into a regression framework. It consists of two chapters, chapter \ref{chapBasicCovarianceKernels} describes basic covariance functions, while chapter \ref{chapCombiningBasicCovariances} explains how to make new covariance functions by combining the basic covariance functions. This part has been inspired from the works of \cite{bishop2006pattern, mackay2003information, duvenaud-thesis-2014, wilson2014thesis, lloyd2014automatic, durrande2001etude, durrande2013anova}. 
 
-Chapter \ref{chapBasicCovarianceKernels} describes different types of covariance functions and their corresponding family of functions. Patterns such as smoothness, linearity, differentiability, etc. can be easily encoded using simple covariance functions. We briefly list the properties of basic stationary and non-stationary covariance functions, while also giving an example to demonstrate effects of choosing different covariance functions on the final regression model. Stationary kernels have an interesting property that their Fourier transforms exist and are more interpretable. We exploit this property to learn modal parameters of a structure from their dynamic excitations. 
+Chapter \ref{chapBasicCovarianceKernels} describes different types of covariance functions and their corresponding families of functions. Patterns such as smoothness, linearity, differentiability, etc. can be easily encoded using simple covariance functions. We briefly list the properties of basic stationary and non-stationary covariance functions, while also giving an example to demonstrate the effects of choosing different covariance functions on the final regression model. Stationary kernels have an interesting property that their Fourier transforms exist and are more interpretable. We exploit this property to learn modal parameters of a structure from their dynamic excitations. 
 \marginnote{\textsl{Chapter \ref{chapBasicCovarianceKernels}}}[-2cm]
 
 \marginnote{\textsl{Chapter \ref{chapCombiningBasicCovariances}}}[1cm]
-Chapter \ref{chapCombiningBasicCovariances} provides intuition on what happens when we combine different covariance functions. We first look at the effects of simply adding or multiplying covariances in one-dimensional inputs (section \ref{secSingleDimension}), and then investigate how to create covariance functions for multi-dimensional inputs (section \ref{secMultiDimensionalKernels}). We use these kind of covariance functions to detect onset of plasticity in Tensile experiments on AL 6061 (section \ref{subsubsecCh4ApplicationCP}) and interpolate pressures in the Transonic regime (section \ref{subecInterpolationOfAerodynamicPressures}). 
+Chapter \ref{chapCombiningBasicCovariances} provides intuition on what happens when we combine different covariance functions. We first look at the effects of simply adding or multiplying covariances in one-dimensional inputs (section \ref{secSingleDimension}), and then investigate how to create covariance functions for multi-dimensional inputs (section \ref{secMultiDimensionalKernels}). We use these kind of covariance functions to detect onset of plasticity in Tensile experiments on an aluminum alloy (section \ref{subsubsecCh4ApplicationCP}) and interpolate pressures in the Transonic regime (section \ref{subecInterpolationOfAerodynamicPressures}). 
 
 \marginnote{\textsl{Part \ref{partIncorporateMultipleOutputs}}}[1cm]
 Several real-world problems often exhibit strong correlations between output variables, for example, correlations across spatial coordinates ($x, y, z$) in an experiment. Part \ref{partIncorporateMultipleOutputs} of this thesis demonstrates how to incorporate an \textit{a priori} information among multiple outputs, this is also called as `Multi-Task Gaussian Process' (MTGP) in GP literature. This part is split into two chapters, chapter \ref{chapMultiTaskExtrapolation} describes the MTGP for the case of multi-fidelity simulations, while chapter \ref{chapAddingEquationsInGP} describes the MTGP for the case when we have \textit{a priori} information of relationships between outputs. This part has been inspired from the works of \cite{forrester2007multi, alvarez2011kernels, bonilla_multi-task_2008, Boyle05dependentgaussian, kennedy2000predicting, le2013multi, Constantinescu2013, journals/jmlr/AlvarezLL09, jidling2017linearly, ginsbourger2013invariances, sarkka2011linear}
@@ -284,7 +283,7 @@ Several real-world problems often exhibit strong correlations between output var
 Chapter \ref{chapMultiTaskExtrapolation} describes how to build GP regression models in presence of multi-fidelity simulations. The \textit{a priori} information in this case is that one simulation is more accurate than another. The chapter starts by presenting MTGP models when no information of dependency between outputs exists, we then present the multi-fidelity model. Finally, we expand the multi-fidelity model to the case of extrapolating experimental data using a simulation model. 
 
 \marginnote{\textsl{Chapter \ref{chapAddingEquationsInGP}}}[1cm]
-Finally, chapter \ref{chapAddingEquationsInGP} demonstrates how to build an MTGP model if we know a relationship in form of an operation between two outputs. We first tackle the case of linear operators and then expand the case to non-linear operators. We then give methods to scale MTGP models to large number of data-points, mainly by applying already seen techniques in chapter \ref{chapScalingGPR}. 
+Finally, chapter \ref{chapAddingEquationsInGP} demonstrates how to build an MTGP model if we know a relationship in the form of an operation between two outputs. We first tackle the case of linear operators and then expand the case to non-linear operators. We then give methods to scale up MTGP models to large numbers of data-points, mainly by applying techniques already seen in chapter \ref{chapScalingGPR}. 
 
 \section{Contributions}\label{secCh1Contributions}
 Before highlighting the contributions of this thesis it is important to understand the research work in context of a CIFRE thesis. A CIFRE thesis is different from a traditional PhD thesis since the doctoral candidate is an employee of the host company, while also being linked to the research university. Thus the research performed in this thesis is application oriented, mostly trying to solve some industry specific problem.
@@ -294,22 +293,27 @@ The main theme of this thesis is applying the developments from the supervised m
 
 \begin{table}[!ht]
 \centering
-\begin{tabularx}{\textwidth}{|l|X|X|}
+\begin{tabularx}{\textwidth}{|X|l|}
   \hline
-  & GP + Aircraft Design & GP Regression \\
+  \multicolumn{2}{c}{\textbf{GP + Aircraft Design}}\\
   \hline 
   \hline
-Chapter \ref{chapBasicCovarianceKernels}& Identifying Structural dynamic parameters \cite{chiplunkar2017operational} &\\
+Chapter \ref{chapBasicCovarianceKernels}& Identifying Structural dynamic parameters \cite{chiplunkar2017operational} \\
 \hline
-Chapter \ref{chapCombiningBasicCovariances} & Identifying onset of non-linearity \cite{chiplunkar:hal-01555401} &\\
+Chapter \ref{chapCombiningBasicCovariances} & Identifying onset of non-linearity \cite{chiplunkar:hal-01555401} \\
 \hline
-Chapter \ref{chapCombiningBasicCovariances} & Interpolating Shock position \cite{oatao18004} &\\
+Chapter \ref{chapCombiningBasicCovariances} & Interpolating Shock position \cite{oatao18004} \\
 \hline
-Chapter \ref{chapMultiTaskExtrapolation} & Extrapolating using simulation model &\\
+Chapter \ref{chapMultiTaskExtrapolation} & Extrapolating using a simulation model \\
 \hline
-Chapter \ref{chapAddingEquationsInGP} & Adding flight mechanics to GP \cite{oatao18001} &\\
+Chapter \ref{chapAddingEquationsInGP} & Adding flight mechanics to GP \cite{oatao18001} \\
 \hline
-Chapter \ref{chapAddingEquationsInGP} & & Scaling multi-task GP  \cite{icpram16Ankit, oatao18000}  \\
+\multicolumn{2}{c}{} \\
+\hline
+\hline
+\multicolumn{2}{c}{\textbf{Additions to GP Regression}} \\
+\hline
+Chapter \ref{chapAddingEquationsInGP} & Scaling multi-task GP  \cite{icpram16Ankit, oatao18000}  \\
   \hline 
   \end{tabularx}
   \label{tabListOfContributions}
@@ -320,8 +324,8 @@ When we are applying GP regression to Aircraft design problems, we are effective
 
 \begin{enumerate}
 \item \textbf{Pattern}: How to add \textit{a priori} information of a pattern in a learning algorithm? For example, given that shock is a discontinuous change in pressure, how to predict the position of shock on an airfoil (part \ref{partIncorporatePattern}). 
-\item \textbf{Simulation model}: How to merge \textit{a priori} information of simulations with experiments? For example, given a simulation model and experimental data how to perform extrapolations on experimental data(chapter \ref{chapMultiTaskExtrapolation}). 
-\item \textbf{Relationships}: How to add \textit{a priori} information of relationships between measurements? For example given $Loads = \int Pressures$, how to make a robust loads model when we measure both pressures and loads (chapter \ref{chapAddingEquationsInGP}).
+\item \textbf{Simulation model}: How to merge \textit{a priori} information of simulations with experiments? For example, given a simulation model and experimental data how to perform extrapolations on experimental data (chapter \ref{chapMultiTaskExtrapolation})?
+\item \textbf{Relationships}: How to add \textit{a priori} information of relationships between measurements? For example given $Loads = \int Pressures$, how to make a robust loads model when we measure both pressures and loads (chapter \ref{chapAddingEquationsInGP})?
 \item \textbf{Scaling}: How to scale GP regression to large data sets? How to scale single output and multiple output GPs to large number of outputs (chapter \ref{chapScalingGPR} and section \ref{sec:sparseGPRegression}).
 \end{enumerate}
 

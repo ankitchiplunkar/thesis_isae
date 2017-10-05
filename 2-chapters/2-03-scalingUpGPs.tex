@@ -4,11 +4,11 @@
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
 \section*{Résumé}
-Le calcul de distributions postérieures dans les GPs devient difficile pour les ensembles de données de la grosse taille. Le calcul de la matrice de précision est une opération de complexité $ \mathcal{O}(N ^ {3}) $, mettant une limite de $ N \sim 10^4 $ points de données pour la construction de modèles. Ce chapitre décrit l'état de l'art pour l'étendue des GPs pour les tâches de régression. Il existe deux methodes pour étendre des GPs, la première méthode 'Sparse GPs' utilisent un ensemble des points inductifs pour réduire le coût de calcul de la matrice de précision. La seconde est appelée `Distributed GP ' elle divise l'ensemble de données en sous-ensembles plus petits, en distribuant le modèle en plusieurs lots.
+Le calcul de lois a posteriori dans les GPs devient difficile pour les ensembles de données de grande taille. Le calcul de la matrice de précision est une opération de complexité $ \mathcal{O}(N ^ {3}) $, mettant une limite de $ N \sim 10^4 $ points de données pour la construction de modèles. Ce chapitre décrit l'état de l'art pour l'étendue des GPs pour les tâches de régression. Il existe deux méthodes pour étendre des GPs, la première méthode `Sparse GPs' utilisent un ensemble des points inductifs pour réduire le coût de calcul de la matrice de précision. La seconde est appelée `Distributed GPs' elle divise l'ensemble de données en sous-ensembles plus petits, en distribuant le modèle en plusieurs lots.
 
-Les méthodes `Sparse GPs 'utilisent le approximation de Nystr\"{o}m, récrivant la matrice de Gram comme l'équation \ref{subSecSamplingFunctionsGPPrior}, diminuant ainsi la complexité de calcul à $ \mathcal{O} (NM^{2}) $ (M $ \ll $ N) , $ M $ étant le nombre de points inductifs. Grâce à des expériences sur les données synthétiques, on peut montrer que on peut fixer $ M \sim N/10 $ quand les points inductifs sont distribués alétoirement et $ M \sim N/50 $ quand les emplacements des points inductifs sont optimisés. Cette approximation pousse la limite de régression GP à $ N \sim 10^6 $ points de données.
+Les méthodes `Sparse GPs' utilisent l'approximation de Nystr\"{o}m, récrivant la matrice de Gram, diminuant ainsi la complexité de calcul à $ \mathcal{O} (NM^{2}) $ (M $ \ll $ N) , $ M $ étant le nombre de points inductifs. Grâce à des expériences sur les données synthétiques, on peut montrer que on peut fixer $ M \sim N/10 $ quand les points inductifs sont distribués aléatoirement et $ M \sim N/50 $ quand les emplacements des points inductifs sont optimisés. Cette approximation pousse la limite de régression GP à $ N \sim 10^6 $ points de données.
 
-«Distributed GPs» distribue les tâches de régression GP dans plusieurs lots, diminuant ainsi la complexité informatique à $ \mathcal{O} (NP^{3}) $ (P $\ll$ N), $ P $ étant le nombre (numéro) des points dans un lot. Grâce à des expériences sur les données synthétiques, nous démontrons que $ P \sim N/100 $ n'affecte pas beaucoup la précision de la régression. En fait, nous pouvons réduire davantage $ P $ si nous permettons la répétition de points entre les lots. Cela permet d'étendre le GP à n'importe quel nombre de points de données.
+``Distributed GPs" distribue les tâches de régression GP dans plusieurs lots, diminuant ainsi la complexité informatique à $ \mathcal{O} (NP^{3}) $ (P $\ll$ N), $ P $ étant le nombre des points dans un lot. Grâce à des expériences sur les données synthétiques, nous démontrons que $ P \sim N/100 $ n'affecte pas beaucoup la précision de la régression. En fait, nous pouvons réduire davantage $ P $ si nous permettons la répétition de points entre les lots. Cela permet d'étendre le GP à n'importe quel nombre de points de données.
 \end{mdframed}
 
 
@@ -23,7 +23,7 @@ Let us take the example of a SE kernel, for a high value of length-scale, the Gr
 \marginnote{\textsl{Block-diagonal approximation}}[1cm]
 For the same SE kernel, if the length-scale tends to a low value, the Gram matrix is not of low-rank but tends to a diagonal matrix (figure \ref{subFigSEPrior_1}). In the GP literature the mixture of experts (section \ref{secDgp}) methodology exploits the block diagonal nature of the Gram matrix by distributing data points into a subset of experts, assuming independence across experts and distributing the calculations into several batches. The first regime suggests global (numerical) low-rank approximations while the second regime suggests local block-diagonal approximations \cite{march2015askit, chenhan2016inv}. 
 
-The remaining chapter unfolds as follows, section \ref{secSparseApprox} describes the Sparse Approximations detailing several methods of choosing inducing points and then performing experiments on a toy data-set. Section \ref{secDgp} describes the Distributed GP methodology detailing several methods for merging of experts and then performing experiments on the same toy data-set. 
+The remaining chapter unfolds as follows, section \ref{secSparseApprox} describes the Sparse Approximations detailing several methods of choosing inducing points and then performing experiments on a toy data-set. Section \ref{secDgp} describes the Distributed GPs methodology detailing several methods for merging of experts and then performing experiments on the same toy data-set. 
 
 \section{Sparse Approximations}\label{secSparseApprox}
 Sparse methods use a small subset of input points as support or inducing points to approximate the Gram matrix. Suppose we use $M$ inducing points $\myMatrix{X^{m}} = \{\VEC{x^{m}_{1}}, \VEC{x^{m}_{2}}, \ldots, \VEC{x^{m}_{M}}\}^T$, such that $M < N$. The points $\myMatrix{X^{m}}$ can be a subset of training inputs in the input space. 
@@ -156,7 +156,7 @@ Figure \ref{boxPlotsOfPerformance_242} are 10-fold RMSE box-plots for varying nu
        \caption{Results of Nystr\"{o}m Approximation on a toy-data set of size $N=1000$ }\label{figGPPredictionNystorm}
 \end{figure}
 
-Global low-rank approximations are best suited for the case of spread out Gram matrices (example high length-scale SE priors). We have seen three types of low-rank approximation algorithms in this section. While Nystr\"{o}m and FITC approximations are the simplest method to approximate Gram matrix, finding optimal locations of the inducing points can often lead to over-fitting. We then look at variational approximation procedure which adds a regularization term while finding inducing points, thereby, penalizing over-fitting. The lower computational cost due to sparse approximations, scales sparse GPs to the training set of sizes $N \sim \mathcal{O}(5 \times 10^5)$. \cite{Gal2014Distributed} propose a distributed architecture for scaling variational sparse GPs. In the next section we look at how to approximate Gram matrices using mixture of experts, this enables us to massively scale GPs to sizes $N > \mathcal{O}(10^6)$ by exploiting distributed architecture.
+Global low-rank approximations are best suited for the case of spread out Gram matrices (example high length-scale SE priors). We have seen three types of low-rank approximation algorithms in this section. While Nystr\"{o}m and FITC approximations are the simplest method to approximate Gram matrix, finding optimal locations of the inducing points can often lead to over-fitting. We then look at variational approximation procedure which adds a regularization term while finding inducing points, thereby, penalizing over-fitting. The lower computational cost due to sparse approximations, scales Sparse GPs to the training set of sizes $N \sim \mathcal{O}(5 \times 10^5)$. \cite{Gal2014Distributed} propose a distributed architecture for scaling variational Sparse GPs. In the next section we look at how to approximate Gram matrices using mixture of experts, this enables us to massively scale GPs to sizes $N > \mathcal{O}(10^6)$ by exploiting distributed architecture.
 
 \section{Distributed Gaussian Process}\label{secDgp}
 \marginnote{\textsl{Netflix prize}}[1cm]
@@ -185,13 +185,13 @@ Figure \ref{subFigdistributedKernelRandomExperts} is an approximate Gram matrix 
 
 \begin{figure}[!ht]
   \centering
-    \subfigure[{Approximated Gram matrix using distributed GP approximation for a SE Kernel with $(\VEC{\theta} = [1, 0.2])$ (figure \ref{subFigcovSEmatrix_1}) at the input points $\myMatrix{X^{*}} = \{[0:0.02:1]\}$. Points in the experts are distributed randomly, this gives the approximate Gram matrix scattered shape.}]
+    \subfigure[{Approximated Gram matrix using Distributed GPs approximation for a SE Kernel with $(\VEC{\theta} = [1, 0.2])$ (figure \ref{subFigcovSEmatrix_1}) at the input points $\myMatrix{X^{*}} = \{[0:0.02:1]\}$. Points in the experts are distributed randomly, this gives the approximate Gram matrix scattered shape.}]
   {
         \includegraphics[width=0.45\textwidth]
         {images/part1/distributedKernelRandomExperts}
         \label{subFigdistributedKernelRandomExperts}
   }\quad
-\subfigure[{Approximated Gram matrix using distributed GP approximation for a SE Kernel with $(\VEC{\theta} = [1, 0.2])$ (figure \ref{subFigcovSEmatrix_1}) at the input points $\myMatrix{X^{*}} = \{[0:0.02:1]\}$. Points in the experts are distributed uniformly. We can observe that covariance across experts goes to zero.}]
+\subfigure[{Approximated Gram matrix using Distributed GPs approximation for a SE Kernel with $(\VEC{\theta} = [1, 0.2])$ (figure \ref{subFigcovSEmatrix_1}) at the input points $\myMatrix{X^{*}} = \{[0:0.02:1]\}$. Points in the experts are distributed uniformly. We can observe that covariance across experts goes to zero.}]
   {
         \includegraphics[width=0.45\textwidth]
         {images/part1/distributedKernel}
@@ -235,7 +235,7 @@ Due to the independence assumption, the marginal likelihood can be written as a 
 The sample code \ref{codelmdDGP} defines the function `logMarginalLikelihoodDGP' which calculates the new log marginal likelihood (equation \ref{eqDGPNLML}) using the experts as defined in code \ref{codeClusteringIntoExperts}. The optimal hyper-parameters can be obtained after maximizing this function with respect to hyper-parameters. 
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
-\lstinputlisting[caption={log Marginal Likelihood for Distributed GP}, 
+\lstinputlisting[caption={log Marginal Likelihood for Distributed GPs}, 
                     captionpos=b, 
                     label={codelmdDGP}, 
                     backgroundcolor = \color{MatlabCellColour},
@@ -248,14 +248,14 @@ The sample code \ref{codelmdDGP} defines the function `logMarginalLikelihoodDGP'
 Maximizing the above log-marginal likelihood will give the optimal values of hyper-parameters. Points in the experts can be distributed either randomly, or using a clustering scheme (eg. k-means clustering\footnote{k-means algorithm clusters close by points in one cluster. The notion of closeness is defined by some measure of distance}) for stationary kernels k-means clustering should be preferred. The k-means algorithm clusters points based on a measure of distance, points in separate clusters are far away from each other when compared to points in the same cluster. This means that the covariance (for stationary kernels) between separate clusters is significantly lower when compared to points in same cluster. Hence, the cross-covariance across separate clusters can be more easily assumed to be zero.
 
 \subsection{Experiments}\label{subSecDistributedExperiments}
-We again conduct experiments on a toy-data set, this time to observe the accuracy of the distributed GP approximation for a varying number of experts. 
+We again conduct experiments on a toy-data set, this time to observe the accuracy of the Distributed GPs approximation for a varying number of experts. 
 
 Again the 10-fold Cross Validation (CV) will be used to assess the performance of the prediction. The same toy-data set as used in section \ref{subsecNystromExperiments} was used to perform the experiments in this section (1000 data-points from $\Pr[\VEC{y} \mid \myMatrix{X}, \VEC{\theta}, \sigma_{n}] = GP(0, \myMatrix{K_{SE}(X, X', \theta = [1, 0.1])} + (0.3)^{2}\myMatrix{I})$.
 
 \marginnote{\textsl{Figure \ref{predictionOfm10_243}}}[1cm]
 Figure \ref{predictionOfm10_243} is the prediction of the GP obtained after distributed approximation using 9 experts and k-means clustering. The solid black line defines the mean function, blue region defines 95\% confidence interval (2$\sigma$) distance away from the mean. The colored points in the points denoted by `*' at the bottom show how different points are distributed across experts, similar colored points belong to one expert. The data denoted by `.' is the test data for one fold of the 10-fold CV. 
 
-The points across experts are uniformly distributed, as can be observed by the coloring scheme. Since the training points are almost uniformly distributed, the k-means algorithm will cluster the points uniformly. The training and the test data-set for figures \ref{predictionOfm10_243} and \ref{predictionOfm10_242} are kept intentionally same. We can thus compare the interpolating properties of both inducing inputs approximation (figure \ref{predictionOfm10_243}) and distributed GP (figure \ref{predictionOfm10_242}). The Nystr\"{o}m approximation has a global smooth shape while the distributed GP approximation retains the local features of the data set. 
+The points across experts are uniformly distributed, as can be observed by the coloring scheme. Since the training points are almost uniformly distributed, the k-means algorithm will cluster the points uniformly. The training and the test data-set for figures \ref{predictionOfm10_243} and \ref{predictionOfm10_242} are kept intentionally same. We can thus compare the interpolating properties of both inducing inputs approximation (figure \ref{predictionOfm10_243}) and Distributed GPs (figure \ref{predictionOfm10_242}). The Nystr\"{o}m approximation has a global smooth shape while the Distributed GPs approximation retains the local features of the data set. 
 
 \marginnote{\textsl{Figure \ref{boxPlotsOfPerformance_243}}}[1cm]
 Figure \ref{boxPlotsOfPerformance_243} are 10-fold RMSE box-plots for different values of $P$. The box-plots in red are cases when the points are distributed using k-means clustering. The box-plots in blue are the cases when points are distributed randomly. The accuracy of prediction improves with increasing number of points in an expert. Note, the noise in the generated toy-data is $\sigma_{n}=0.3$, it is the best achievable RMSE value. Accuracy is slightly better when experts are distributed using k-means clustering, both being very close to the $0.3$ RMSE limit. As a thumb-rule, setting $P = \frac{N}{100}$, and optimizing the hyper-parameters ($\VEC{\theta}$) is a good enough approximation. 
@@ -276,11 +276,11 @@ Figure \ref{boxPlotsOfPerformance_243} are 10-fold RMSE box-plots for different 
         \label{boxPlotsOfPerformance_243}
   }\quad
   
-       \caption{Results of distributed GP Approximation on a toy-data set of size $N= 1000$}\label{figGPPredictionDistributed}
+       \caption{Results of Distributed GPs approximation on a toy-data set of size $N= 1000$}\label{figGPPredictionDistributed}
 \end{figure}
 
 \section{Summary and discussion}
-The calculation of posterior in GPs becomes computationally intractable for large data sets. Calculating the precision matrix is an operation of computational complexity $\mathcal{O}(N^{3})$, putting a limit of $N \sim 10^4$ data points for model building. This chapter describes the state of the art for scaling up GPs for regression tasks. There exist two methods to scale up GPs, the first called sparse methods, they use a set of inducing inputs to reduce the computational cost of calculating the precision matrix. The second called distributed GP they divide the data set into smaller subsets called experts, distributing the model building into several batches. 
+The calculation of posterior in GPs becomes computationally intractable for large data sets. Calculating the precision matrix is an operation of computational complexity $\mathcal{O}(N^{3})$, putting a limit of $N \sim 10^4$ data points for model building. This chapter describes the state-of-the-art for scaling up GPs for regression tasks. There exist two methods to scale up GPs, the first called sparse methods, they use a set of inducing inputs to reduce the computational cost of calculating the precision matrix. The second called Distributed GPs they divide the data set into smaller subsets called experts, distributing the model building into several batches. 
 
 \marginnote{\textsl{Conclusions}}[1cm]
 Sparse methods use Nystr\"{o}m approximation rewriting the Gram matrix, thereby reducing the computational complexity to $\mathcal{O}(NM^{2})$ (M $\ll$ N), $M$ being the number of inducing points. Through experiments on a toy data-set, it can be shown that we can set $M \sim N/10$ when inducing points are randomly distributed, and $M \sim N/50$ when the locations of inducing points are optimized. This approximation pushes the limit of GP Regression to $N \sim 10^6$ data points. Distributed GPs distribute the GP Regression tasks into several batches, thereby reducing the computational complexity to $\mathcal{O}(NP^{3})$ (P $\ll$ N), $P$ being the number of points in an expert. Through experiments on a toy data-set we demonstrate that $P \sim N/100$ does not effects the regression task significantly. In fact we can further reduce $P$ if we enable repetition of points between experts. This enables to scale GPs to any number of data-points.
