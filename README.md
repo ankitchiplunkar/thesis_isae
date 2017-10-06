@@ -12,9 +12,19 @@ Dans cette thèse, nous proposons de construire de meilleurs modèles Processus 
 
 Mots clés : **Processus gaussien, Mécanique de vol, Conception d'aéronefs, Dynamique structurale, Interpolation de choc**
 
-Download the compiled PDF [here](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/thesis_isae_Chiplunkar_06102017.pdf). 
-Individual chapters
+## Download 
 
+The complete PDF [here](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/thesis_isae_Chiplunkar_06102017.pdf). 
+
+**Individual chapters**
+1. Abstracts
+2. Index and lists
+3. Part 1 - Introduction 
+4. Part 2 - Incorporating structure in Gaussian Process Regression
+5. Part 3 - Incorporating multiple outputs in Gaussian Process Regression
+6. Conclusions
+7. Appendix
+8. Bibliography
 
 
 ### Credits
