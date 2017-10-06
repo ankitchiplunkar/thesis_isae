@@ -7,7 +7,7 @@ Dans la partie \ref{partIncorporateMultipleOutputs}, nous nous intéressons à l
 
 Dans ce chapitre, nous verrons comment effectuer la régression GP en présence de sorties multiples. Une méthode simple d'apprentissage d'un modèle de régression pour les sorties multiples est de supposer le nombre de sorties comme une dimension supplémentaire (cette dimension supplémentaire est une variable catégorielle). Cette hypothèse est bénéfique pour deux raisons, nous avons effectivement augmenté le nombre de points de données (figure \ref{figoutputsAsAnExtraDimension}), puis des fonctions de covariances pour plusieurs dimensions (section \ref{secMultiDimensionalKernels}) peuvent être également appliquées au cas des sorties multiples (section \ref{subsecAnExtraDimension}).
 
-Si aucune information n'est disponible sur la relation entre les sorties, nous pouvons apprendre la relation entre les sorties en utilisant une covariance `simple MTGP’ (section \ref{simpleMultiTask}), un `Linear Model Of Coregionalization' (section \ref{subsecLMC}), ou un `convoluted GP’ \cite{alvarez2011kernels}. Si nous savons \textit{a priori} que les sorties proviennent de modèles de fidélité multiples, nous pouvons utiliser la fonction de covariance jointe proposée par \cite{kennedy2000predicting} (section \ref{secMultiFidelityMTGP}).
+Si aucune information n'est disponible sur la relation entre les sorties, nous pouvons apprendre la relation entre les sorties en utilisant une covariance `simple MTGP’ (section \ref{simpleMultiTask}), un `Linear Model Of Coregionalization' (section \ref{subsecLMC}), ou un `convoluted GP’ \cite{alvarez2011kernels}. Si nous savons \textit{a-priori} que les sorties proviennent de modèles de fidélité multiples, nous pouvons utiliser la fonction de covariance jointe proposée par \cite{kennedy2000predicting} (section \ref{secMultiFidelityMTGP}).
 
 Dans la section \ref{subsecMTGPExtrapolation}, nous avons montré comment les modèles GP multi-fidélité peuvent être utilisés pour effectuer une interpolation ou une extrapolation des données expérimentales du modèle. Nous incluons un terme d'erreur et un terme de translation dans un modèle multi-fidélité normal pour tenir compte des différences entre le modèle de simulation et les données expérimentales. Dans des travaux futurs, nous souhaitons quantifier la performance des différentes méthodes d'extrapolation et décider de la méthode à choisir dans un scénario particulier.
 \end{mdframed}
@@ -62,12 +62,6 @@ Here, \(\myMatrix{X^j}\) is the matrix containing all input points of the $j^{th
 \subsection{An extra dimension}\label{subsecAnExtraDimension}
 One simple way of building a joint model for multiple outputs is by treating them as a single-output GP but with an extra dimension, the extra dimension denoting the output number (equation \ref{eq:modifiedInput}) \cite{osborne2010bayesian}. 
 
-\begin{equation}\label{eq:modifiedInput}
-    \VEC{x_{i}^{j}} = [x_{i1}^{j}, x_{i2}^{j}, \ldots, x_{iD_{inputs}}^{j}, j]
-\end{equation}
-
-The figure \ref{figoutputsAsAnExtraDimension} demonstrates how the different outputs can be treated as a single output coming from different dimensions. We can thus write the new input point as
-
 \begin{figure}[!ht]
   \centering
         \includegraphics[width=0.45\textwidth]
@@ -76,15 +70,22 @@ The figure \ref{figoutputsAsAnExtraDimension} demonstrates how the different out
         \caption{The outputs can also be represented as an extra dimension.}
 \end{figure}
 
+The figure \ref{figoutputsAsAnExtraDimension} demonstrates how the different outputs can be treated as a single output coming from different dimensions. We can thus write the new input point as equation \ref{eq:modifiedInput}.
+
+\begin{equation}\label{eq:modifiedInput}
+    \VEC{x_{i}^{j}} = [x_{i1}^{j}, x_{i2}^{j}, \ldots, x_{iD_{inputs}}^{j}, j]
+\end{equation}
+
+
 \marginnote{\textsl{Categorical variable}}[1cm]
 Note, the new input point has an extra dimension which denotes its output number. The extra dimension ($j$) is a categorical variable and hence has no measure of distance. Henceforth we define the joint output vector \(\VEC{y_{joint}}\) such that all the output values are stacked one after the other, while \(\VEC{y_{joint}} \in \mathbb{R}^{N_{joint}}\). Similarly, we define the joint input matrix as \(\myMatrix{X_{joint}}\), having one extra dimension representing the output number, such that \(\myMatrix{X_{joint}} \in \mathbb{R}^{N_{joint} \times (D_{inputs}+1)}\).  
 
 \begin{equation}\label{eqMTGPDimension}
     \myMatrix{X_{joint}} = \begin{bmatrix}
-\myMatrix{X^1}, \VEC{\mathbbm{1}} \times 1\\ 
-\myMatrix{X^2}, \VEC{\mathbbm{1}} \times 2\\ 
+\myMatrix{X^1}, \VEC{\mathbbm{1}_{N_{1}}} \times 1\\ 
+\myMatrix{X^2}, \VEC{\mathbbm{1}_{N_{2}}} \times 2\\ 
 \vdots\\ 
-\myMatrix{X^{D_{outputs}}, \VEC{\mathbbm{1}} \times D_{outputs}}
+\myMatrix{X^{D_{outputs}}, \VEC{\mathbbm{1}_{N_{D_{outputs}}}} \times D_{outputs}}
 \end{bmatrix} ; \quad 
 \VEC{y_{joint}} = \begin{bmatrix}
 \VEC{y^1}\\ 
@@ -94,7 +95,7 @@ Note, the new input point has an extra dimension which denotes its output number
 \end{bmatrix}
 \end{equation}
 
-Here, $\VEC{\mathbbm{1}}$ denotes a vector of ones to be multiplied with the `number of output'. Since the multi-output GP can be represented as a single output GP with an extra dimension, we can use all the kernel making techniques discussed in section \ref{secMultiDimensionalKernels} to the current problem. For a case of 2 outputs we can write a zero mean GP prior for the full set of inputs and outputs $\{\myMatrix{X_{joint}}, \VEC{y_{joint}}\}$, as equation \ref{eq:mogpJointPrior}. 
+Here, $\VEC{\mathbbm{1}_{N_{j}}}$ denotes a vector of ones to be multiplied with the `number of output'. The size of $\VEC{\mathbbm{1}_{N_{j}}}$ is $1 \times N_{j}$, $N_{j}$ is the number of data-points for the $j^{th}$ output. Since the multi-output GP can be represented as a single output GP with an extra dimension, we can use all the kernel making techniques discussed in section \ref{secMultiDimensionalKernels} to the current problem. For a case of 2 outputs we can write a zero mean GP prior for the full set of inputs and outputs $\{\myMatrix{X_{joint}}, \VEC{y_{joint}}\}$, as equation \ref{eq:mogpJointPrior}. 
 
 \begin{equation}\label{eq:mogpJointPrior}
 \begin{aligned}
@@ -113,13 +114,13 @@ Here, $\VEC{\mathbbm{1}}$ denotes a vector of ones to be multiplied with the `nu
    \end{equation}
 
 \marginnote{\textsl{Equation \ref{eq:mogpJointPrior}}}[1cm]
-Here, $Cov(\VEC{y_{joint}}(x, j), \VEC{y_{joint}}(x, j))$ is called the  auto-covariance between observations of the $j^{th}$ output, while $Cov(\VEC{y_{joint}}(x, 2), \VEC{y_{joint}}(x, 1))$ is called cross-covariance between the $2^{nd}$ and the $1^{st}$ output. Once we have the functional forms of the covariance functions, we can equivalently calculate the Gram matrix ($K_{XX}$), by replacing the values of individual input points. The upcoming sections describe different forms of covariance functions between outputs and their corresponding family of functions.
+Here, $Cov(\VEC{y_{joint}}(x, j), \VEC{y_{joint}}(x, j))$ is called the  auto-covariance between observations of the $j^{th}$ output, while $Cov(\VEC{y_{joint}}(x, 2), \VEC{y_{joint}}(x, 1))$ is called cross-covariance between the $2^{nd}$ and the $1^{st}$ output. Once we have the functional forms of the covariance functions, we can equivalently calculate the Gram matrix ($\myMatrix{K_{XX}}$), by replacing the values of individual input points. The upcoming sections describe different forms of covariance functions between outputs and their corresponding family of functions.
 
 The sections \ref{simpleMultiTask} and \ref{subsecLMC} describe two simple covariance function forms when we are interested in discovering relationship between outputs, while section \ref{secMultiFidelityMTGP} describes how to impose prior information of multi-fidelity among outputs. 
 
 \subsection{Simple Multi-task kernel}\label{simpleMultiTask}
 
-One simple method to calculate the auto and cross-covariance functions is by simply multiplying the covariance functions for the inputs dimensions with the covariance functions for the output dimension, refer to equation \ref{eqBonillaMTGP} for more clarity \cite{bonilla2007multi}.   
+One simple method to calculate the auto and cross-covariance functions is by simply multiplying the covariance functions for the inputs dimensions with the covariance functions for the output dimension (equation \ref{eqBonillaMTGP}), refer to \cite{bonilla2007multi} for more clarity .   
 
 \begin{align}\label{eqBonillaMTGP}
     Cov(\VEC{y_{joint}}(x_{1}, a), \VEC{y_{joint}}(x_{2}, b)) = \FUNC{k_{output}}(a, b) \times \FUNC{k_{input}}(x_{1}, x_{2})
@@ -171,20 +172,20 @@ Figure \ref{subFigdrawsBonillaKernel} is a joint draw from such a kernel functio
 \subsection{Linear Model of Coregionalization}\label{subsecLMC}
 The next method considers the output variables as a linear combination of independent latent GPs. It is called the Linear Model of Coregionalization in kriging literature \cite{goovaerts1997geostatistics} or Semiparametric Latent Factor Model in MTGP literature \cite{seeger2005semiparametric}. Latent GPs are random variables which are not directly observed. 
 
-Suppose we have a set of $L$ latent GPs $U(x) = \{u^{1}(x), u^2(x), \ldots, u^{L}(x)\}$, where $u^{i}(x)$ is a GP with covariance $k_{u}^{i}(x_{1}, x_{2})$. Any linear combination of $u^{i}(x) \quad \forall i \in T$ is a viable GP (section \ref{subsecStructureKernelsAddingKernels}), therefore we can define the GP of output $y^{j}$ as equation \ref{eqLinearCombo}. 
+Suppose we have a set of $L$ latent GPs $U(x) = \{u^{1}(x), u^2(x), \ldots, u^{L}(x)\}$, where $u^{i}(x)$ is a GP with covariance $k_{u}^{i}(x_{1}, x_{2})$. Any linear combination of $u^{i}(x) \quad \forall i \in L$ is a viable GP (section \ref{subsecStructureKernelsAddingKernels}), therefore we can define the GP of output $y^{j}$ as equation \ref{eqLinearCombo}. 
 
 \begin{equation}\label{eqLinearCombo}
-y^{j}(x) = \sum_{i=1}^{T} \alpha^{ij}u^{i}(x)
+y^{j}(x) = \sum_{i=1}^{L} \alpha^{ij}u^{i}(x)
 \end{equation}
 
 The covariance function can thus be written as equation \ref{eqCovarianceLMC}.
 
 \begin{equation}\label{eqCovarianceLMC} 
  \begin{aligned}
-Cov(\VEC{y_{joint}}(x_{1}, a), \VEC{y_{joint}}(x_{2}, b)) & = Cov(\sum_{i=1}^{T} \alpha^{ia}u^{i}(x_{1}), \sum_{i=1}^{T} \alpha^{ib}u^{i}(x_{2})) \\ 
-& = \sum_{i=1}^{T} \alpha^{ia}\alpha^{ib} Cov(u^{i}(x_{1}), u^{i}(x_{2})) \\ 
-& = \sum_{i=1}^{T} \alpha^{ia}\alpha^{ib}k_{u}^{i}(x_{1}, x_{2}) \\ 
-& = \sum_{i=1}^{T} \MAT{K_{output}^{i}}(a, b) \cdot k_{u}^{i}(x_{1}, x_{2})
+Cov(\VEC{y_{joint}}(x_{1}, a), \VEC{y_{joint}}(x_{2}, b)) & = Cov(\sum_{i=1}^{L} \alpha^{ia}u^{i}(x_{1}), \sum_{i=1}^{L} \alpha^{ib}u^{i}(x_{2})) \\ 
+& = \sum_{i=1}^{L} \alpha^{ia}\alpha^{ib} Cov(u^{i}(x_{1}), u^{i}(x_{2})) \\ 
+& = \sum_{i=1}^{L} \alpha^{ia}\alpha^{ib}k_{u}^{i}(x_{1}, x_{2}) \\ 
+& = \sum_{i=1}^{L} \MAT{K_{output}^{i}}(a, b) \cdot k_{u}^{i}(x_{1}, x_{2})
  \end{aligned}
 \end{equation}
 
@@ -195,13 +196,13 @@ The covariance between the output dimension \MAT{K_{output}^{i}} is also called 
 \alpha^{i1}\\ 
 \alpha^{i2}\\ 
 \vdots\\ 
-\alpha^{iT}
+\alpha^{iL}
 \end{bmatrix} \cdot \begin{bmatrix}
-\alpha^{i1} & \alpha^{i2} & \ldots & \alpha^{iT}
+\alpha^{i1} & \alpha^{i2} & \ldots & \alpha^{iL}
 \end{bmatrix}
 \end{equation}
 
-Note, when $T = 1$ and $D_{outputs} > 1$ the Linear Model of Coregionalization is equivalent to the model proposed by \cite{bonilla2007multi}. While, when $T > 1$ and $D_{outputs} = 1$ the Linear Model of Coregionalization model resembles an additive covariance of $T$ individual covariances (section \ref{subsecStructureKernelsAddingKernels}).
+Note, when $L = 1$ and $D_{outputs} > 1$ the Linear Model of Coregionalization is equivalent to the model proposed by \cite{bonilla2007multi}. While, when $L > 1$ and $D_{outputs} = 1$ the Linear Model of Coregionalization model resembles an additive covariance of $T$ individual covariances (section \ref{subsecStructureKernelsAddingKernels}).
 
 \marginnote{\textsl{Figure \ref{subFigdrawsLCMKernel}}}[1cm]
 Figure \ref{subFigdrawsLCMKernel} shows 3 joint draws from a `Linear Model of Coregionalization' kernel function between outputs $y^{1}$ and $y^{2}$. We use two latent functions for this figure; the kernels between output dimensions are $\MAT{K_{output}}^{1} = \bigl( \begin{smallmatrix} 4 & 0.2\\ 0.2 & 1\end{smallmatrix}\bigr)$ and $\MAT{K_{output}}^{2} = \bigl( \begin{smallmatrix} 1 & 0.2\\ 0.2 & 1\end{smallmatrix}\bigr)$, while the covariance function between inputs are SE kernel with hyper-parameters $(\theta = [1, 0.2])$ for the first latent process and $(\theta = [1, 0.1])$ for the second latent process. The length-scale of the functions is determined by the smallest length-scale of the latent processes.
@@ -248,7 +249,7 @@ Here, $r^{i-1}(x)$ is a continuous function in $x \in \mathbb{R}$, $\perp$ signi
 
 \begin{equation}\label{eqJointCovarianceMultiFidelity}
          \begin{aligned}
-           K_{XX}   & = \begin{bmatrix} k^{1}(x^{1}, x^{1}) & r(x^{1})k^{1}(x^{1}, x^{2})   \\
+           \myMatrix{K_{XX}}   & = \begin{bmatrix} k^{1}(x^{1}, x^{1}) & r(x^{1})k^{1}(x^{1}, x^{2})   \\
            r(x^{2})k^{1}(x^{2}, x^{1}) & r(x^{2})^2k^{1}(x^{2}, x^{2}) + k^{\delta}(x^{2}, x^{2}) \end{bmatrix} \\ 
            & = \begin{bmatrix} k^{1}(x^{1}, x^{1}) & r(x^{2})k^{1}(x^{1}, x^{2})   \\ r(x^{1})k^{1}(x^{2}, x^{1}) & r(x^{2})^2k^{1}(x^{2}, x^{2}) \end{bmatrix} 
            +  
@@ -258,10 +259,10 @@ Here, $r^{i-1}(x)$ is a continuous function in $x \in \mathbb{R}$, $\perp$ signi
 
 Here, $x^{1}$ are the input points for simulation $y^{1}$, and $x^{2}$ are the simulation points for output $y^{2}$, $k^{1}(x^{1}, x^{2})$ is the covariance function for output $y^{1}$. \cite{kennedy2000predicting} have used a constant function for the value of $r(x)$ and an SE kernel for the covariances $k^{1}(x, x')$ and $k^{\delta}(x, x')$. 
 
-The model of multi-fidelity GP in equation \ref{eqJointCovarianceMultiFidelity} is equivalent to a `Linear Model of Coregionalization' model with two latent processes. The fist process has $\MAT{K_{output}}^{1} = \bigl( \begin{smallmatrix} 1 & r\\ r & r^2\end{smallmatrix}\bigr)$ as covariance between outputs and $\FUNC{k_{inputs}^1 = k^1}$ as the covariance between inputs, while the second process has $\MAT{K_{output}}^{2} = \bigl( \begin{smallmatrix} 0 & 0\\ 0 & 1\end{smallmatrix}\bigr)$ as the covariance between outputs and $\FUNC{k_{inputs}^2 = k^\delta}$ as the covariance between inputs. We have thus linearly seperated the effects of both the models, such that the difference between the two is captured by the $k^{\delta}(x, x')$ covariance function.
+The model of multi-fidelity GPs in equation \ref{eqJointCovarianceMultiFidelity} is equivalent to a `Linear Model of Coregionalization' model with two latent processes. The fist process has $\MAT{K_{output}}^{1} = \bigl( \begin{smallmatrix} 1 & r\\ r & r^2\end{smallmatrix}\bigr)$ as covariance between outputs and $\FUNC{k_{inputs}^1 = k^1}$ as the covariance between inputs, while the second process has $\MAT{K_{output}}^{2} = \bigl( \begin{smallmatrix} 0 & 0\\ 0 & 1\end{smallmatrix}\bigr)$ as the covariance between outputs and $\FUNC{k_{inputs}^2 = k^\delta}$ as the covariance between inputs. We have thus linearly seperated the effects of both the models, such that the difference between the two is captured by the $k^{\delta}(x, x')$ covariance function.
 
 \marginnote{\textsl{Recursive model}}[1cm]
-Multi-fidelity GP are expensive due to the cost of calculating the Precision matrix ($(K_{XX} + \Sigma)^{-1}$). \cite{le2013multi} propose a recursive model for performing multi-fidelity, this model performs the learning for individual computer codes thereby breaking the Gram matrix into smaller sizes and reducing the computational complexity. They also extend the Cokriging model to several number of multiple outputs.
+Multi-fidelity GPs are expensive due to the cost of calculating the precision matrix. \cite{le2013multi} propose a recursive model for performing multi-fidelity, this model performs the learning for individual computer codes thereby breaking the Gram matrix into smaller sizes and reducing the computational complexity. They also extend the Cokriging model to several number of multiple outputs.
 
 \subsection{Posterior distribution}\label{subsecPosteriorDistribution}
 For simplicity let us take the case of two outputs \(y^{1}\) and \(y^{2}\). Suppose we measure the two outputs with some error ($\epsilon_{n1}$ and $\epsilon_{n2}$), while the true physical process is defined by latent variables (\(f^{1}\) and \(f^{2}\)). Then the relation between the output function, measurement error, and true physical process can be written as follows. 
@@ -271,29 +272,29 @@ y^{1} & = f^{1} + \epsilon_{n1} \\
 y^{2} & = f^{2} + \epsilon_{n2}
 \end{align} 
 
-Here, \(\epsilon_{n1}\) and \(\epsilon_{n2}\) are measurement errors sampled from a white noise gaussian \(\mathcal{N}(0, \sigma_{n1}^2)\) and \(\mathcal{N}(0, \sigma_{n2}^2)\) respectively, then the joint error matrix can be denoted by \(\Sigma\);
+Here, \(\epsilon_{n1}\) and \(\epsilon_{n2}\) are measurement errors sampled from a white noise gaussian \(\mathcal{N}(0, \sigma_{n1}^2)\) and \(\mathcal{N}(0, \sigma_{n2}^2)\) respectively, then the joint error matrix can be denoted by \(\myMatrix{\Sigma}\);
 
 \begin{equation}\label{eq:sigmaToError}
          \Sigma = 
           \begin{bmatrix}
-          \sigma _{n1}^{2} \times \mathbb{I}_{N_{1}} & 0 \\ 
-          0 & \sigma _{n2}^{2} \times \mathbb{I}_{N_{2}}
+          \sigma _{n1}^{2} \times \myMatrix{\mathbb{I}_{N_{1}}} & 0 \\ 
+          0 & \sigma _{n2}^{2} \times \myMatrix{\mathbb{I}_{N_{2}}}
           \end{bmatrix} 
 \end{equation}
 
 \marginnote{\textsl{Noise model}}[1cm]
-Here, \(\sigma_{nj}^2\) is the variance of the measurement error sampled from a white noise Gaussian and \(\mathbb{I}_{N_{j}}\) is an identity matrix of size \(N_{j}\) (\(N_{j}\) are the number of data points for \(j^{th}\) output). If we assume a zero mean GP for the above type of covariance functions (sections \ref{simpleMultiTask}, \ref{subsecLMC} and \ref{secMultiFidelityMTGP}). The prior for a noisy multi-task learning case can be written as equation \ref{eqNoisyMultiTaskPrior}.
+Here, \(\sigma_{nj}^2\) is the variance of the measurement error sampled from a white noise Gaussian and \(\myMatrix{\mathbb{I}_{N_{j}}}\) is an identity matrix of size \(N_{j}\) (\(N_{j}\) are the number of data-points for \(j^{th}\) output). If we assume a zero mean GP for the above type of covariance functions (sections \ref{simpleMultiTask}, \ref{subsecLMC} and \ref{secMultiFidelityMTGP}). The prior for a noisy multi-task learning case can be written as equation \ref{eqNoisyMultiTaskPrior}.
 
 \begin{equation}\label{eqNoisyMultiTaskPrior}
-         \Pr[\VEC{y_{joint}}(\myMatrix{X_{joint}}))] = GP(0, K_{XX} + \Sigma)
+         \Pr[\VEC{y_{joint}}(\myMatrix{X_{joint}}))] = GP(0, \myMatrix{K_{XX}} + \myMatrix{\Sigma})
 \end{equation}
       
-If we want to make a prediction for the $i^{th}$ output at the test point $x_{*}$ ($X_{*} = [x_{*}, i]$). Then the full joint prior can be expressed as equation \ref{eqMOGPPrior}.
+If we want to make a prediction for the $i^{th}$ output at the test point $\VEC{x_{*}}$ ($\VEC{X_{*}} = [\VEC{x_{*}}, i]$). Then the full joint prior can be expressed as equation \ref{eqMOGPPrior}.
  
  \begin{equation}\label{eqMOGPPrior}
  \begin{bmatrix}
-   \VEC{y_{joint}}(X))\\ 
-   f(X_{*}))
+   \VEC{y_{joint}}(\myMatrix{X}))\\ 
+   \VEC{f(X_{*}))}
    \end{bmatrix} = GP\begin{bmatrix}
    \begin{pmatrix}
    0\\ 
@@ -301,8 +302,8 @@ If we want to make a prediction for the $i^{th}$ output at the test point $x_{*}
    \end{pmatrix}, 
    & 
    \begin{bmatrix}
-   K_{XX} + \Sigma & K_{XX_{*}}\\ 
-   K_{X_{*}X} & K_{X_{*}X_{*}}
+   \myMatrix{K_{XX}} + \myMatrix{\Sigma} & \myMatrix{K_{XX_{*}}}\\ 
+   \myMatrix{K_{X_{*}X}} & \myMatrix{K_{X_{*}X_{*}}}
    \end{bmatrix} 
 
    \end{bmatrix} 
@@ -312,15 +313,15 @@ If we want to make a prediction for the $i^{th}$ output at the test point $x_{*}
 The posterior mean and variance, conditioned on the data-set based on the prior (equation \ref{eq:mogpJointPrior}) can then be derived as the set of equations below .
 
 \begin{align}
-  E[f(X_{*}))] & = K_{X_{*}X}\left ( K_{XX} + \Sigma \right )^{-1}\VEC{y_{joint}} \label{eq:predictiveMOMean} \\ 
-  Cov(f(X_{*})), f(X_{*}))) & = K_{X_{*}X_{*}} - K_{X_{*}X}\left ( K_{XX} + \Sigma \right )^{-1}K_{XX_{*}} \label{eq:predictiveMOCovariance}
+  E[\VEC{f(X_{*}))}] & = \myMatrix{K_{X_{*}X}}\left ( \myMatrix{K_{XX}} + \myMatrix{\Sigma} \right )^{-1}\VEC{y_{joint}} \label{eq:predictiveMOMean} \\ 
+  Cov(\VEC{f(X_{*}))}), \VEC{f(X_{*}))}) & = \myMatrix{K_{X_{*}X_{*}}} - \myMatrix{K_{X_{*}X}}\left ( \myMatrix{K_{XX}} + \myMatrix{\Sigma} \right )^{-1} \myMatrix{K_{XX_{*}}} \label{eq:predictiveMOCovariance}
 \end{align}
   
 \marginnote{\textsl{Posterior}}[1cm]
-Here, the elements \(K_{XX}\), \(K_{X_{*}X}\) and \(K_{X_{*}X_{*}}\) are block covariances derived from equations \ref{eq:mogpJointPrior}. The joint-covariance matrix depends on several hyper-parameters \(\theta\). The MTGP prior has a greater number of hyper-parameters when compared to single output GP. This is due to the need to define hyper-parameters for the coregionalization matrix. We maximize the log-marginal likelihood to find a set of good hyper-parameters. This leads to an optimization problem where the objective function is given by equation \ref{eq:exactMONLML} 
+Here, the elements \(\myMatrix{K_{XX}}\), \(\myMatrix{K_{X_{*}X}}\) and \(\myMatrix{K_{X_{*}X_{*}}}\) are block covariances derived from equations \ref{eq:mogpJointPrior}. The joint-covariance matrix depends on several hyper-parameters \(\VEC{\theta}\). The MTGP prior has a greater number of hyper-parameters when compared to single output GP. This is due to the need to define hyper-parameters for the coregionalization matrix. We maximize the log-marginal likelihood to find a set of good hyper-parameters. This leads to an optimization problem where the objective function is given by equation \ref{eq:exactMONLML} 
   
   \begin{equation}\label{eq:exactMONLML}
-\log(\Pr[\VEC{y_{joint}} \mid X, \theta]) = \log[GP(\VEC{y_{joint}}| 0, K_{XX} + \Sigma )]
+\log(\Pr[\VEC{y_{joint}} \mid \myMatrix{X}, \VEC{\theta}]) = \log[GP(\VEC{y_{joint}}| 0, \myMatrix{K_{XX}} + \myMatrix{\Sigma} )]
   \end{equation}
   
 \marginnote{\textsl{Scalability?}}[1cm]
@@ -346,7 +347,7 @@ The Matlab code \ref{codeDatasetD4} is how we have created the data-set $\mathca
                     style=Matlab-editor, 
                     basicstyle=\color{black}\ttfamily\small,
                     backgroundcolor = \color{MatlabCellColour}]
-nData = 20; % number of data points
+nData = 20; % number of data-points
 
 f1 = @(x)sin(5*pi*x)./(5*pi*x); % Function
 f2 = @(x) f1(x)/2 + 0.1*cos(f1(x));
@@ -578,6 +579,6 @@ Often times the different models cannot be linearly separable by the Markov prop
 \section{Summary and discussion}
 In the current chapter, we have seen how to perform GP regression in the presence of multiple outputs. One simple method of learning a regression model for multiple outputs is by assuming the output number as an extra dimension (this extra dimension is a categorical variable). This observation is beneficial due to two reasons, first, we have effectively increased the number of data-points (figure \ref{figoutputsAsAnExtraDimension}). Second, all the tricks of making covariance functions for multiple dimensions can be applied to the case of multiple outputs as well (section \ref{subsecAnExtraDimension}). 
 
-If no information is available about the relation between outputs then we can learn the relationship between outputs by either using a simple MT covariance (section \ref{simpleMultiTask}), a `Linear Model of Coregionalization' (section \ref{subsecLMC}), or a convoluted GP \cite{alvarez2011kernels}. If we know \textit{a priori} that the outputs are coming from models of multiple fidelity then we can use the joint covariance function proposed by  \cite{kennedy2000predicting} (section \ref{secMultiFidelityMTGP}). 
+If no information is available about the relation between outputs then we can learn the relationship between outputs by either using a simple MT covariance (section \ref{simpleMultiTask}), a `Linear Model of Coregionalization' (section \ref{subsecLMC}), or a convoluted GP \cite{alvarez2011kernels}. If we know \textit{a-priori} that the outputs are coming from models of multiple fidelity then we can use the joint covariance function proposed by  \cite{kennedy2000predicting} (section \ref{secMultiFidelityMTGP}). 
 
 In section \ref{subsecMTGPExtrapolation} we have shown how multi-fidelity GP models can be used to perform interpolation or extrapolation of experimental data. We include an error term and a translation term into a normal multi-fidelity model to account for differences in the simulation model and experimental data. In the future, we would wish to quantify the performance of different methods of extrapolation and decide which method to choose in a particular scenario.
