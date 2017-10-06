@@ -1,4 +1,4 @@
-*Incorporating Prior Information from Engineering Design into Gaussian Process Regression: with applications to Aeronautical Engineering
+# Incorporating Prior Information from Engineering Design into Gaussian Process Regression: with applications to Aeronautical Engineering
 
 This is the Latex code for generating the PDF version of my thesis manuscript
 
