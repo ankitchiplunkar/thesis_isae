@@ -26,7 +26,6 @@ The complete PDF [here](https://github.com/ankitchiplunkar/thesis_isae/blob/mast
 7. Appendix
 8. Bibliography
 
-
 ### Credits
 This template has been created by Damien Roque (ISAE Supaero)
 <damien.roque_AT_isae-supaero.fr>

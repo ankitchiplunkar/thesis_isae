@@ -204,8 +204,8 @@ The covariance between the output dimension \MAT{K_{output}^{i}} is also called 
 
 Note, when $L = 1$ and $D_{outputs} > 1$ the Linear Model of Coregionalization is equivalent to the model proposed by \cite{bonilla2007multi}. While, when $L > 1$ and $D_{outputs} = 1$ the Linear Model of Coregionalization model resembles an additive covariance of $T$ individual covariances (section \ref{subsecStructureKernelsAddingKernels}).
 
-\marginnote{\textsl{Figure \ref{subFigdrawsLCMKernel}}}[1cm]
 Figure \ref{subFigdrawsLCMKernel} shows 3 joint draws from a `Linear Model of Coregionalization' kernel function between outputs $y^{1}$ and $y^{2}$. We use two latent functions for this figure; the kernels between output dimensions are $\MAT{K_{output}}^{1} = \bigl( \begin{smallmatrix} 4 & 0.2\\ 0.2 & 1\end{smallmatrix}\bigr)$ and $\MAT{K_{output}}^{2} = \bigl( \begin{smallmatrix} 1 & 0.2\\ 0.2 & 1\end{smallmatrix}\bigr)$, while the covariance function between inputs are SE kernel with hyper-parameters $(\theta = [1, 0.2])$ for the first latent process and $(\theta = [1, 0.1])$ for the second latent process. The length-scale of the functions is determined by the smallest length-scale of the latent processes.
+\marginnote{\textsl{Figure \ref{subFigdrawsLCMKernel}}}[-1cm]
 
 \begin{figure}[!ht]
   \centering
