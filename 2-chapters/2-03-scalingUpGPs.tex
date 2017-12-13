@@ -229,7 +229,7 @@ $k_{x_{*}x_{*}}$ is the auto-covariance of the prior at prediction point $\VEC{x
 Due to the independence assumption, the marginal likelihood can be written as a sum of individual likelihoods and then can be optimized to find the best-fit hyper-parameters. By approximating the $\myMatrix{K(X, X)}$ in terms of $\mathcal{D}^{(i)}$ and $N_{experts}$ we have again changed the GP prior. This means that the number of experts $N_{experts}$ and clustering of points also impact the prediction capabilities of GP. The below equation \ref{eqDGPNLML} describes the formulation for marginal likelihood. 
 
 \begin{align}\label{eqDGPNLML}
-    \log \Pr[\VEC{y} \mid \myMatrix{X}, \mathcal{D}, \VEC{\theta}] \approx \sum_{k=1}^{N_{experts}} \log \Pr[\VEC{y^{(i)}}\mid \myMatrix{X^{(i)}}, \VEC{\theta}]
+    \log \Pr[\VEC{y} \mid \myMatrix{X}, \mathcal{D}, \VEC{\theta}] \approx \sum_{i=1}^{N_{experts}} \log \Pr[\VEC{y^{(i)}}\mid \myMatrix{X^{(i)}}, \VEC{\theta}]
  \end{align}
 
 The sample code \ref{codelmdDGP} defines the function `logMarginalLikelihoodDGP' which calculates the new log marginal likelihood (equation \ref{eqDGPNLML}) using the experts as defined in code \ref{codeClusteringIntoExperts}. The optimal hyper-parameters can be obtained after maximizing this function with respect to hyper-parameters. 

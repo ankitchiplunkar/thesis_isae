@@ -416,7 +416,7 @@ The bound ($Fv$) can be maximized with respect to all parameters of the covarian
 An alternative to sparse approximations is to learn local experts on a subset of data. We have described Distributed GPs in detail in section \ref{secDgp}. We again distribute our data-set $\myMatrix{X_{joint}}$ into smaller experts and use the independence assumption to approximate the Gram matrix.  
 
 
-Figure \ref{figDGPMTGP} shows the difference between an exact Gram matrix and a Gram matrix approximated using Distributed GPs. Figure \ref{subfig:distributedJointmatrixUniform} shows the Gram matrix after performing distributed approximation for the Gram matrix described in the left figure. We see how choosing two same uniform experts for both the outputs ($y^1$ and $y^2$) impact the Gram matrix. As analyzed in the chapter \ref{chapScalingGPR}, we can improve the approximate Gram matrix if we increase the number of pointsin each expert. 
+Figure \ref{figDGPMTGP} shows the difference between an exact Gram matrix and a Gram matrix approximated using Distributed GPs. Figure \ref{subfig:distributedJointmatrixUniform} shows the Gram matrix after performing distributed approximation for the Gram matrix described in the left figure. We see how choosing two same uniform experts for both the outputs ($y^1$ and $y^2$) impact the Gram matrix. As analyzed in the chapter \ref{chapScalingGPR}, we can improve the approximate Gram matrix if we increase the number of points in each expert. 
 
 \begin{figure}[!ht]
   \centering

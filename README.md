@@ -36,4 +36,3 @@ This template has been created by Damien Roque (ISAE Supaero)
 
 ### Built-with
 [Sharelatex](https://www.sharelatex.com/project)
-

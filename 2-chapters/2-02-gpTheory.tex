@@ -302,7 +302,7 @@ y(\VEC{x}) = f(\VEC{x}) + \epsilon
 
 Such that $\epsilon$ is an independent random noise sampled from a white noise Gaussian $\mathcal{N}(0, \sigma_{n}^{2})$. We can thus write the prior GP of the noisy case as:
 
-\begin{equation}\label{equationMeanZeroGPNoisydefinition}
+\begin{equation}\label{equationMecanZeroGPNoisydefinition}
 \Pr[y(\VEC{x})] = GP(0 , k(\VEC{x_1}, \VEC{x_2}) + \sigma^{2}_{n}\delta_{x_{1}x_{2}})
 \end{equation}
 
@@ -354,7 +354,7 @@ Figure \ref{figGPNoisyPosteriors} shows the posterior GP after adding observed d
 
 \begin{figure}[!ht]
   \centering
-    \subfigure[{Posterior distribution for the case of noisy observations. Prior is a GP with mean zero, covariance as SE Kernel with $(\VEC{\theta} = [1, 0.2])$ and noise as $\sigma_{n} = [0.02])$, , data-set is $\{x = -0.5; f = 0\}$.}]
+    \subfigure[{Posterior distribution for the case of noisy observations. Prior is a GP with mean zero, covariance as SE Kernel with $(\VEC{\theta} = [1, 0.2])$ and noise as $\sigma_{n} = [0.02])$, data-set is $\{x = -0.5; f = 0\}$.}]
   {
         \includegraphics[width=0.45\textwidth]
         {images/part1/posteriorSENoisy_1}
@@ -497,7 +497,7 @@ Directly maximizing the marginal likelihood with respect to the hyper-parameters
   \end{equation}
 
 \marginnote{\textsl{Trade-off}}[1cm]
-The log marginal likelihood is composed of three terms a data-fit term $( \textcolor{blue}{-\frac{1}{2}\VEC{y}^{T}[\myMatrix{K_{XX}} + \sigma^{2}_{n}\myMatrix{I}]^{-1}\VEC{y}})$, a model complexity term $( \textcolor{red}{\log\left |  \myMatrix{K_{XX}} + \sigma^{2}_{n}\myMatrix{I} \right |})$, and a normalization term ($\textcolor{green}{\frac{N}{2}\log(2\pi)}$). It performs a trade-off between the data-fit term and the complexity term. The optimization of log marginal likelihood provides the best compromise in terms of explaining the existing data-set \{($x_{i}, y_{i}$)\} and the initial assumptions encoded in the prior. The Matlab code \ref{codeOptimizingLML} defines the function `logMarginalLikelihood' (equation \ref{eqExactNLML}), which is maximized later in the same code.
+The log marginal likelihood is composed of three terms: a data-fit term $( \textcolor{blue}{-\frac{1}{2}\VEC{y}^{T}[\myMatrix{K_{XX}} + \sigma^{2}_{n}\myMatrix{I}]^{-1}\VEC{y}})$, a model complexity term $( \textcolor{red}{\log\left |  \myMatrix{K_{XX}} + \sigma^{2}_{n}\myMatrix{I} \right |})$, and a normalization term ($\textcolor{green}{\frac{N}{2}\log(2\pi)}$). It performs a trade-off between the data-fit term and the complexity term. The optimization of log marginal likelihood provides the best compromise in terms of explaining the existing data-set \{($x_{i}, y_{i}$)\} and the initial assumptions encoded in the prior. The Matlab code \ref{codeOptimizingLML} defines the function `logMarginalLikelihood' (equation \ref{eqExactNLML}), which is maximized later in the same code.
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
 \lstinputlisting[caption={Optimizing the Log Marginal Likelihood}, 
@@ -530,7 +530,7 @@ Figure \ref{subFigmaximizingMarginalLikelihood} shows the contours of the margin
 \end{figure}
 
 \marginnote{\textsl{Multi modality}}[1cm]
-The marginal likelihood could have multiple maxima in the space of hyper-parameters. Since we do not know \textit{a-priori} the multi-modality of log marginal likelihood, proper care should be taken while optimizing the hyper-parameters. \cite{forrester2008engineering} propose the use of a global optimizer (genetic algorithm) to find the global optimum, while \cite{le2013multi, bouhlel2016optimisation} propose the use of cross validation to find the global optimum.
+The marginal likelihood could have multiple maxima in the space of hyper-parameters. Since we do not know \textit{a-priori} the multi-modality of log marginal likelihood, proper care should be taken while optimizing the hyper-parameters. \cite{forrester2008engineering} propose the use of a global optimizer (genetic algorithm) to find the global optimum, while \cite{le2013multi} propose the use of cross validation to find the global optimum.
 
 \section{Summary and discussion}\label{secCH2Discussion}
 In this chapter we provide a brief introduction on how to perform Regression with GPs. GPs are the ideal candidate for regression due to their marginalization property which makes them computationally tractable. Even if GPs define an infinite dimensional random vector, inference on a few points does not require the presence of infinitely other points. This makes drawing functions, calculating posterior distribution, and automating selection of hyper-parameters computationally feasible.  
@@ -539,7 +539,7 @@ In this chapter we provide a brief introduction on how to perform Regression wit
 Section \ref{secPrior} details the key components of the GPs. A GP can be completely parametrized by its mean and covariance function. While the trend of a GP is defined by its mean function, the structure of its constituent functions is defined by the covariance function. The mean of a GP can be assumed to be zero, since an extra term in the covariance function can represent the mean function. Hence the problem of learning in a GP is exactly the problem of finding suitable properties of the covariance function (subsection \ref{subSecCH2Covariance}). Once a function form of covariance is chosen, we can calculate the Gram matrix at desired points and use it to draw random functions from our prior (subsection \ref{subSecSamplingFunctionsGPPrior}). 
 
 \marginnote{\textsl{Section \ref{secPosterior}}}[1cm]
-Section \ref{secPosterior} describes how to calculate the posterior distribution. The posterior is the conditional distribution $(\Pr[f(\VEC{x_{*}}) \mid \VEC{y}, \myMatrix{X}, \VEC{\theta}])$ for an assumed Prior distribution $(\Pr[f] = GP(0, k(\VEC{x_1}, \VEC{x_2}, \VEC{\theta}))$ and a set of observed data-points $(\mathcal{D} = \{\myMatrix{X}, \VEC{y}\})$. Due to the Gaussian assumption, the conditional probabilities are all computationally tractable and can be calculated using a few matrix operations, side-stepping the computational burden of performing iterative sampling. Calculating the posterior is easy both in the absence (subsection \ref{subSecPosteriorNoiseFree})and presence (subsection \ref{subSecPosteriorNoisy}) of noise in observations. 
+Section \ref{secPosterior} describes how to calculate the posterior distribution. The posterior is the conditional distribution $(\Pr[f(\VEC{x_{*}}) \mid \VEC{y}, \myMatrix{X}, \VEC{\theta}])$ for an assumed Prior distribution $(\Pr[f] = GP(0, k(\VEC{x_1}, \VEC{x_2}, \VEC{\theta}))$ and a set of observed data-points $(\mathcal{D} = \{\myMatrix{X}, \VEC{y}\})$. Due to the Gaussian assumption, the conditional probabilities are all computationally tractable and can be calculated using a few matrix operations, side-stepping the computational burden of performing iterative sampling. Calculating the posterior is easy both in the absence (subsection \ref{subSecPosteriorNoiseFree}) and presence (subsection \ref{subSecPosteriorNoisy}) of noise in observations. 
 
 \marginnote{\textsl{Section \ref{secHyperParameter}}}[1cm]
 Given a functional form of the covariance, section \ref{secHyperParameter} shows the importance of choosing the correct hyper-parameters. In a pure Bayesian framework the posterior distribution of the hyper-parameters should be calculated ($\Pr[\VEC{\theta} \mid \myMatrix{X}, \VEC{y}]$), but this is formally non-computable, needing several iterations for calculation of integrals. A common practice in the community is maximizing the marginal likelihood to automatically choose the hyper-parameters. Marginal likelihood is the probability of a prior distribution $\Pr[f] = GP(0, k(\VEC{x_1}, \VEC{x_2}, \theta)$ generating the observations $\mathcal{D}$. Hence maximizing the marginal likelihood gives the optimal set of hyper-parameters for a functional form of covariance function (figure \ref{figGPRMarginalOptimized}). 
