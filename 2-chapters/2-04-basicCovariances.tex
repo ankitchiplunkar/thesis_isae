@@ -90,7 +90,7 @@ The above equation is the covariance function for a Linear kernel, where the $w_
     \Pr[y(\VEC{x})] = GP(0, w_{0} + w_{1} \VEC{x_{1}}^T \VEC{x_{2}} + \sigma_{n}^2\delta_{x_{1} x_{2}})
 \end{equation}
 
-Hence, the intercept ($w_{0}$), the slope ($w_{1}$) and the noise ($\sigma_{n}$) are the hyper-parameters of the above prior. The above equation is equivalent to performing Bayesian linear regression as discussed in section \ref{secBayesianModelling}. The hyper-parameters can be chosen using marginal likelihood and posterior prediction can be performed based on the discussion of section \ref{secHyperParameter}. 
+Hence, the intercept ($w_{0}$), the slope ($w_{1}$) and the noise ($\sigma_{n}$) are the hyper-parameters of the above prior. The above equation is equivalent to performing Bayesian linear regression as discussed in section \ref{secBayesianModelling}. $\delta_{x_{1}x_{2}}$ is a Kronecker delta function which is $1$ if $x_{1} = x_{2}$ and zero otherwise, this means that observations at two inputs are independent of each other. The hyper-parameters can be chosen using marginal likelihood and posterior prediction can be performed based on the discussion of section \ref{secHyperParameter}. 
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
 \paragraph{Revisiting Bayesian linear regression}\label{paraLinearGPExperiment}
@@ -150,7 +150,7 @@ K_{NN}(x_{1}, x_{2}, \theta) = \theta_{1}^{2}\frac{2}{\pi} sin^{-1}\left ( \frac
 \end{equation}
 
 \marginnote{\textsl{Hyper-parameters}}[1cm]
-The hyper-parameters $(\theta = [\theta_{1}, \theta_{2}])$ are; amplitude $\theta_{1}$ which defines average distance from mean and the length scale $\theta_{2}$ which define the smoothness of functions. GPs with this covariance function define a space of superimposed sigmoidal functions. Figure \ref{figNNPrior} shows random draws from a Neural Network kernel but with varying value of hyper-parameters. Figure \ref{subfig:drawsNN100} has a higher value of smoothness hyper-parameter ($\theta_{2}$) than figure \ref{subfig:drawsNN10}, which makes the constituent functions have stronger slope. Hence, we can use this kernel to approximate the presence of discontinuity in our family of functions. 
+The hyper-parameters $(\theta = [\theta_{1}, \theta_{2}])$ are; amplitude $\theta_{1}$ which defines average distance from mean and the length scale $\theta_{2}$ which defines the smoothness of functions. GPs with this covariance function define a space of superimposed sigmoidal functions. Figure \ref{figNNPrior} shows random draws from a Neural Network kernel but with varying value of hyper-parameters. Figure \ref{subfig:drawsNN100} has a higher value of smoothness hyper-parameter ($\theta_{2}$) than figure \ref{subfig:drawsNN10}, which makes the constituent functions have stronger slope. Hence, we can use this kernel to approximate the presence of discontinuity in our family of functions. 
 
 \begin{figure*}[!ht]
   \centering
@@ -173,7 +173,7 @@ k_{noise}(x_{1}, x_{2}) & = \sigma^2_{noise}\delta_{x_{1}x_{2}} \label{eqNoiseKe
 On the other hand, equation \ref{eqNoiseKernel} defines a white noise kernel, the $\sigma_{noise}$ defines the amplitude of noise. $\delta_{x_{1}x_{2}}$ is a Kronecker delta function which is $1$ if $x_{1} = x_{2}$ and zero otherwise, this means that observations at two inputs are independent of each other. 
 
 \section{Stationary kernels} \label{secStationaryKernels}
-Covariance functions which are purely a function of distance $d = (x_{1} - x_{2})$ are called as stationary functions, Whereas covariance functions which are functions of absolute value of distance $d = |x_{1} - x_{2}|$ are called as isotropic covariance functions. Stationary covariance functions remain unchanged if the points $x_{1}, x_{2}$ are translated. Hence a family of functions defined by stationary kernels will have similar local features throughout the input domain. 
+Covariance functions which are purely a function of distance $d = (x_{1} - x_{2})$ are called as stationary functions, whereas covariance functions which are functions of absolute value of distance $d = |x_{1} - x_{2}|$ are called as isotropic covariance functions. Stationary covariance functions remain unchanged if the points $x_{1}, x_{2}$ are translated. Hence a family of functions defined by stationary kernels will have similar local features throughout the input domain. 
 
 \marginnote{\textsl{\textit{Bochner's theorem}}}[1cm]
 The \textit{Bochner's theorem} defines a relationship between a stationary covariance function and its Fourier transform. It states that the Fourier transform of a stationary covariance function exists and is a positive finite measure. If $k(d)$ is a stationary covariance function (equation \ref{eqCh4StationaryCovariance}) then $S(s)$ is its Fourier transform (equation \ref{eqCh4StationaryPowerSpectrum}), also called the power spectrum or spectral density \cite{bochner1959lectures, Stein1999Springer, cox1977theory}. A positive finite measure in this context means that $S(s)$ is non-negative for all frequencies $s$, and integral in equation \ref{eqCh4StationaryCovariance} is finite.
@@ -231,14 +231,14 @@ Figure \ref{subFigkernelFunctionsSE} plots the covariance values of SE kernel ((
 Note, as $\theta_{lengthScale}$ tends to infinity, an SE kernel tends to a constant covariance function (Fourier transform of a constant function is a delta function). Whereas, if $\theta_{lengthScale}$ tends to zero, an SE kernel tends to a white noise kernel (Fourier transform of a delta function is a constant function).
 
 \subsection{Mat\'ern Kernel}\label{subsecCh4MaternKernel}
-The Mat\'ern kernel is the second most popular kernel after the squared exponential. This kernel is derived using a t-distribution as the power spectrum ($S(s)$) and calculating its inverse Fourier transform. A t-distribution has more weight on higher-frequencies (when compared to a Gaussian distribution) and hence gives rise to more non-smooth functions. 
+The Mat\'ern kernel is the second most popular kernel after the squared exponential. This kernel is derived using a Student-t distribution as the power spectrum ($S(s)$) and calculating its inverse Fourier transform. A Student-t distribution has more weight on higher-frequencies (when compared to a Gaussian distribution) and hence gives rise to more non-smooth functions. 
 
 \begin{equation}
 k_{Matern}(\nu, d, \theta) = \theta_{amplitude}^2\frac{2^{1- \nu }}{\Gamma (\nu)}\left ( \frac{\sqrt{2\nu(d))}}{\theta_{lengthScale}} \right )^{\nu}K_{\nu}\left ( \frac{\sqrt{2\nu(d))}}{\theta_{lengthScale}} \right)
 \end{equation}
 
 \marginnote{\textsl{Differentiability}}[1cm]
-$k_{Matern}$ is the covariance function for a Mat\'ern kernel, $\nu$ is a positive parameter which signifies the degrees of freedom in the t-distribution of the power spectrum. $\Gamma (\nu)$ is a Gamma function, while $K_{\nu}$ is a modified Bessel function. The Mat\'ern kernel provides the flexibility to define a hypothesis space of functions with varying degree of differentiability, due to this property they are often used to build machine learning models \cite{minasny2005matern, cornford2002modelling}. The degree of differentiability of the functions in the hypothesis space can be set as [$\nu-1/2$], i.e.  $\nu = 1/2$ (equation \ref{eqnExponential}) defines family of non-differentiable but continuous functions, $\nu = 3/2$ (equation \ref{eqnMAT32}) defines a family of functions differentiable only once and $\nu = 5/2$ (equation \ref{eqnMAT52}) defines a family of twice differentiable functions. Note, as $\nu$ tends to $\infty$ a t-distribution tends to a Gaussian distribution, similarly as $\nu$ tends to $\infty$ the Mat\'ern kernel tends to a SE kernel. 
+$k_{Matern}$ is the covariance function for a Mat\'ern kernel, $\nu$ is a positive parameter which signifies the degrees of freedom in the Student-t distribution of the power spectrum. $\Gamma (\nu)$ is a Gamma function, while $K_{\nu}$ is a modified Bessel function. The Mat\'ern kernel provides the flexibility to define a hypothesis space of functions with varying degree of differentiability, due to this property they are often used to build machine learning models \cite{minasny2005matern, cornford2002modelling}. The degree of differentiability of the functions in the hypothesis space can be set as [$\nu-1/2$], i.e.  $\nu = 1/2$ (equation \ref{eqnExponential}) defines family of non-differentiable but continuous functions, $\nu = 3/2$ (equation \ref{eqnMAT32}) defines a family of functions differentiable only once and $\nu = 5/2$ (equation \ref{eqnMAT52}) defines a family of twice differentiable functions. Note, as $\nu$ tends to $\infty$ a Student-t distribution tends to a Gaussian distribution, similarly as $\nu$ tends to $\infty$ the Mat\'ern kernel tends to a SE kernel. 
 
 \begin{equation}\label{eqnExponential}
 k_{Matern}(\nu = 1/2, d, \theta) = \theta_{amplitude}^2exp[-\frac{d}{\theta_{lengthScale}}]
@@ -273,7 +273,7 @@ When $\nu = 1/2$ the Mat\'ern kernel is also called the Ornstein-Uhlenbeck or Ex
 
 \subsection{Experiments}\label{subsecCH4Experiments}
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
-Let us interpolate the data-set $\mathcal{D}_{2}$ used to choose the hyper-parameters in section \ref{secPosterior}, but this time using three different covariance functions. We will use Exponential kernel, Mat\'ern ($\nu=1/2$) and SE kernel and compare their interpolations. 
+Let us interpolate the data-set $\mathcal{D}_{2}$ used to choose the hyper-parameters in section \ref{secPosterior}, but this time using three different covariance functions. We will use Exponential kernel ($\nu=3/2$), Mat\'ern ($\nu=3/2$) and SE kernel and compare their interpolations. 
 
 We follow the standard framework of GP regression; we first draw random functions from the covariance function to judge the hypothesis space, we then calculate the posterior distribution conditioned on data-set $\mathcal{D}_{2}$, and finally optimize the marginal likelihood to compare the final predictions of the three covariance functions. 
 
@@ -310,7 +310,7 @@ Figure \ref{figpreOptimizedPosteriorCh5} shows the posterior GP conditioned on t
 
 \begin{figure}[!ht]
   \centering
-    \subfigure[{Draws from a GP posterior with mean zero and Exopnential kernel (figure \ref{subFigpriorDrawsEXP}) conditioned on the data $\mathcal{D}_{2}$. The posterior mean passes through the data-points, random functions drawn from exponential kernel are non-differentiable}]
+    \subfigure[{Draws from a GP posterior with mean zero and Exponential kernel (figure \ref{subFigpriorDrawsEXP}) conditioned on the data $\mathcal{D}_{2}$. The posterior mean passes through the data-points, random functions drawn from exponential kernel are non-differentiable}]
   {
         \includegraphics[width=0.29\textwidth]
         {images/part2/drawsPosteriorEXP}
@@ -322,7 +322,7 @@ Figure \ref{figpreOptimizedPosteriorCh5} shows the posterior GP conditioned on t
         {images/part2/drawsPosteriorMAT3}
         \label{subFigdrawsPosteriorMAT3}
   }\quad
-  \subfigure[{Draws from a GP posterior with mean zero and SE kernel $\nu = \infty$ (figure \ref{subFigpriorDrawsMAT3}) conditioned on the data $\mathcal{D}_{2}$. The posterior mean passes through the data-points, random functions drawn from exponential kernel are infinitely differentiable}]
+  \subfigure[{Draws from a GP posterior with mean zero and SE kernel $\nu = \infty$ (figure \ref{subFigdrawsPosteriorSE}) conditioned on the data $\mathcal{D}_{2}$. The posterior mean passes through the data-points, random functions drawn from exponential kernel are infinitely differentiable}]
   {
         \includegraphics[width=0.29\textwidth]
         {images/part2/drawsPosteriorSE}
@@ -333,7 +333,7 @@ Figure \ref{figpreOptimizedPosteriorCh5} shows the posterior GP conditioned on t
 \end{figure}
 
 \begin{mdframed}[hidealllines=true,backgroundcolor=lightgray!20]
-Figure \ref{figOptimizedPosteriorCh4} shows the posterior GP conditioned on the data-set $\mathcal{D}_{2}$, for three different covariance functions with optimized hyper-parameters. All the three covariance functions estimate the same value of amplitude hyper-parameter, while having significantly different value of noise hyper-parameter (lowest noise estimated for Exponential kernel followed by Mat\'ern ($\nu=3/2$) and SE kernel). 
+Figure \ref{figOptimizedPosteriorCh4} shows the posterior GP conditioned on the data-set $\mathcal{D}_{2}$, for three different covariance functions with optimized hyper-parameters. All the three covariance functions estimate the same value of amplitude hyper-parameter, while having significantly different value of noise hyper-parameter (section \ref{subSecPosteriorNoisy}), lowest noise estimated for Exponential kernel ($\sigma_{n} = 2.8e^-5$) followed by Mat\'ern ($\nu=3/2$) ($\sigma_{n} = 1.7e^-5$) and SE kernel ($\sigma_{n} = 0.01$). 
 
 \marginnote{\textsl{Bias vs Variance}}[1cm]
 The Exponential kernel defines a family of non-differentiable functions, hence functions in its hypothesis space have the flexibility to pass through all the data-points. Whereas, the SE kernel has less flexibility in the functions, due to its strict bias (infinitely differentiable). If the data-set does not have the same level of smoothness the SE kernel will find the closest function in its hypothesis space, and associate the difference to noise. Hence the Exponential kernel will almost always have a low noise estimate than the SE kernel. The infinitely smooth assumption of the squared exponential function is unrealistic in several cases, making the Mat\'ern kernels ($\nu=5/2$) second most popular choice of kernels \cite{Stein1999Springer, cornford2002modelling}. 
@@ -345,19 +345,19 @@ This experiment only shows the different posteriors obtained for the same observ
 
 \begin{figure}[!ht]
   \centering
-    \subfigure[{Draws from a GP posterior, conditioned on the data-set $\mathcal{D}_{1}$ with mean zero and Exponential kernel with hyper-parameters ($\theta_{lengthscale} = 0.215$, $\theta_{amplitude} = 0.312$ and $\sigma_{n} = 2.8e^-5$) that maximize the marginal likelihood ($max(ML) = -1$).}]
+    \subfigure[{Draws from a GP posterior, conditioned on the data-set $\mathcal{D}_{2}$ with mean zero and Exponential kernel with hyper-parameters ($\theta_{lengthscale} = 0.215$, $\theta_{amplitude} = 0.312$ and $\sigma_{n} = 2.8e^-5$) that maximize the marginal likelihood ($max(ML) = -1$).}]
   {
         \includegraphics[width=0.29\textwidth]
         {images/part2/drawsOptimizedPosteriorEXP}
         \label{subFigdrawsOptimizedPosteriorEXP}
   }\quad
-\subfigure[{Draws from a GP posterior, conditioned on the data-set $\mathcal{D}_{1}$ with mean zero and Mat\'ern ($\nu=3/2$) kernel with hyper-parameters ($\theta_{lengthscale} = 0.2$, $\theta_{amplitude} = 0.347$ and $\sigma_{n} = 1.7e^-5$) that maximize the marginal likelihood ($max(ML) = 2$).}]
+\subfigure[{Draws from a GP posterior, conditioned on the data-set $\mathcal{D}_{2}$ with mean zero and Mat\'ern ($\nu=3/2$) kernel with hyper-parameters ($\theta_{lengthscale} = 0.2$, $\theta_{amplitude} = 0.347$ and $\sigma_{n} = 1.7e^-5$) that maximize the marginal likelihood ($max(ML) = 2$).}]
   {
         \includegraphics[width=0.29\textwidth]
         {images/part2/drawsOptimizedPosteriorMAT3}
         \label{subFigdrawsOptimizedPosteriorMAT3}
   }\quad
-  \subfigure[{Draws from a GP posterior, conditioned on the data-set $\mathcal{D}_{1}$ with mean zero and se kernel with hyper-parameters ($\theta_{lengthscale} = 0.151$, $\theta_{amplitude} = 0.358$ and $\sigma_{n} = 0.01$) that maximize the marginal likelihood ($max(ML) = 8$).}]
+  \subfigure[{Draws from a GP posterior, conditioned on the data-set $\mathcal{D}_{2}$ with mean zero and SE kernel with hyper-parameters ($\theta_{lengthscale} = 0.151$, $\theta_{amplitude} = 0.358$ and $\sigma_{n} = 0.01$) that maximize the marginal likelihood ($max(ML) = 8$).}]
   {
         \includegraphics[width=0.29\textwidth]
         {images/part2/drawsOptimizedPosteriorSE}
@@ -368,7 +368,7 @@ This experiment only shows the different posteriors obtained for the same observ
 \end{figure}
 
 \marginnote{\textsl{Choosing functional form}}[1cm]
-If nothing is known about the data or type of experiment, and the number of hyper-parameters are same, then the covariance function with the maximum optimized marginal likelihood should be preferred. By this logic the SE kernel should be the preferred functional form of the covariance for the data-set $\mathcal{D}_{2}$. If the number of hyper-parameters are not the same, then marginal likelihood tends to be higher for covariance functions with greater number of hyper-parameters. \cite{duvenaud-thesis-2014, lloyd2014automatic} propose to use the Bayesian Information Criterion (BIC)\footnote{The BIC again performs a trade-off between data-fit and model complexity, for more details refer to section \ref{subSecSMKernelApplication}} to choose optimal covariance functions if the number of hyper-parameters is different. 
+If nothing is known about the data or type of experiment, and the number of hyper-parameters are the same, then the covariance function with the maximum optimized marginal likelihood should be preferred. By this logic the SE kernel should be the preferred functional form of the covariance for the data-set $\mathcal{D}_{2}$. If the number of hyper-parameters are not the same, then marginal likelihood tends to be higher for covariance functions with greater number of hyper-parameters. \cite{duvenaud-thesis-2014, lloyd2014automatic} propose to use the Bayesian Information Criterion (BIC)\footnote{The BIC again performs a trade-off between data-fit and model complexity, for more details refer to section \ref{subSecSMKernelApplication}} to choose optimal covariance functions if the number of hyper-parameters is different. 
 
 \subsection{Spectral Mixture Kernels}\label{subSecSMKernel}
 Spectral Mixture kernels define a more general class of stationary kernels exploiting the \textit{Bochner's theorem} \cite{bochner1959lectures}. They define the power spectrum ($S(s)$) as a scale location mixture of Gaussians \cite{wilson2013gaussian}. This has two benefits: firstly, with enough Gaussian components, scale location mixtures of Gaussians can approximate a curve up to arbitrary precision \cite{kostantinos2000gaussian, bishop2006pattern}, secondly, the inverse Fourier transform of a scale location mixture of Gaussians can be evaluated analytically and is also a mixture of Gaussians.
@@ -384,10 +384,10 @@ Here, $ S_{SM}$ is the power spectrum of the Spectral Mixture kernel. Each Gauss
 k_{SM}(d, \mu, \sigma, w) = \sum_{q=1}^{Q}w_{q}cos(2\pi\mu_{q}) exp[-2\pi^{2}d^{2}\sigma_{q}^2]
 \end{equation}
 
-Here, $k_{SM}$ is the covariance function of the above power spectrum (equation \ref{eqPowerSpectrumSSM}). The parameter $w_{q}$ is the weight of the Gaussian component $q$, the mean of the Gaussian component $\mu_{q}$ defines the period of kernel while the variance $\sigma_{q}$ of the Gaussian component denotes inverse of the length scale . 
+Here, $k_{SM}$ is the covariance function of the above power spectrum (equation \ref{eqPowerSpectrumSSM}). The parameter $w_{q}$ is the weight of the Gaussian component $q$, the mean of the Gaussian component $\mu_{q}$ defines the period of kernel while the variance $\sigma_{q}$ of the Gaussian component denotes inverse of the length scale. 
 
 \marginnote{\textsl{Pattern recognition}}[1cm]
-\cite{wilson2014thesis} demonstrate that the Spectral Mixture kernels can be used as a replacement for many available kernels, since they define a general class of stationary kernels. Due to their expansive hypothesis space, they can be used as a means to perform automatic pattern discovery. Their Fourier transform can provide more understanding of the observation data-set (this is very similar to interpreting the Fourier transform of dynamic data) \cite{wilson2013gaussian}. One of the major hindrances of SE kernels is that they cannot be used for extrapolation, we cannot extrapolate an SE kernel a $\theta_{lengthScale}$ distance away from the last observation (figure \ref{figGPNoiseLessPosteriors}). Since Spectral Mixture kernels can detect patterns in the data they can also be used to perform extrapolation\footnote{A detailed code can be found : \url{https://people.orie.cornell.edu/andrew/code/\#spectral}}. 
+\cite{wilson2014thesis} demonstrates that the Spectral Mixture kernels can be used as a replacement for many available kernels, since they define a general class of stationary kernels. Due to their expansive hypothesis space, they can be used as a means to perform automatic pattern discovery. Their Fourier transform can provide more understanding of the observation data-set (this is very similar to interpreting the Fourier transform of dynamic data) \cite{wilson2013gaussian}. One of the major hindrances of SE kernels is that they cannot be used for extrapolation, we cannot extrapolate an SE kernel a $\theta_{lengthScale}$ distance away from the last observation (figure \ref{figGPNoiseLessPosteriors}). Since Spectral Mixture kernels can detect patterns in the data they can also be used to perform extrapolation\footnote{A detailed code can be found : \url{https://people.orie.cornell.edu/andrew/code/\#spectral}}. 
 
 We propose to use this relationship between the covariance function and its Fourier transform to automatically identify parameters of a dynamic system. Dynamic engineering systems are generally parametrized by their modal frequencies and participation factors. In structural engineering, identification of modal frequencies is an important step for certification, while minor change in modal frequencies can help in fast discovery of failure. In the next section we apply the Spectral Mixture kernel to automatically identify the modal frequencies of a structural system, parts of the following work have been published in \cite{chiplunkar2017operational}.
 
@@ -482,7 +482,7 @@ While the modal parameters can be chosen by minimizing the least square error, h
 \end{equation}
 
 \marginnote{\textsl{BIC}}[1cm]
-Here, $N$ denotes the number of data-points to fit, $ML$ denotes the marginal likelihood of the fit and $N_{hyp}$ denote the number of hyper-parameters to fit. The BIC performs a trade-off between the data-fit term $N\ln(ML)$ and the complexity penalty term $N_{hyp}\ln(N)$, basically penalizing for over-fitting. Lowest value of BIC is preferred. 
+Here, $N$ denotes the number of data-points to fit, $ML$ denotes the marginal likelihood of the fit and $N_{hyp}$ denotes the number of hyper-parameters to fit. The BIC performs a trade-off between the data-fit term $N\ln(ML)$ and the complexity penalty term $N_{hyp}\ln(N)$, basically penalizing for over-fitting. Lowest value of BIC is preferred. 
 \end{mdframed}
 
 Generally, identification of modal frequencies requires engineering judgment, i.e. engineers have to look at the stabilization diagrams and figure out the optimal value of modal order. Using the Spectral Mixture kernel we have encoded the knowledge of peaks in the power spectrum which in combination with BIC has eliminated the need to perform costly engineering judgment exercises and has made the process automatic. We now compare the accuracy of finding modal frequencies using a Spectral Mixture kernel vs NExT \cite{james1995natural} methodology for a toy data-set, and then later for a real data-set of HCT building \cite{brincker2000modal}.
@@ -511,7 +511,7 @@ Third Frequency (Hz) & 35 & 12.34\% & 5.1\%\\
   \label{tabComparisonOfModalFrequenciesToyData}
 \end{table}
 
-Figure \ref{subfig:stabilizationDiagram} shows the stabilization diagram with increasing number of Gaussians $Q$. As we progressively increase the number of components we start getting more and more modal frequencies. We call a frequency stabilized if the difference between modal frequencies of two subsequent $Q$ is less than $1\%$. The green points are stabilized frequencies. Figure \ref{subfig:bicVsQ} shows the BIC criterion with increasing number of Gaussian's $Q$. We can see that that the BIC is minimum for $Q=6$ and hence if we add any more Gaussians for our data-set we will be over-fitting. The red line in figure \ref{subfig:stabilizationDiagram} shows the $Q$ with minimum BIC and hence the stabilized frequencies for this automatically become our modal frequency predictions.
+Figure \ref{subfig:stabilizationDiagram} shows the stabilization diagram with increasing number of Gaussians $Q$. As we progressively increase the number of components we start getting more and more modal frequencies. We call a frequency stabilized if the difference between modal frequencies of two subsequent $Q$ is less than $1\%$. The green points are stabilized frequencies. Figure \ref{subfig:bicVsQ} shows the BIC criterion with increasing number of Gaussian's $Q$. We can see that the BIC is minimum for $Q=6$ and hence if we add any more Gaussians for our data-set we will be over-fitting. The red line in figure \ref{subfig:stabilizationDiagram} shows the $Q$ with minimum BIC and hence the stabilized frequencies for this automatically become our modal frequency predictions.
 
 \begin{figure*}[!ht]
   \centering
@@ -562,7 +562,7 @@ Figure \ref{subfigStablizationHTCData} shows the stabilization diagram with incr
 In the current setting of the Spectral Mixture model we propose an automatic way to identify the most important frequencies of a structural system. Neither the mode shapes nor the damping ratios are estimated in the current format. In the future we would like to derive a method to estimate mode-shape and damping ratio such that the contributions of neighbouring Gaussians are also taken into account. 
 
 \section{Summary and discussion}\label{sec:ch4Summary}
-This chapter discussed only a small number of possible covariance functions, the table below provides a list of basic covariance functions that we have encountered thus far. Several other other functional forms of the covariance function exist in the literature, for example Gibbs kernel, Rational Quadratic kernel, Periodic kernel etc for more detailed list please refer to works of \cite{Rasmussen2005, duvenaud2013structure, wilson2014thesis}. . 
+This chapter discussed only a small number of possible covariance functions, the table below provides a list of basic covariance functions that we have encountered thus far. Several other functional forms of the covariance function exist in the literature, for example Gibbs kernel, Rational Quadratic kernel, Periodic kernel etc for more detailed list please refer to works of \cite{Rasmussen2005, duvenaud2013structure, wilson2014thesis}. . 
 
 %\renewcommand{\arraystretch}{1}
 \begin{table}[!ht]

@@ -70,7 +70,7 @@ Figure \ref{subFigPriorMultiLinSE} shows random draws obtained using $k_{Multi}$
         {images/part2/drawsMultiLinSE}
         \label{subFigPriorMultiLinSE}
   }\quad
-\subfigure[{Draws from a GP prior with mean zero and kernel obtained by \textbf{adding} a Linear kernel with SE kernel. The hyper-parameters of the linear kernel are $w_{0}=0$ and $w_{1}=1$ while the hyper-parameters of the SE part are $\theta_{amplitude}=1$ and $\theta_{lengthScale}=1$. We see that the variance at $x=0$ goes to variance of SE kernel, since multiplication is an OR operation}]
+\subfigure[{Draws from a GP prior with mean zero and kernel obtained by \textbf{adding} a Linear kernel with SE kernel. The hyper-parameters of the linear kernel are $w_{0}=0$ and $w_{1}=1$ while the hyper-parameters of the SE part are $\theta_{amplitude}=1$ and $\theta_{lengthScale}=1$. We see that the variance at $x=0$ goes to variance of SE kernel, since addition is an OR operation}]
   {
         \includegraphics[width=0.45\textwidth]
         {images/part2/drawsSumLinSE}
@@ -107,7 +107,7 @@ Cov[f(x) \mid \myMatrix{X}, \VEC{y}, k_{Sum}] = \sum_{i=1}^{n} \left[ k_{i}(x_{*
 Note that the precision matrix $( \myMatrix{K_{Sum}(X, X)} )^{-1}$ cannot be decomposed into its constituent covariance matrices. This is not an issue since this strategy is used to separate/discover individual effects in the data-set. For example, if we make a covariance function by adding a Linear kernel and an SE kernel, we can seperate the Linear part of the data-set from the non-linear part. 
 
 \marginnote{\textsl{Discovering pattern}}[1cm]
-This comes very handy while iteratively discovering structure in the data. One method to make an optimal covariance structure by hand is to iteratively add new kernels until the posterior error variance represents a white noise. \cite{Rasmussen2005} use a sum of several kernels to interpolate $CO_{2}$ content in the atmosphere through the years. \cite{durrande2013gaussian} use a sum of periodic kernels to detect which genes are responsible for the 24-hour cycle (\textit{circadian rhythm}) in \textit{arabidopsis} plant. \cite{duvenaud2013structure, lloyd2014automatic} propose to automatically detect pattern by adding new kernels, and using the BIC measure to find the optimal covariance structure. 
+This comes very handy while iteratively discovering structure in the data. One method to make an optimal covariance structure by hand is to iteratively add new kernels until the posterior error variance represents a white noise. \cite{Rasmussen2005} uses a sum of several kernels to interpolate $CO_{2}$ content in the atmosphere through the years. \cite{durrande2013gaussian} uses a sum of periodic kernels to detect which genes are responsible for the 24-hour cycle (\textit{circadian rhythm}) in \textit{arabidopsis} plant. \cite{duvenaud2013structure, lloyd2014automatic} propose to automatically detect pattern by adding new kernels, and using the BIC measure to find the optimal covariance structure. 
 
 \subsection{Change-Point kernels}\label{subSecCh4CPKernel}
 The CP kernel was introduced to recognize changes in regimes, and adapt the covariance function accordingly. They were initially introduced to identify change points in time-series modelling \cite{osborne2010bayesian, saatcci2010gaussian}. These kernels can be defined through addition and multiplication with sigmoidal functions (equation \ref{eqCh4SigmoidalFUnction}). 
@@ -234,17 +234,23 @@ k(\VEC{x_{1}}, \VEC{x_{2}}) & = (\theta)^2 \prod_{i=1}^{D_{inputs}} \left(1 + k^
 
 The above kernel will include all the possible interactions across dimensions. For example for a 3-dimensional input space, the above kernel will include all the first order terms (equation \ref{eqANOVAfirstOrder}), all the second order terms (equation \ref{eqANOVAsecondOrder}), and the third order term (equation \ref{eqANOVAthirdOrder}).
 
-\begin{align}
-k_{first-order}(\VEC{x_{1}}, \VEC{x_{2}}) =  & k^{1}(x_{1}^{1}, x_{2}^{1}) + k^{2}(x_{1}^{2}, x_{2}^{2}) + k^{3}(x_{1}^{3}, x_{2}^{3})\label{eqANOVAfirstOrder} \\
-k_{second-order}(\VEC{x_{1}}, \VEC{x_{2}})  = & k^{1}(x_{1}^{1}, x_{2}^{1}) \times k^{2}(x_{1}^{2}, x_{2}^{2}) + k^{2}(x_{1}^{2}, x_{2}^{2}) \times k^{3}(x_{1}^{3}, x_{2}^{3}) \\ & 
-+  k^{3}(x_{1}^{3}, x_{2}^{3}) \times k^{1}(x_{1}^{1}, x_{2}^{1}) \label{eqANOVAsecondOrder} \\
-k_{third-order}(\VEC{x_{1}}, \VEC{x_{2}}) = & k^{1}(x_{1}^{1}, x_{2}^{1}) \times k^{2}(x_{1}^{2}, x_{2}^{2}) \times k^{3}(x_{1}^{3}, x_{2}^{3})\label{eqANOVAthirdOrder} \\
+
+\begin{align}\label{eqANOVAfirstOrder}
+k_{first-order}(\VEC{x_{1}}, \VEC{x_{2}}) =  k^{1}(x_{1}^{1}, x_{2}^{1}) + k^{2}(x_{1}^{2}, x_{2}^{2}) + k^{3}(x_{1}^{3}, x_{2}^{3})
 \end{align}
 
+\begin{align}\label{eqANOVAsecondOrder} 
+k_{second-order}(\VEC{x_{1}}, \VEC{x_{2}})  = & k^{1}(x_{1}^{1}, x_{2}^{1}) \times k^{2}(x_{1}^{2}, x_{2}^{2}) + k^{2}(x_{1}^{2}, x_{2}^{2}) \times k^{3}(x_{1}^{3}, x_{2}^{3}) \\ & 
++  k^{3}(x_{1}^{3}, x_{2}^{3}) \times k^{1}(x_{1}^{1}, x_{2}^{1})     
+\end{align}
+
+\begin{align}\label{eqANOVAthirdOrder}
+k_{third-order}(\VEC{x_{1}}, \VEC{x_{2}}) = k^{1}(x_{1}^{1}, x_{2}^{1}) \times k^{2}(x_{1}^{2}, x_{2}^{2}) \times k^{3}(x_{1}^{3}, x_{2}^{3})
+\end{align}
 
 These kinds of kernels can be used to analyze the sensitivity of interactions between various dimensions (also called as ANalysis Of VAriance, ANOVA). 
 
-\subsection{Low dimensional structure}
+\subsection{Low dimensional structure}\label{subsec:lowDimensional}
 We can also encode a low dimensional structure into family of functions by specifying the kernel as $k_{low} = k(\VEC{x_{1}}\myMatrix{H}, \VEC{x_{2}}\myMatrix{H})$ (equation \ref{eqCh5ComposedCovariances}), here $\myMatrix{H}$ is a low rank matrix. 
 
 \begin{align}\label{eq:SELowDimensional}
@@ -455,9 +461,9 @@ Polynomial & \small $k_{constant}+\prod k_{linear}+k_{noise}$ &  \normalsize\\
 Ordinary kriging & \small $k_{SE} + k_{noise}$ \normalsize &  \cite{krige1951statistical} \\
 Simple kriging & \small $k_{constant}+k_{SE} + k_{noise}$ &  \normalsize\\
 Universal Kriging & \small $\prod k_{linear}+k_{SE} + k_{noise}$ \normalsize & \cite{matheron1963principles} \\ Multiple Kernel & \small $\sum k_{SE} + k_{noise}$ \normalsize  &  \\
-Spectral Mixture & \small  $\sum cos k_{SE} + k_{noise} ]$ \normalsize & \cite{wilson2013gaussian} \\
-Change point & \small  $\sum CP(k_{Lin}, k_{SE}) + k_{noise} ]$ \normalsize & \cite{osborne2010bayesian} \\
-Additive GPs & \small  $\prod_{i}(1+k^{i}_{SE}) ]$ \normalsize& \cite{duvenaud2011additive} \normalsize\\
+Spectral Mixture & \small  $\sum cos k_{SE} + k_{noise} $ \normalsize & \cite{wilson2013gaussian} \\
+Change point & \small  $\sum CP(k_{Lin}, k_{SE}) + k_{noise} $ \normalsize & \cite{osborne2010bayesian} \\
+Additive GPs & \small  $\prod_{i}(1+k^{i}_{SE}) $ \normalsize& \cite{duvenaud2011additive} \normalsize\\
    \hline
 \end{tabularx}
   \caption{Combination of covariance functions available in literature}

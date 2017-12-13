@@ -1,4 +1,4 @@
-function [meanPosterior, gramMatrixPosterior] = evaluatePosterior(meanFunction, covarianceFunction, theta, x, xStar)
+function [meanPosterior, gramMatrixPosterior] = evaluatePosterior(meanFunction, covarianceFunction, theta, x, y, xStar)
 
 % Evaluating the mean vector
 meanVector = meanFunction(xStar);
@@ -8,7 +8,7 @@ gramMatrixXstarX = evaluateGramMatrix(covarianceFunction, theta, xStar, x);
 gramMatrixXX = evaluateGramMatrix(covarianceFunction, theta, x, x);
 gramMatrixXstarXstar = evaluateGramMatrix(covarianceFunction, theta, xStar, xStar);
 
-+% Calculating the posterior mean and covariance
+% Calculating the posterior mean and covariance
 meanPosterior = meanVector + gramMatrixXstarX*(gramMatrixXX\y);
 gramMatrixPosterior = gramMatrixXstarXstar - gramMatrixXstarX*(gramMatrixXX\gramMatrixXstarX');
 
