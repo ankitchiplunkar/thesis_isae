@@ -26,18 +26,18 @@ Increase in accuracy of pressure reconstruction after incorporating information 
 
 ## Download 
 
-The defense presentation [here](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/defense.pdf)      
-The complete PDF [here](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/thesis_isae_Chiplunkar_06102017.pdf). 
+The defense presentation [here](https://github.com/ankitchiplunkar/thesis_isae/raw/master/compiledPDF/defense.pdf)      
+The complete PDF [here](https://github.com/ankitchiplunkar/thesis_isae/raw/master/compiledPDF/thesis_isae_Chiplunkar_06102017.pdf). 
 
 **Individual chapters**
-1. [Abstracts](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/thesisChiplunkar_abstracts.pdf)
-2. [Index and lists](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/thesisChiplunkar_indexAndLists.pdf)
-3. [Part 1 - Introduction](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/thesisChiplunkar_part1.pdf)
-4. [Part 2 - Incorporating structure in Gaussian Process Regression](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/thesisChiplunkar_part2.pdf)
-5. [Part 3 - Incorporating multiple outputs in Gaussian Process Regression](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/thesisChiplunkar_part3.pdf)
-6. [Conclusions](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/thesisChiplunkar_conclusions.pdf)
-7. [Appendix](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/thesisChiplunkar_appendix.pdf)
-8. [Bibliography](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/thesisChiplunkar_bibliography.pdf)
+1. [Abstracts](https://github.com/ankitchiplunkar/thesis_isae/raw/master/compiledPDF/thesisChiplunkar_abstracts.pdf)
+2. [Index and lists](https://github.com/ankitchiplunkar/thesis_isae/raw/master/compiledPDF/thesisChiplunkar_indexAndLists.pdf)
+3. [Part 1 - Introduction](https://github.com/ankitchiplunkar/thesis_isae/raw/master/compiledPDF/thesisChiplunkar_part1.pdf)
+4. [Part 2 - Incorporating structure in Gaussian Process Regression](https://github.com/ankitchiplunkar/thesis_isae/raw/master/compiledPDF/thesisChiplunkar_part2.pdf)
+5. [Part 3 - Incorporating multiple outputs in Gaussian Process Regression](https://github.com/ankitchiplunkar/thesis_isae/raw/master/compiledPDF/thesisChiplunkar_part3.pdf)
+6. [Conclusions](https://github.com/ankitchiplunkar/thesis_isae/raw/master/compiledPDF/thesisChiplunkar_conclusions.pdf)
+7. [Appendix](https://github.com/ankitchiplunkar/thesis_isae/raw/master/compiledPDF/thesisChiplunkar_appendix.pdf)
+8. [Bibliography](https://github.com/ankitchiplunkar/thesis_isae/raw/master/compiledPDF/thesisChiplunkar_bibliography.pdf)
 
 ### Credits
 This template has been created by Damien Roque (ISAE Supaero)
