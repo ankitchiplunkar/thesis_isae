@@ -14,6 +14,7 @@ Mots clés : **Processus gaussien, Mécanique de vol, Conception d'aéronefs, Dy
 
 ## Download 
 
+The defense presentation [here](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/defense.pdf)
 The complete PDF [here](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/thesis_isae_Chiplunkar_06102017.pdf). 
 
 **Individual chapters**
