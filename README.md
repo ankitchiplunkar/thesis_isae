@@ -12,9 +12,21 @@ Dans cette thèse, nous proposons de construire de meilleurs modèles Processus 
 
 Mots clés : **Processus gaussien, Mécanique de vol, Conception d'aéronefs, Dynamique structurale, Interpolation de choc**
 
+## Results
+
+**Incorporating information of relationships**   
+Increase in accuracy of the surrogate model after incorporating relationship between outputs;
+
+<img src="https://raw.githubusercontent.com/ankitchiplunkar/thesis_isae/master/images/part3/quadraticRelationshipIndependent.png" width="400"> <img src="https://raw.githubusercontent.com/ankitchiplunkar/thesis_isae/master/images/part3/quadraticRelationshipJointKernel.png" width="400"> 
+
+**Incorporating information of shape**      
+Increase in accuracy of pressure reconstruction after incorporating information of shock
+
+<img src="https://raw.githubusercontent.com/ankitchiplunkar/thesis_isae/master/images/part2/CRM-clean-testSnapshots_M850A20.png" width="400"> <img src="https://raw.githubusercontent.com/ankitchiplunkar/thesis_isae/master/images/part2/CRM-clean-testSnapshots_M840A20.png" width="400"> 
+
 ## Download 
 
-The defense presentation [here](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/defense.pdf)
+The defense presentation [here](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/defense.pdf)      
 The complete PDF [here](https://github.com/ankitchiplunkar/thesis_isae/blob/master/compiledPDF/thesis_isae_Chiplunkar_06102017.pdf). 
 
 **Individual chapters**
